@@ -1,28 +1,12 @@
-
+import os
 import sys
-
 import asyncio
 import nest_asyncio
 from qgis._core import QgsRasterLayer
 from qgis.core import QgsVectorLayer, QgsProject
-
-# # custom_module_dir = r"D:\LLM_Geo_QGIS\LLMQgs"  #REPLACE WITH THE PATH THAT CONTAINS ALL THE MODULES
-# custom_module_dir = r"C:\Users\AKINBOYEWA TEMITOPE\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\llmfind"  # REPLACE WITH THE PATH THAT CONTAINS ALL THE MODULES
-# if custom_module_dir not in sys.path:
-#     sys.path.append(custom_module_dir)
-
 from IPython import get_ipython
-
-# Enable autoreload
-ipython = get_ipython()
-if ipython:
-    ipython.run_line_magic('load_ext', 'autoreload')
-    ipython.run_line_magic('autoreload', '2')
-
-import os
 import rasterio
 from PIL import Image
-
 import requests
 import networkx as nx
 import pandas as pd
@@ -32,15 +16,16 @@ from openai import OpenAI
 from IPython.display import display, HTML, Code
 from IPython.display import clear_output
 import matplotlib.pyplot as plt
-
 import base64
-
 import pickle
-import sys
 import osmnx as ox
 
-import os
-import sys
+# Enable autoreload
+ipython = get_ipython()
+if ipython:
+    ipython.run_line_magic('load_ext', 'autoreload')
+    ipython.run_line_magic('autoreload', '2')
+
 
 # Get the directory of the current script
 current_script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -593,6 +578,7 @@ if __name__ == "__main__":
     main(task, saved_fname, model_name)
 downloaded_file_name = main(task, saved_fname, model_name)
 
+#%%
 #Create the model
 if os.path.exists(saved_fname):
     os.remove(saved_fname)
@@ -603,13 +589,12 @@ os.makedirs(save_dir, exist_ok=True)
 # model_name = r'gpt-4o'
 OpenAI_key = helper.load_OpenAI_key()
 model = ChatOpenAI(api_key=OpenAI_key, model=model_name, temperature=1)
-
+#%%
 #Select the data source
 source_select_prompt_str = helper.create_select_prompt(task=task)
 
 print(source_select_prompt_str)
-
-
+#%%
 #Pick up the data source handbook
 from IPython.display import clear_output
 
@@ -628,9 +613,7 @@ LLM_reply_str = helper.convert_chunks_to_str(chunks=chunks)
 
 print("Select the data source: \n")
 print(LLM_reply_str)
-
-
-
+#%%
 #Generate the data fetching program
 import ast
 select_source = ast.literal_eval(LLM_reply_str)
@@ -645,33 +628,28 @@ handbook_list = constants.handbooks[f"{data_source_ID}"]
 handbook_str =  '\n'.join([f"{idx + 1}. {line}" for idx, line in enumerate(handbook_list)])
 print()
 print(f"Handbook:\n{handbook_str}")
-
-
+#%%
 download_prompt_str = helper.create_download_prompt(task,saved_fname, selected_data_source, handbook_str)
 print(download_prompt_str)
-
-
+#%%
 from IPython.display import clear_output
 async def fetch_download_str(model, download_prompt_str):
     chunks = []
-
     async for chunk in model.astream(download_prompt_str):
         chunks.append(chunk)
         # print(chunk.content, end="", flush=True)
     return chunks
 nest_asyncio.apply()
 chunks = asyncio.run(fetch_chunks(model, download_prompt_str))
-
 clear_output(wait=True)
 # clear_output(wait=False)
 LLM_reply_str = helper.convert_chunks_to_str(chunks=chunks)
 print(LLM_reply_str)
 
-
+#%%
 code = helper.extract_code_from_str(LLM_reply_str, task)
 display(Code(code, language='python'))
-
-
+#%%
 #Execute the generated program
 code = code.replace('area({osm_id})->.searchArea;',
                     'relation({osm_id}); map_to_area->.searchArea;')  # GPT-4o never follow the related instruction!
@@ -680,7 +658,7 @@ code = helper.execute_complete_program(code=code, try_cnt=10, task=task, model_n
 code = code.replace('area({osm_id})->.searchArea;',
                     'relation({osm_id}); map_to_area->.searchArea;')  # GPT-4o never follow the related instruction!
 display(Code(code, language='python'))
-
+#%%
 
 
 # Displaying the result in QGIS
