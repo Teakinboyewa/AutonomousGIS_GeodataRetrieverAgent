@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Initial commit">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LLM_Find/LLM_FIND.py" beforeDir="false" afterPath="$PROJECT_DIR$/LLM_Find/LLM_FIND.py" afterDir="false" />
-    </list>
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Initial commit" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -203,7 +200,7 @@
       <workItem from="1722715916954" duration="1164000" />
       <workItem from="1722721784998" duration="34000" />
       <workItem from="1722747244613" duration="38000" />
-      <workItem from="1722809816846" duration="1837000" />
+      <workItem from="1722809816846" duration="2123000" />
     </task>
     <task id="LOCAL-00001" summary="User_Manual Added">
       <option name="closed" value="true" />
@@ -333,7 +330,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722810947404</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722811664739</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1722811664739</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
