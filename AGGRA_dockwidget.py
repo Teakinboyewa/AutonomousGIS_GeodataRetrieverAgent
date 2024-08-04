@@ -306,6 +306,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # file_dialog.setNameFilter("Shapefile (*.shp *.SHP)")
         file_dialog.setNameFilters([
             "GeoPackage (*.gpkg *.GPKG)",
+            "Shapefile (*.shp)",
             "CSV files (*.csv)",
             "TIFF files (*.tif *.tiff *.TIF *.TIFF)",
             "PNG files (*.png *.PNG)",
