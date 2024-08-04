@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Initial commit">
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Shapefile included as an output option&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LLM_Find/LLM_Find_Codebase.py" beforeDir="false" afterPath="$PROJECT_DIR$/LLM_Find/LLM_Find_Codebase.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +50,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/AKINBOYEWA TEMITOPE/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/llmqgis",
+    "last_opened_file_path": "D:/Onedrive/OneDrive - The Pennsylvania State University/LLMFIND/Plugin/AutonomousGIS_GeodataRetrieverAgent-master",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -202,6 +203,7 @@
       <workItem from="1722715916954" duration="1164000" />
       <workItem from="1722721784998" duration="34000" />
       <workItem from="1722747244613" duration="38000" />
+      <workItem from="1722809816846" duration="959000" />
     </task>
     <task id="LOCAL-00001" summary="User_Manual Added">
       <option name="closed" value="true" />
@@ -299,7 +301,23 @@
       <option name="project" value="LOCAL" />
       <updated>1722727828902</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722810041925</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1722810041925</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Shapefile included as an output option&quot;">
+      <option name="closed" value="true" />
+      <created>1722810169738</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1722810169738</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -336,6 +354,7 @@
     <MESSAGE value=".gitkeep deleted" />
     <MESSAGE value="User_Manual Added" />
     <MESSAGE value="Initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
+    <MESSAGE value="Shapefile included as an output option&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Shapefile included as an output option&quot;" />
   </component>
 </project>
