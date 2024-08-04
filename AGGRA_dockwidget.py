@@ -303,7 +303,6 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         file_dialog.setAcceptMode(QFileDialog.AcceptSave)
         file_dialog.setFileMode(QFileDialog.AnyFile)
         file_dialog.setDefaultSuffix("gpkg")
-        # file_dialog.setNameFilter("Shapefile (*.shp *.SHP)")
         file_dialog.setNameFilters([
             "GeoPackage (*.gpkg *.GPKG)",
             "Shapefile (*.shp)",
