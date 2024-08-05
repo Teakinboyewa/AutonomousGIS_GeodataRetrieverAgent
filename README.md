@@ -3,17 +3,14 @@ AutonomousGIS_GeodataRetrieverAgent is a plugin integration of an autonmomous ag
 
 # Installation
 ## Dependencies
-```pip install openai```
-
+```python
+pip install openai
 pip install pyvis
 pip install nest-asyncio
 pip install rasterio
-
 pip install osmnx
-
 pip install pyogrio
-
 pip install fiona
+pip install geopandas
 
-pip install geopandas```
 ## macOS + QGIS 3
