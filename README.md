@@ -6,9 +6,7 @@ AutonomousGIS_GeodataRetrieverAgent is a plugin integration of an autonmomous ag
 ```pip install openai```
 
 pip install pyvis
-
 pip install nest-asyncio
-
 pip install rasterio
 
 pip install osmnx
