@@ -3,6 +3,7 @@
 - [Download](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/archive/refs/heads/master.zip) the master repository of the plugin from github
 - Launch QGIS software and navigate to ```Plugin >  Manage and install Plugins.. > Install from ZIP```
 - Click on ```...``` to select the directory of the downloaded zip file and ```Install plugin```
+
 ![Install_Plugin1.png](Docs%2FInstall_Plugin1.png) 
 
 - Click ```Yes``` to install all missing dependencies.
@@ -21,6 +22,16 @@
 - Load the AutonomousGis_GeodataRetrieverAgent on ```Plugins```on menubar, or via its icon on the plugins toolbar.
 
 ![Plugin icon on toolbar.png](Docs%2FPlugin%20icon%20on%20toolbar.png)
+
+# How to use the Plugin
+- The plugin interface consists of three tabs - ```Data Request Page```, ```Settings```, and ```Help```
+- Data requests are made in the ```Data Request Page```. This consists of the ```Code pad``` which displays the AI-generated codes, ```Information Panel``` which displays the agent running information, ```Data request message panel``` which enables the user to enter the resuest message in natural language command, and the ```Output dirctory``` which enables user to set the desired path to save the downloaded data.
+
+![Plugin Interface.png](Docs%2FPlugin%20Interface.png)
+
+- The ```Settings``` tab, enable the user to select models and to set the Openai API keys and other data sources API keys. Find more details about [OpenAI API key](https://platform.openai.com/account/api-keys) and [data sources](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/User_manual.md#data-sources)
+
+
 
 
 
