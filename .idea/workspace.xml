@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Initial commit" />
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Initial commit">
+      <change beforePath="$PROJECT_DIR$/LLM_Find/config.ini" beforeDir="false" afterPath="$PROJECT_DIR$/LLM_Find/config.ini" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -202,7 +204,7 @@
       <workItem from="1722747244613" duration="38000" />
       <workItem from="1722809816846" duration="2260000" />
       <workItem from="1722818234818" duration="2257000" />
-      <workItem from="1722975342152" duration="304000" />
+      <workItem from="1722975342152" duration="386000" />
     </task>
     <task id="LOCAL-00001" summary="User_Manual Added">
       <option name="closed" value="true" />
@@ -348,7 +350,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722811952171</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722975705484</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1722975705484</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
