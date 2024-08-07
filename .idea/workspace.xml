@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Data request examples page created" />
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="updated data request examples page">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/User_manual.md" beforeDir="false" afterPath="$PROJECT_DIR$/User_manual.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -207,7 +210,7 @@
       <workItem from="1722747244613" duration="38000" />
       <workItem from="1722809816846" duration="2260000" />
       <workItem from="1722818234818" duration="2257000" />
-      <workItem from="1722975342152" duration="13582000" />
+      <workItem from="1722975342152" duration="15597000" />
     </task>
     <task id="LOCAL-00001" summary="User_Manual Added">
       <option name="closed" value="true" />
@@ -489,7 +492,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722994276956</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="updated data request examples page">
+      <option name="closed" value="true" />
+      <created>1722994415228</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1722994415228</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -532,6 +543,7 @@
     <MESSAGE value="Help page updated" />
     <MESSAGE value="User manual updated" />
     <MESSAGE value="Data request examples page created" />
-    <option name="LAST_COMMIT_MESSAGE" value="Data request examples page created" />
+    <MESSAGE value="updated data request examples page" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated data request examples page" />
   </component>
 </project>
