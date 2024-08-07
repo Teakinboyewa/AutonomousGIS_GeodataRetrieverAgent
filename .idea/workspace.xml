@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated config.ini">
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated User_Manual">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User_manual.md" beforeDir="false" afterPath="$PROJECT_DIR$/User_manual.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/install_packages/check_packages.py" beforeDir="false" afterPath="$PROJECT_DIR$/install_packages/check_packages.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,7 +210,8 @@
       <workItem from="1722747244613" duration="38000" />
       <workItem from="1722809816846" duration="2260000" />
       <workItem from="1722818234818" duration="2257000" />
-      <workItem from="1722975342152" duration="22786000" />
+      <workItem from="1722975342152" duration="23014000" />
+      <workItem from="1723046401843" duration="298000" />
     </task>
     <task id="LOCAL-00001" summary="User_Manual Added">
       <option name="closed" value="true" />
@@ -549,7 +549,23 @@
       <option name="project" value="LOCAL" />
       <updated>1723002048727</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Updated README.md">
+      <option name="closed" value="true" />
+      <created>1723003549498</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1723003549498</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Updated User_Manual">
+      <option name="closed" value="true" />
+      <created>1723003559594</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1723003559594</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -588,12 +604,13 @@
     <MESSAGE value="Shapefile included as an output option&quot;" />
     <MESSAGE value="Updated User_manual" />
     <MESSAGE value="Initial commit" />
-    <MESSAGE value="Updated User_Manual" />
     <MESSAGE value="Help page updated" />
     <MESSAGE value="Data request examples page created" />
     <MESSAGE value="updated data request examples page" />
     <MESSAGE value="User manual updated" />
     <MESSAGE value="Updated config.ini" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated config.ini" />
+    <MESSAGE value="Updated README.md" />
+    <MESSAGE value="Updated User_Manual" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated User_Manual" />
   </component>
 </project>
