@@ -43,13 +43,13 @@ To make a data request, follow these steps:
 - To stop a request, use the ```Interrupt``` button. This button is especially useful if you need to terminate a request. Additionally, the ```Clear``` button can be used to clear the code pad panel if needed.
 
 ## Data sources
-- [Openstreetmap:]() administrative boundaries, street networks, points of interests (POIs) can be downloaded from this source.
+- [Openstreetmap:](https://www.openstreetmap.org/) administrative boundaries, street networks, points of interests (POIs) can be downloaded from this source.
 - [US Census Bureau boundary:]() provides the US administrative boundaries (nation, state, county, tract, and block group level, as well as metropolitan statistic areas. API key is required. You can get an API key [here.]()
 - [US Census Bureau demography:]() provides the demographic and socio-economic data, such as population, gender, income, education, and race.
 - [US COVID-19 data by New York Times:]() provides the cumulative counts of COVID-19 cases and deaths in the United States, at the state and county level, over time from 2020-01-21 to 2023-03-23.
 - [OpenWeather data:]() provides historical, current, and forecast weather data. The historical data can be back to 2023-08. [API]() limited: ```[Hourly forecast: 4 days, Daily forecast: 16 days, 3 hour forecast: 5 days]``` 
 - [ESRI World Imagery (for export):]() It is a web map service, providing satellite image tiles. You can download tiles and mosaic them into a large image.
-- [OpenTopography](). You can download global digital elevation model (DEM) data using API (get one [here](https://opentopography.org/blog/introducing-api-keys-access-opentopography-global-datasets)); the resolution ranges from 15m to 1000m, such as SRTM GL3 (global 90m), and GL1 (global 30m). The DEM source list from this API contains: SRTMGL3, SRTMGL1, SRTMGL1_E, AW3D30, AW3D30, SRTM15Plus, NASADEM, COP30, COP30, EU_DTM, GEDI_L3, GEBCOIceTopo, GEBCOSubIceTopo.
+- [OpenTopography](https://opentopography.org/). You can download global digital elevation model (DEM) data using API (get one [here](https://opentopography.org/blog/introducing-api-keys-access-opentopography-global-datasets)); the resolution ranges from 15m to 1000m, such as SRTM GL3 (global 90m), and GL1 (global 30m). The DEM source list from this API contains: SRTMGL3, SRTMGL1, SRTMGL1_E, AW3D30, AW3D30, SRTM15Plus, NASADEM, COP30, COP30, EU_DTM, GEDI_L3, GEBCOIceTopo, GEBCOSubIceTopo.
 
 ## Data request Examples
 - Data request examples and video demonstrations for each data sources are available [here](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md).
