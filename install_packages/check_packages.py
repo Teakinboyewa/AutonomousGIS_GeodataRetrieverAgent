@@ -14,7 +14,7 @@ def check(required_packages):
         except ImportError:
             missing_packages.append(package)
         if missing_packages:
-            message = "The following Python packages are required to use the plugin Autonomous GIS - GeoData Retrieve Agent:\n\n"
+            message = "The following Python packages are required to use the plugin Autonomous GIS - GeoData Retriever Agent:\n\n"
             message += "\n".join(missing_packages)
             message += "\n\nWould you like to install them now? After installation please restart QGIS."
 
