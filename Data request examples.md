@@ -1,4 +1,4 @@
-# Data request Examples
+# Data Request Examples
 - [Openstreetmap](#data-source-1-openstreetmap)
 - [US Census Bureau boundary](#data-source-2-us-census-bureau-boundary)
 - [US Census Bureau demography](#data-source-3-us-census-bureau-demography)
