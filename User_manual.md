@@ -40,7 +40,7 @@ To make a data request, follow these steps:
 - Enter your OpenAI API key and any other data source keys if required. Note: These API keys will be saved automatically in the ```config.ini``` file and will be used for any future data requests after this initial input.
 - On the ```Data Request Page```, click the Send button to submit your request. Note: On every first request, it may take some few minutes to get the OpenAI response.
 - To stop a request, use the ```Interrupt``` button. This button is especially useful if you need to terminate a request. Additionally, the ```Clear``` button can be used to clear the code pad panel if needed.
-- Data request examples and video demonstrations are available [here](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/User_manual.md#data-request-examples).
+- Data request examples and video demonstrations are available [here](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md).
 ## Data sources
 
 ## Data request Examples
