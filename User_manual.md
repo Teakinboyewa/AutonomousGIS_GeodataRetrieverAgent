@@ -8,8 +8,6 @@
 
 - Click ```Yes``` to install all missing dependencies.
 
-![Install dependencies.png](Docs%2FInstall%20dependencies.png)
-
 - If successful, a success message will be displayed, then you can close the ```Plugins``` dialog. If you face any difficulty in installing any dependencies click here ([learn more about installing dependencies]())
 
 ![Plugin installation success.png](Docs%2FPlugin%20installation%20success.png)
@@ -31,7 +29,7 @@
 
 - The ```Settings``` tab, enable the user to select models and to set the Openai API keys and other data sources API keys. Find more details about [OpenAI API key](https://platform.openai.com/account/api-keys) and [data sources](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/User_manual.md#data-sources)
 
-- ![Settings.png](Docs%2FSettings.png)
+- ![PluginSetting.png](Docs%2FPluginSetting.png)
 
 # Data request Instructions
 
@@ -39,7 +37,7 @@ To make a data request, follow these steps:
 - In the ```Data Request Message Panel```, type your data request using natural language.
 - Specify the directory where you want the downloaded data to be saved.
 - Enter your OpenAI API key and any other data source keys if required. Note: These API keys will be saved automatically in the ```config.ini``` file and will be used for any future data requests after this initial input.
-- On the ```Data Request Page```, click the Send button to submit your request. Note: On every first request, it may take some few minutes to get the OpenAI response.
+- On the ```Data Request Page```, click the Send button to submit your request. Note: For the first request, it may take a minute to establish a connection to the OpenAI server.
 - To stop a request, use the ```Interrupt``` button. This button is especially useful if you need to terminate a request. Additionally, the ```Clear``` button can be used to clear the code pad panel if needed.
 
 ## Data sources
