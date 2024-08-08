@@ -596,6 +596,7 @@ class ScriptThread(QThread):
         config_path = os.path.join(current_script_dir, 'LLM_Find', 'config.ini')
         # config_path = os.path.join(os.path.dirname(self.script_path), 'config.ini')
         config = configparser.ConfigParser()
+        config.optionxform = str  # Preserve case for keys
         config.read(config_path)
 
         if 'API_Key' not in config:
