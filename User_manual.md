@@ -8,8 +8,6 @@
 
 - Click ```Yes``` to install all missing dependencies.
 
-![Install dependencies.png](Docs%2FInstall%20dependencies.png)
-
 - If successful, a success message will be displayed, then you can close the ```Plugins``` dialog. If you face any difficulty in installing any dependencies click here ([learn more about installing dependencies]())
 
 ![Plugin installation success.png](Docs%2FPlugin%20installation%20success.png)
