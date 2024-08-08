@@ -8,7 +8,7 @@ The User Manual is available [here](https://github.com/Teakinboyewa/AutonomousGI
 
 ![Plugin Interface.png](Docs%2FPlugin%20Interface.png)
 
-![Settings.png](Docs%2FSettings.png)
+![Settings.png](Docs%2FPluginSettings.png)
 
 # Usage
 Find some usage example on the Data Request [Examples](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md) page
