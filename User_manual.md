@@ -1,4 +1,4 @@
-#  Autonomous GIS - Geodata Retriever Agent User Manual
+#  Autonomous GIS - Geodata Retrieve Agent User Manual
 # Installation Guide
 - [Download](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/archive/refs/heads/master.zip) the master repository of the plugin from github
 - Launch QGIS software and navigate to ```Plugin >  Manage and install Plugins.. > Install from ZIP```
@@ -19,7 +19,7 @@
 
 ![CheckBox.png](Docs%2FCheckBox.png)
 
-- Load the ```AutonomousGis_GeodataRetrieverAgent``` on ```Plugins```on menubar, or via its icon on the plugins toolbar.
+- Load the ```AutonomousGis-GeodataRetrieveAgent``` on ```Plugins```on menubar, or via its icon on the plugins toolbar.
 
 ![Plugin icon on toolbar.png](Docs%2FPlugin%20icon%20on%20toolbar.png)
 
