@@ -7,7 +7,7 @@
 ![Install_Plugin1.png](Docs%2FInstall_Plugin1.png) 
 
 - Click ```Yes``` to install all missing dependencies.
-- 
+  
 ![Install dependencies.png](Docs%2FInstall%20dependencies.png)
 
 - If successful, a success message will be displayed, then you can close the ```Plugins``` dialog. If you face any difficulty in installing any dependencies click here ([learn more about installing dependencies]())
