@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated User_Manual">
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Initial commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/install_packages/check_packages.py" beforeDir="false" afterPath="$PROJECT_DIR$/install_packages/check_packages.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Docs/Install dependencies.png" beforeDir="false" afterPath="$PROJECT_DIR$/Docs/Install dependencies.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,21 +44,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Onedrive/OneDrive - The Pennsylvania State University/LLMFIND/Plugin/AutonomousGIS_GeodataRetrieverAgent-master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/AKINBOYEWA TEMITOPE/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/AutonomousGIS_GeodataRetrieverAgent-master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Onedrive\OneDrive - The Pennsylvania State University\LLMFIND\Plugin\AutonomousGIS_GeodataRetrieverAgent-master" />
@@ -211,7 +211,9 @@
       <workItem from="1722809816846" duration="2260000" />
       <workItem from="1722818234818" duration="2257000" />
       <workItem from="1722975342152" duration="23014000" />
-      <workItem from="1723046401843" duration="298000" />
+      <workItem from="1723046401843" duration="3712000" />
+      <workItem from="1723061490463" duration="62000" />
+      <workItem from="1723061567345" duration="661000" />
     </task>
     <task id="LOCAL-00001" summary="User_Manual Added">
       <option name="closed" value="true" />
@@ -565,7 +567,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723003559594</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1723050178644</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1723050178644</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -603,7 +613,6 @@
     <MESSAGE value="User_Manual Added" />
     <MESSAGE value="Shapefile included as an output option&quot;" />
     <MESSAGE value="Updated User_manual" />
-    <MESSAGE value="Initial commit" />
     <MESSAGE value="Help page updated" />
     <MESSAGE value="Data request examples page created" />
     <MESSAGE value="updated data request examples page" />
@@ -611,6 +620,7 @@
     <MESSAGE value="Updated config.ini" />
     <MESSAGE value="Updated README.md" />
     <MESSAGE value="Updated User_Manual" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated User_Manual" />
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
   </component>
 </project>
