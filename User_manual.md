@@ -29,7 +29,7 @@
 
 - The ```Settings``` tab, enable the user to select models and to set the Openai API keys and other data sources API keys. Find more details about [OpenAI API key](https://platform.openai.com/account/api-keys) and [data sources](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/User_manual.md#data-sources)
 
-- ![PluginSetting.png](PluginSetting.png)
+- ![PluginSetting.png](Docs%2FPluginSetting.png)
 
 # Data request Instructions
 
