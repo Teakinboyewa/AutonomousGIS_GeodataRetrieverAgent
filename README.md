@@ -6,7 +6,7 @@ The User Manual is available [here](https://github.com/Teakinboyewa/AutonomousGI
 
 # Plugin Interface
 
-![Plugin Interface.png](Docs%2FPlugin%20Interface.png)
+![Plugin Interface.png](Docs%2FPluginGUI.png)
 
 ![Settings.png](Docs%2FPluginSetting.png)
 
