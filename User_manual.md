@@ -37,7 +37,7 @@ To make a data request, follow these steps:
 - In the ```Data Request Message Panel```, type your data request using natural language.
 - Specify the directory where you want the downloaded data to be saved.
 - Enter your OpenAI API key and any other data source keys if required. Note: These API keys will be saved automatically in the ```config.ini``` file and will be used for any future data requests after this initial input.
-- On the ```Data Request Page```, click the Send button to submit your request. Note: On every first request, it may take some few minutes to get the OpenAI response.
+- On the ```Data Request Page```, click the Send button to submit your request. Note: For the first request, it may take a minute to establish a connection to the OpenAI server.
 - To stop a request, use the ```Interrupt``` button. This button is especially useful if you need to terminate a request. Additionally, the ```Clear``` button can be used to clear the code pad panel if needed.
 
 ## Data sources
