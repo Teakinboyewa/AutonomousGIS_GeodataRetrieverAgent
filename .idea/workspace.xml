@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Initial commit">
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated User Manual">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Docs/Install dependencies.png" beforeDir="false" afterPath="$PROJECT_DIR$/Docs/Install dependencies.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +49,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/AKINBOYEWA TEMITOPE/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/AutonomousGIS_GeodataRetrieverAgent-master",
+    "last_opened_file_path": "C:/Users/AKINBOYEWA TEMITOPE/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/llmqgis",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -214,6 +213,8 @@
       <workItem from="1723046401843" duration="3712000" />
       <workItem from="1723061490463" duration="62000" />
       <workItem from="1723061567345" duration="661000" />
+      <workItem from="1723097105325" duration="1924000" />
+      <workItem from="1723145007384" duration="131000" />
     </task>
     <task id="LOCAL-00001" summary="User_Manual Added">
       <option name="closed" value="true" />
@@ -575,7 +576,23 @@
       <option name="project" value="LOCAL" />
       <updated>1723050178644</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1723097303922</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1723097303922</updated>
+    </task>
+    <task id="LOCAL-00047" summary="Updated User Manual">
+      <option name="closed" value="true" />
+      <created>1723108382713</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1723108382713</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -621,6 +638,7 @@
     <MESSAGE value="Updated README.md" />
     <MESSAGE value="Updated User_Manual" />
     <MESSAGE value="Initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
+    <MESSAGE value="Updated User Manual" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated User Manual" />
   </component>
 </project>
