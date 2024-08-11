@@ -14,4 +14,4 @@ The User Manual is available [here](https://github.com/Teakinboyewa/AutonomousGI
 Find some usage example on the Data Request [Examples](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md) page
 
 # YouTube Channel
-Some video demonstrations have been created on our [YouTubeChannel](https://youtube.com/@gibd_lab?feature=shared). Feel free to subscribe to the our YouTube channel dor regular updates.
+Some video demonstrations have been created on our [YouTubeChannel](https://youtube.com/@gibd_lab). Feel free to subscribe to the our YouTube channel dor regular updates.
