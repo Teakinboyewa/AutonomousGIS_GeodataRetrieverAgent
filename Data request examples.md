@@ -8,19 +8,19 @@
 - [ESRI World Imagery (for export):](#data-source-7-esri-world-imagery-for-export)
 
 
-# Data source 1: Openstreetmap
-Task1:Download all state boundaries of Nigeria. ([Video demonstration]())
+# Data source 1: Openstreetmap ([Video demonstration](https://youtu.be/4yVhVPFjCsw?si=qu8SWyoxvTbrMnLL))
+Task1:Download all state boundaries of Nigeria. 
 
 ![Nigeria_States2.png](Docs%2FData%20request%20examples%2FNigeria_States2.png)
 
-Task: Download all rivers in Yulin, Guangxi, China. ([Video demonstration]())
+Task: Download all rivers in Yulin, Guangxi, China.
 
-Task: Download the administrative boundary of Yulin, Guangxi, China. ([Video demonstration]())
+Task: Download the administrative boundary of Yulin, Guangxi, China.
 
 ![Yuling.png](Docs%2FData%20request%20examples%2FYuling.png)
 
 
-# Data source 2: US Census Bureau boundary
+# Data source 2: US Census Bureau boundary ([Video demonstration](https://youtu.be/WZhVv2st6Tw?si=I7XX-MljKbSuaS39))
 
 Task: Download the boundaries of all the counties in the USA.
 
@@ -31,7 +31,7 @@ Task: Download all Census block group boundaries in Pennsylvania, USA.
 
 ![PA_blockgroup.png](Docs%2FData%20request%20examples%2FPA_blockgroup.png)
 
-# Data source 3: US Census Bureau demography
+# Data source 3: US Census Bureau demography ([Video demonstration](https://youtu.be/ABhpBw5fkRo?si=VKM2cRR2-1O74UoO))
 
 
 # Data source 4: US COVID-19 data by New York Times
@@ -43,15 +43,15 @@ Task: Download the COVID-19 case data of all counties in Pennsylvania, USA. The 
 
 ![PA_covid19.png](Docs%2FData%20request%20examples%2FPA_covid19.png)
 
-# Data source 5 : OpenTopography  (API Key required)
+# Data source 5 : OpenTopography  (API Key required) ([Video demonstration](https://youtu.be/laruNGMzEfo?si=0BpCKViM2GREazYH))
 Task: 
 - Download the 30m resolution DEM of Chongqing, China from SRTMGL1.
-- Download the administrative boundary of Chongqing, China. [Video demonstration]()
+- Download the administrative boundary of Chongqing, China.
 
 ![Chongqing_DEM.png](..%2F..%2FCase_Studies%2FCaseStudy1%2FChongqing_DEM.png)
 
 Task:
-- Download the 30m resolution DEM of Lhasa, China, from COP30. [Video demonstration]()
+- Download the 30m resolution DEM of Lhasa, China, from COP30.
 
 ![Lhasa_DEM.png](Docs%2FData%20request%20examples%2FLhasa_DEM.png)
 
@@ -59,13 +59,13 @@ Task:
 # Data source 6: OpenWeather data
 
 
-# Data source 7: ESRI World Imagery (for export)
+# Data source 7: ESRI World Imagery (for export) ([Video demonstration](https://youtu.be/nhMR9i1NiVg?si=xOJVnfWZmS5DDBCU))
 
-Task: Download the YellowStone National Park satellite image at level 10. [Video demonstration]()
+Task: Download the YellowStone National Park satellite image at level 10.
 
 ![YellowStone_park.png](Docs%2FData%20request%20examples%2FYellowStone_park.png)
 
-Task: Download the Brasília satellite image at level 6. [Video demonstration]()
+Task: Download the Brasília satellite image at level 6.
 
 ![Brasilia.png](Docs%2FData%20request%20examples%2FBrasilia.png)
 
