@@ -48,7 +48,7 @@ Task:
 - Download the 30m resolution DEM of Chongqing, China from SRTMGL1.
 - Download the administrative boundary of Chongqing, China.
 
-![Chongqing_DEM.png](..%2F..%2FCase_Studies%2FCaseStudy1%2FChongqing_DEM.png)
+![Chongqing_DEM.png](Docs%2FData%20request%20examples%2FChongqing_DEM.png)
 
 Task:
 - Download the 30m resolution DEM of Lhasa, China, from COP30.

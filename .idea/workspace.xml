@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated README.md">
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated User_Manual">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data request examples.md" beforeDir="false" afterPath="$PROJECT_DIR$/Data request examples.md" afterDir="false" />
     </list>
@@ -216,15 +216,7 @@
       <workItem from="1723061567345" duration="661000" />
       <workItem from="1723097105325" duration="1924000" />
       <workItem from="1723145007384" duration="131000" />
-      <workItem from="1723396779523" duration="3370000" />
-    </task>
-    <task id="LOCAL-00001" summary="User_Manual Added">
-      <option name="closed" value="true" />
-      <created>1722644105236</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1722644105236</updated>
+      <workItem from="1723396779523" duration="6283000" />
     </task>
     <task id="LOCAL-00002" summary="Initial commit">
       <option name="closed" value="true" />
@@ -610,7 +602,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723397511992</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Updated User_Manual">
+      <option name="closed" value="true" />
+      <created>1723400319241</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1723400319241</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -653,10 +653,10 @@
     <MESSAGE value="updated data request examples page" />
     <MESSAGE value="User manual updated" />
     <MESSAGE value="Updated config.ini" />
-    <MESSAGE value="Updated User_Manual" />
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Updated User Manual" />
     <MESSAGE value="Updated README.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated README.md" />
+    <MESSAGE value="Updated User_Manual" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated User_Manual" />
   </component>
 </project>
