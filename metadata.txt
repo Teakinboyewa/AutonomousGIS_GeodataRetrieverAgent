@@ -3,7 +3,7 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Autonomous GIS - GeoData Retrieve Agent (AGGRA)
+name=AutonomousGIS_GeoData Retriever Agent
 qgisMinimumVersion=3.0
 description=An autonomous agent framework to select geospatial data and then fetch data by generating and executing programs with self-debugging.
 version=0.1
