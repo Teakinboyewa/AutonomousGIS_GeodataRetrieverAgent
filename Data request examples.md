@@ -59,7 +59,7 @@ Task:
 # Data source 6: OpenWeather data
 
 
-# Data source 7: ESRI World Imagery (for export) ([Video demonstration](https://youtu.be/nhMR9i1NiVg?si=xOJVnfWZmS5DDBCU))
+# Data source 7: ESRI World Imagery([Video demonstration](https://youtu.be/nhMR9i1NiVg?si=xOJVnfWZmS5DDBCU))
 
 Task: Download the YellowStone National Park satellite image at level 10.
 
