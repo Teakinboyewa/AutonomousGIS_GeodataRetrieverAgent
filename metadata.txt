@@ -6,14 +6,18 @@
 name=AutonomousGIS_GeoData Retriever Agent
 qgisMinimumVersion=3.0
 description=An autonomous agent framework to select geospatial data and then fetch data by generating and executing programs with self-debugging.
-version=0.1
+version=0.2
+changelog = version=0.2, August 2024
+            - Updated the settings panel of the plugin GUI
+            - Updated documentation to fix the issues faced during installation on MacOS
+            - Updated the 'about' of the plugin
 author=Geoinformation and Big Data Research Laboratory (GIBD)
 email=tea5209@psu.edu
 
-about=Autonomous GIS - GeoData Retrieve Agent is an autonomous agent framework to select geospatial data and then fetch data by generating and executing programs with self-debugging.
+about=The GeoData Retriever Agent is a plugin integration of an autonomous GIS agent for geospatial data retrieval and QGIS. This plugin simplifies the process of retrieving and loading geospatial data into the QGIS environment through natural language commands.
 
-tracker=http://bugs
-repository=http://repo
+tracker=https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/issues
+repository=https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent
 # End of mandatory metadata
 
 # Recommended items:
@@ -25,7 +29,7 @@ hasProcessingProvider=no
 # Tags are comma separated with spaces allowed
 tags=python
 
-homepage=http://homepage
+homepage=https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent
 category=Plugins
 icon=icon.png
 # experimental flag
