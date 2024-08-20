@@ -10,6 +10,8 @@ The User Manual is available [here](https://github.com/Teakinboyewa/AutonomousGI
 
 ![Settings.png](Docs%2FPluginSetting.png)
 
+Note: API keys input here will only be stored locally on the user's computer ('plugin_dir/LLM-Find/config.ini').  
+
 # Usage
 Find some usage example on the Data Request [Examples](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md) page
 
