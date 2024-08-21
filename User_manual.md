@@ -54,6 +54,8 @@ Alternatively,
 
 ![PluginSetting.png](Docs%2FPluginSetting.png)
 
+Note: API keys input here will only be stored locally on the user's computer ('plugin_dir/LLM-Find/config.ini').  
+
 # Data Request Instructions
 
 To make a data request, follow these steps:
