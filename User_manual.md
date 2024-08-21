@@ -31,6 +31,8 @@
 
 ![CheckBox.png](Docs%2FCheckBox.png)
 
+#Opening the Plugin
+
 - Load the ```Autonomous GIS - GeoData Retrieve Agent``` on ```Plugins```on menubar, or via its icon on the plugins toolbar.
 
 ![Plugin icon on toolbar.png](Docs%2FPlugin%20icon%20on%20toolbar.png)
