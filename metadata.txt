@@ -9,7 +9,7 @@ description=An autonomous agent framework to select geospatial data and then fet
 version=0.2
 changelog = version=0.2, August 2024
             - Updated the settings panel of the plugin GUI
-            - Updated documentation to fix the issues faced during installation on MacOS
+            - Updated documentation to fix the issues faced during installation of 'nest_asyncio' python package on MacOS
             - Updated the 'about' of the plugin
 author=Temitope Akinboyewa, Zhenlong Li, Huan Ning, and M. Naser Lessani
 email=tea5209@psu.edu
