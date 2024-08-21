@@ -22,7 +22,10 @@ Find some usage example on the Data Request [Examples](https://github.com/Teakin
   ```python
   import pip
   pip.main(['install', 'nest-asyncio'])
+- If you encounter any issue you can also try installing "nest_asyncio" via the terminal by pointing to QGIsS python interpreter:
   
+  ```python
+  /Applications/QGIS3.38.1.app/Contents/MacOS/bin/python3 -m pip install nest_asyncio
 
 
 # YouTube Channel
