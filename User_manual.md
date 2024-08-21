@@ -14,6 +14,18 @@
 
 ![Plugin installation success.png](Docs%2FPlugin%20installation%20success.png)
 
+# MacOS users
+## After the installation of the plugin, you need to install the "nest_asyncio" manually. Follow the steps below:
+- Open the QGIS Python Console by navigating to ```Plugins``` > ```Python Console``` or press ```Ctrl+Alt+P```
+- In the console, run these two lines of code:
+  ```python
+  import pip
+  pip.main(['install', 'nest-asyncio'])
+- If you encounter any issue you can also try installing "nest_asyncio" via the terminal by pointing to QGIS python interpreter:
+  
+  ```python
+  /Applications/QGIS3.38.1.app/Contents/MacOS/bin/python3 -m pip install nest_asyncio
+
 - Restart the QGIS Software.
 - Navigate to ```Plugins > Manage and install plugins```.  Ensure the plugin is checked.
 
