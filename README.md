@@ -15,5 +15,15 @@ Note: API keys input here will only be stored locally on the user's computer ('p
 # Usage
 Find some usage example on the Data Request [Examples](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md) page
 
+# MacOS users
+## After the installation of the plugin, you need to install the "nest_asyncio" manually. Follow the steps below:
+- Open the QGIS Python Console by navigating to ```Plugins``` > ```Python Console``` or press ```Ctrl+Alt+P```
+- In the console, run these two lines of code:
+  ```python
+  import pip
+  pip.main(['install', 'nest-asyncio'])
+  
+
+
 # YouTube Channel
 Some video demonstrations have been created on our [YouTubeChannel](https://youtube.com/@gibd_lab). Feel free to subscribe to the our YouTube channel dor regular updates.
