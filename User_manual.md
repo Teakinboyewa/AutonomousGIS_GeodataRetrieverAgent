@@ -31,7 +31,7 @@
 
 ![CheckBox.png](Docs%2FCheckBox.png)
 
-#Opening the Plugin
+# Opening the Plugin
 
 - Load the ```Autonomous GIS - GeoData Retrieve Agent``` on ```Plugins```on menubar, or via its icon on the plugins toolbar.
 
