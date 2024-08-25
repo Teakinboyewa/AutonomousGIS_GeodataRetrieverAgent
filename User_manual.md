@@ -65,7 +65,7 @@ To make a data request, follow these steps:
 - On the ```Data Request Page```, click the Send button to submit your request. Note: For the first request, it may take a minute to establish a connection to the OpenAI server.
 - To stop a request, use the ```Interrupt``` button. This button is especially useful if you need to terminate a request. Additionally, the ```Clear``` button can be used to clear the code pad panel if needed.
 
-## Data Sources
+## Current Data Sources (more are being added...)
 - [Openstreetmap:](https://www.openstreetmap.org/) administrative boundaries, street networks, points of interests (POIs) can be downloaded from this source.
 - [US Census Bureau boundary:]() provides the US administrative boundaries (nation, state, county, tract, and block group level, as well as metropolitan statistic areas. API key is required. You can get an API key [here.]()
 - [US Census Bureau demography:]() provides the demographic and socio-economic data, such as population, gender, income, education, and race.
