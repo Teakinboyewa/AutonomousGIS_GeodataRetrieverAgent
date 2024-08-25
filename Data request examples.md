@@ -76,5 +76,8 @@ Task: Download the Nigeria satellite image at level 7
 
 # Other examples to try: 
 Download county boundaries for South Carolina. 
+
 Download the fastfood restaurants as points in South Carolina. Please extract the restaurant names as a new field when saving the data. 
+
 Download the gas stations as points in South Carolina, and extract the station names as a new field when saving the data. 
+![SC_Demo.png](Docs%2FData%20request%20examples%2FSC_Demo.png)
