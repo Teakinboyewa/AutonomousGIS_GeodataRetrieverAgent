@@ -153,7 +153,7 @@ Download the gas stations as points in South Carolina, and extract the station n
 
 Download the parks as polygons in South Carolina; Please extract the park names as a new field when saving the data. 
 
-Download the water bodies in South Carolina. (Note that it may a minute to run the generated program to download over 45,000 water body polygons.)
+Download the water bodies in South Carolina. (Note that it may a while to run the generated program to download over 45,000 water body polygons.)
 
 Download the major rivers in South Carolina.
 
