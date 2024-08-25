@@ -157,4 +157,4 @@ Download the water bodies in South Carolina. (Note that it may a minute to run t
 
 Download the major rivers in South Carolina.
 
-![SC_demo2.png](Docs%2FData%20request%20examples%2FSC_demo2png)
+![SC_demo2.png](Docs%2FData%20request%20examples%2FSC_demo2.png)
