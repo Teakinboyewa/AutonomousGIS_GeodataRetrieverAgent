@@ -74,8 +74,6 @@ To make a data request, follow these steps:
 - [OpenTopography](https://opentopography.org/). You can download global digital elevation model (DEM) data using API (get one [here](https://opentopography.org/blog/introducing-api-keys-access-opentopography-global-datasets)); the resolution ranges from 15m to 1000m, such as SRTM GL3 (global 90m), and GL1 (global 30m). The DEM source list from this API contains: SRTMGL3, SRTMGL1, SRTMGL1_E, AW3D30, AW3D30, SRTM15Plus, NASADEM, COP30, COP30, EU_DTM, GEDI_L3, GEBCOIceTopo, GEBCOSubIceTopo.
 
 ## Data Request Examples
-- Data request examples and video demonstrations for each data sources are available [here](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md).
-
 ## Openstreetmap ([Video demonstration](https://youtu.be/4yVhVPFjCsw?si=qu8SWyoxvTbrMnLL))
 - Download all state boundaries of Nigeria. 
 
