@@ -77,41 +77,41 @@ To make a data request, follow these steps:
 - Data request examples and video demonstrations for each data sources are available [here](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md).
 
 ## Openstreetmap ([Video demonstration](https://youtu.be/4yVhVPFjCsw?si=qu8SWyoxvTbrMnLL))
-Download all state boundaries of Nigeria. 
+- Download all state boundaries of Nigeria. 
 
 ![Nigeria_States2.png](Docs%2FData%20request%20examples%2FNigeria_States2.png)
 
-Download all rivers in Yulin, Guangxi, China.
+- Download all rivers in Yulin, Guangxi, China.
 
-Download the administrative boundary of Yulin, Guangxi, China.
+- Download the administrative boundary of Yulin, Guangxi, China.
 
 ![Yuling.png](Docs%2FData%20request%20examples%2FYuling.png)
 
-Download county boundaries for South Carolina. 
+- Download county boundaries for South Carolina. 
 
-Download the fastfood restaurants as points in South Carolina. Please extract the restaurant names as a new field when saving the data. 
+- Download the fastfood restaurants as points in South Carolina. Please extract the restaurant names as a new field when saving the data. 
 
-Download the gas stations as points in South Carolina, and extract the station names as a new field when saving the data. 
+- Download the gas stations as points in South Carolina, and extract the station names as a new field when saving the data. 
 
 ![SC_demo.png](Docs%2FData%20request%20examples%2FSC_demo.png)
 
-Download the parks as polygons in South Carolina; Please extract the park names as a new field when saving the data. 
+- Download the parks as polygons in South Carolina; Please extract the park names as a new field when saving the data. 
 
-Download the water bodies in South Carolina. (Note that it may a while to run the generated program to download over 45,000 water body polygons.)
+- Download the water bodies in South Carolina. (Note that it may a while to run the generated program to download over 45,000 water body polygons.)
 
-Download the major rivers in South Carolina.
+- Download the major rivers in South Carolina.
 
 ![SC_demo2.png](Docs%2FData%20request%20examples%2FSC_demo2.png)
 
 
 ## US Census Bureau boundary ([Video demonstration](https://youtu.be/WZhVv2st6Tw?si=I7XX-MljKbSuaS39))
 
-Download the boundaries of all the counties in the USA.
+- Download the boundaries of all the counties in the USA.
 
 ![USA_Counties.png](Docs%2FData%20request%20examples%2FUSA_Counties.png)
 
 
-Download all Census block group boundaries in Pennsylvania, USA.
+- Download all Census block group boundaries in Pennsylvania, USA.
 
 ![PA_blockgroup.png](Docs%2FData%20request%20examples%2FPA_blockgroup.png)
 
@@ -119,11 +119,11 @@ Download all Census block group boundaries in Pennsylvania, USA.
 
 
 ## US COVID-19 data by New York Times
-Download the COVID-19 case data of Richland County in South Carolina, USA. The time is from 2021-01 to 2021-09. [Video demonstration]()
+- Download the COVID-19 case data of Richland County in South Carolina, USA. The time is from 2021-01 to 2021-09. [Video demonstration]()
 
 ![Richland_covid19.png](Docs%2FData%20request%20examples%2FRichland_covid19.png)
 
-Download the COVID-19 case data of all counties in Pennsylvania, USA. The time is from 2021-10 to 2022-02. [Video demonstration]()
+- Download the COVID-19 case data of all counties in Pennsylvania, USA. The time is from 2021-10 to 2022-02. [Video demonstration]()
 
 ![PA_covid19.png](Docs%2FData%20request%20examples%2FPA_covid19.png)
 
@@ -139,14 +139,14 @@ Download the COVID-19 case data of all counties in Pennsylvania, USA. The time i
 
 ## ESRI World Imagery([Video demonstration](https://youtu.be/nhMR9i1NiVg?si=xOJVnfWZmS5DDBCU))
 
-Download the YellowStone National Park satellite image at level 10.
+- Download the YellowStone National Park satellite image at level 10.
 
 ![YellowStone_park.png](Docs%2FData%20request%20examples%2FYellowStone_park.png)
 
-Download the Brasília satellite image at level 6.
+- Download the Brasília satellite image at level 6.
 
 ![Brasilia.png](Docs%2FData%20request%20examples%2FBrasilia.png)
 
-Download the Nigeria satellite image at level 7
+- Download the Nigeria satellite image at level 7
 
 ![Nigeria_Case.png](Docs%2FData%20request%20examples%2FNigeria_Case.png)
