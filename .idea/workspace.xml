@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated the AGGRA_dockwidget.py">
-      <change afterPath="$PROJECT_DIR$/config_files/GitHubTokenConfig.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget.py" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,22 +220,6 @@
       <workItem from="1723638779668" duration="404000" />
       <workItem from="1724194427174" duration="304000" />
       <workItem from="1724195524360" duration="6254000" />
-    </task>
-    <task id="LOCAL-00022" summary="Initial commit">
-      <option name="closed" value="true" />
-      <created>1722978057529</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1722978057529</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Initial commit">
-      <option name="closed" value="true" />
-      <created>1722978145960</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1722978145960</updated>
     </task>
     <task id="LOCAL-00024" summary="Initial commit">
       <option name="closed" value="true" />
@@ -613,7 +597,23 @@
       <option name="project" value="LOCAL" />
       <updated>1726479578701</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Updated the AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1726479680630</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1726479680630</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Updated the AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1726479730015</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1726479730016</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

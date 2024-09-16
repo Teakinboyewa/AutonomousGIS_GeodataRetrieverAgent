@@ -493,7 +493,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         try:
             # current_script_dir = os.path.dirname(os.path.abspath(__file__))
             # script_path = os.path.join(current_script_dir, "SpatialAnalysisAgent", "SpatialAnalysisAgent_MyScript.py")
-            destination_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"SpatialAnalysisAgent", "Tools_Documentation")
+            destination_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"LLM_Find", "Handbooks")
 
             # Ensure the destination directory exists; if not, create it
             if not os.path.exists(destination_dir):
@@ -681,7 +681,7 @@ class ContributionDialog(QDialog):
         super().__init__(parent)
         self.plugin = parent  # Reference to the main plugin class
 
-        self.setWindowTitle("Contribute to SpatialAnalysisAgent")
+        self.setWindowTitle("Contribute to AutonomousGIS_GeodataRetrieverAgent")
         self.setMinimumWidth(400)
 
         self.setWindowTitle("Contribute to Spatial Analysis Agent")
@@ -775,7 +775,7 @@ class ContributionDialog(QDialog):
 
     def upload_to_user_fork(self, token, file_path, username):
         repo = f"{username}/AutonomousGIS_GeodataRetrieverAgent"  # Target the user's fork
-        FOLDER_IN_REPO = "LLM_Find/Handbooks"  # Folder inside the repository
+        FOLDER_IN_REPO = "LLM_Find/Handbook"  # Folder inside the repository
         file_name =os.path.basename(file_path)
         path_in_repo = f"{FOLDER_IN_REPO}/{file_name}"
         url = f"https://api.github.com/repos/{repo}/contents/{path_in_repo}"
