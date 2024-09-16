@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated the AGGRA_dockwidget.py">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget.py" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config_files/GitHubTokenConfig.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,14 +220,6 @@
       <workItem from="1723638779668" duration="404000" />
       <workItem from="1724194427174" duration="304000" />
       <workItem from="1724195524360" duration="6254000" />
-    </task>
-    <task id="LOCAL-00021" summary="Initial commit">
-      <option name="closed" value="true" />
-      <created>1722976734328</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1722976734328</updated>
     </task>
     <task id="LOCAL-00022" summary="Initial commit">
       <option name="closed" value="true" />
@@ -613,7 +605,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726478932600</updated>
     </task>
-    <option name="localTasksCounter" value="70" />
+    <task id="LOCAL-00070" summary="Updated the AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1726479578701</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1726479578701</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
