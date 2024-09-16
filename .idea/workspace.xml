@@ -218,46 +218,6 @@
       <workItem from="1724194427174" duration="304000" />
       <workItem from="1724195524360" duration="6254000" />
     </task>
-    <task id="LOCAL-00025" summary="Initial commit">
-      <option name="closed" value="true" />
-      <created>1722978472781</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1722978472781</updated>
-    </task>
-    <task id="LOCAL-00026" summary="Initial commit">
-      <option name="closed" value="true" />
-      <created>1722978536995</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1722978536995</updated>
-    </task>
-    <task id="LOCAL-00027" summary="Updated User_manual">
-      <option name="closed" value="true" />
-      <created>1722979713188</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1722979713188</updated>
-    </task>
-    <task id="LOCAL-00028" summary="Initial commit">
-      <option name="closed" value="true" />
-      <created>1722980496020</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1722980496020</updated>
-    </task>
-    <task id="LOCAL-00029" summary="Updated User_Manual">
-      <option name="closed" value="true" />
-      <created>1722982226652</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1722982226652</updated>
-    </task>
     <task id="LOCAL-00030" summary="Updated User_Manual">
       <option name="closed" value="true" />
       <created>1722982368611</created>
@@ -610,7 +570,47 @@
       <option name="project" value="LOCAL" />
       <updated>1726480303138</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Updated the AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1726480658948</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1726480658948</updated>
+    </task>
+    <task id="LOCAL-00075" summary="Updated the AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1726480663649</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1726480663649</updated>
+    </task>
+    <task id="LOCAL-00076" summary="Updated the AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1726480729906</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1726480729906</updated>
+    </task>
+    <task id="LOCAL-00077" summary="Updated the AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1726480896543</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1726480896546</updated>
+    </task>
+    <task id="LOCAL-00078" summary="Updated the AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1726480913331</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1726480913331</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
