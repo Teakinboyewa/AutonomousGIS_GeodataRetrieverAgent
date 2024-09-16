@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Autonomous-GIS--Geodata-Retriever-Agent-master.iml" filepath="$PROJECT_DIR$/.idea/Autonomous-GIS--Geodata-Retriever-Agent-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/AutonomousGIS_GeodataRetrieverAgent.iml" filepath="$PROJECT_DIR$/.idea/AutonomousGIS_GeodataRetrieverAgent.iml" />
     </modules>
   </component>
 </project>
