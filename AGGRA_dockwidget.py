@@ -625,3 +625,5 @@ class ScriptThread(QThread):
 
     def isRunning(self):
         return self._is_running
+
+
