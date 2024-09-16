@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated the Doc folder" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="new-branch" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Teakinboyewa&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent.git&quot;,
+    &quot;accountId&quot;: &quot;37e845fd-6b39-4a81-a294-e1e292128da2&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2k7lYDHaWFE4y9kkXmQvPoB7h1W" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Onedrive/OneDrive - The Pennsylvania State University/LLMFIND/Plugin/AutonomousGIS_GeodataRetrieverAgent-master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Onedrive\OneDrive - The Pennsylvania State University\LLMFIND\Plugin\AutonomousGIS_GeodataRetrieverAgent-master" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="DjangoTestsConfigurationType">
+      <module name="AGGRA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
+      <module name="AGGRA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="ADDITIONAL_ARGS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="AGGRA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Python.FlaskServer">
+      <module name="AGGRA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="AGGRA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docs" factoryName="Docutils task">
+      <module name="AGGRA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docs" factoryName="Sphinx task">
+      <module name="AGGRA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
+        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment=".gitkeep deleted" />
+      <created>1722642541572</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1722642541572</updated>
+      <workItem from="1722642542645" duration="1894000" />
+      <workItem from="1722645660777" duration="13969000" />
+      <workItem from="1722714321158" duration="815000" />
+      <workItem from="1722715147746" duration="757000" />
+      <workItem from="1722715916954" duration="1164000" />
+      <workItem from="1722721784998" duration="34000" />
+      <workItem from="1722747244613" duration="38000" />
+      <workItem from="1722809816846" duration="2260000" />
+      <workItem from="1722818234818" duration="2257000" />
+      <workItem from="1722975342152" duration="23014000" />
+      <workItem from="1723046401843" duration="3712000" />
+      <workItem from="1723061490463" duration="62000" />
+      <workItem from="1723061567345" duration="661000" />
+      <workItem from="1723097105325" duration="1924000" />
+      <workItem from="1723145007384" duration="131000" />
+      <workItem from="1723396779523" duration="6283000" />
+      <workItem from="1723638779668" duration="404000" />
+      <workItem from="1724194427174" duration="304000" />
+      <workItem from="1724195524360" duration="6254000" />
+    </task>
+    <task id="LOCAL-00012" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722727828902</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1722727828902</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722810041925</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1722810041925</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Shapefile included as an output option&quot;">
+      <option name="closed" value="true" />
+      <created>1722810169738</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1722810169738</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722810817650</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1722810817650</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722810947404</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1722810947404</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722811664739</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1722811664739</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722811952171</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1722811952171</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722975705484</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1722975705484</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722975741230</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1722975741230</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722976734328</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1722976734328</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722978057529</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1722978057529</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722978145960</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1722978145960</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722978236560</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1722978236560</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722978472781</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1722978472781</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722978536995</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1722978536995</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Updated User_manual">
+      <option name="closed" value="true" />
+      <created>1722979713188</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1722979713188</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1722980496020</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1722980496020</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Updated User_Manual">
+      <option name="closed" value="true" />
+      <created>1722982226652</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1722982226652</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Updated User_Manual">
+      <option name="closed" value="true" />
+      <created>1722982368611</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1722982368611</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Help page updated">
+      <option name="closed" value="true" />
+      <created>1722982683053</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1722982683053</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Help page updated">
+      <option name="closed" value="true" />
+      <created>1722982689219</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1722982689219</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Help page updated">
+      <option name="closed" value="true" />
+      <created>1722984862306</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1722984862306</updated>
+    </task>
+    <task id="LOCAL-00034" summary="User manual updated">
+      <option name="closed" value="true" />
+      <created>1722994254274</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1722994254274</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Data request examples page created">
+      <option name="closed" value="true" />
+      <created>1722994276956</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1722994276956</updated>
+    </task>
+    <task id="LOCAL-00036" summary="updated data request examples page">
+      <option name="closed" value="true" />
+      <created>1722994415228</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1722994415228</updated>
+    </task>
+    <task id="LOCAL-00037" summary="User manual updated">
+      <option name="closed" value="true" />
+      <created>1722996527148</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1722996527148</updated>
+    </task>
+    <task id="LOCAL-00038" summary="User manual updated">
+      <option name="closed" value="true" />
+      <created>1722998524036</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1722998524036</updated>
+    </task>
+    <task id="LOCAL-00039" summary="User manual updated">
+      <option name="closed" value="true" />
+      <created>1723001087001</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1723001087001</updated>
+    </task>
+    <task id="LOCAL-00040" summary="User manual updated">
+      <option name="closed" value="true" />
+      <created>1723001262979</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1723001262979</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Updated config.ini">
+      <option name="closed" value="true" />
+      <created>1723001468691</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1723001468691</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Updated config.ini">
+      <option name="closed" value="true" />
+      <created>1723002048727</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1723002048727</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Updated README.md">
+      <option name="closed" value="true" />
+      <created>1723003549498</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1723003549498</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Updated User_Manual">
+      <option name="closed" value="true" />
+      <created>1723003559594</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1723003559594</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1723050178644</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1723050178644</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1723097303922</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1723097303922</updated>
+    </task>
+    <task id="LOCAL-00047" summary="Updated User Manual">
+      <option name="closed" value="true" />
+      <created>1723108382713</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1723108382713</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Updated README.md">
+      <option name="closed" value="true" />
+      <created>1723397212837</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1723397212837</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Updated README.md">
+      <option name="closed" value="true" />
+      <created>1723397511992</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1723397511992</updated>
+    </task>
+    <task id="LOCAL-00050" summary="Updated User_Manual">
+      <option name="closed" value="true" />
+      <created>1723400319241</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1723400319241</updated>
+    </task>
+    <task id="LOCAL-00051" summary="Updated User_Manual">
+      <option name="closed" value="true" />
+      <created>1723638833815</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1723638833815</updated>
+    </task>
+    <task id="LOCAL-00052" summary="Updated User_Manual">
+      <option name="closed" value="true" />
+      <created>1724195593516</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1724195593516</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Updated the settings panel of the GUI">
+      <option name="closed" value="true" />
+      <created>1724196069512</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1724196069512</updated>
+    </task>
+    <task id="LOCAL-00054" summary="Updated the metadata.txt">
+      <option name="closed" value="true" />
+      <created>1724197532037</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1724197532037</updated>
+    </task>
+    <task id="LOCAL-00055" summary="Updated the metadata.txt">
+      <option name="closed" value="true" />
+      <created>1724201299677</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1724201299677</updated>
+    </task>
+    <task id="LOCAL-00056" summary="Updated the Help panel">
+      <option name="closed" value="true" />
+      <created>1724201319461</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1724201319461</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Updated the Help panel">
+      <option name="closed" value="true" />
+      <created>1724201999629</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1724201999629</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Updated the README.md">
+      <option name="closed" value="true" />
+      <created>1724203685767</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1724203685767</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Updated the User_manual.md">
+      <option name="closed" value="true" />
+      <created>1724203698322</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1724203698322</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Updated the Doc folder">
+      <option name="closed" value="true" />
+      <created>1724203715451</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1724203715451</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ID_WIDTH">
+                <map>
+                  <entry key="Table.Default.Author.ColumnIdWidth" value="186" />
+                  <entry key="Table.Default.Date.ColumnIdWidth" value="94" />
+                  <entry key="Table.GitHub.CommitStatus.ColumnIdWidth" value="29" />
+                  <entry key="Table.Space.CommitStatus.ColumnIdWidth" value="29" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+    <MESSAGE value=".gitkeep deleted" />
+    <MESSAGE value="User_Manual Added" />
+    <MESSAGE value="Shapefile included as an output option&quot;" />
+    <MESSAGE value="Updated User_manual" />
+    <MESSAGE value="Help page updated" />
+    <MESSAGE value="Data request examples page created" />
+    <MESSAGE value="updated data request examples page" />
+    <MESSAGE value="User manual updated" />
+    <MESSAGE value="Updated config.ini" />
+    <MESSAGE value="Initial commit" />
+    <MESSAGE value="Updated User Manual" />
+    <MESSAGE value="Updated README.md" />
+    <MESSAGE value="Updated User_Manual" />
+    <MESSAGE value="Updated the settings panel of the GUI" />
+    <MESSAGE value="Updated the metadata.txt" />
+    <MESSAGE value="Updated the Help panel" />
+    <MESSAGE value="Updated the README.md" />
+    <MESSAGE value="Updated the User_manual.md" />
+    <MESSAGE value="Updated the Doc folder" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated the Doc folder" />
+  </component>
+</project>

@@ -1,5 +1,7 @@
 # Autonomous GIS - GeoData Retrieve Agent
-The GeoData Retriever Agent is a plugin integration of an autonomous GIS agent for geospatial data retrieval and QGIS. This plugin simplifies the process of retrieving and loading geospatial data into the QGIS environment through natural language commands. It leverages [LLM-Find](https://github.com/gladcolor/LLM-Find), an autonomous framework designed to select and fetch geospatial data by generating and executing programs with self-debugging capabilities. For more details on the frame work, please refer to the [LLM-Find](https://github.com/gladcolor/LLM-Find) and our manuscript: Huan Ning, Zhenlong Li, Temitope Akinboyewa, and M. Naser Lessani. 2024. “An Autonomous GIS Agent Framework for Geospatial Data Retrieval.” arXiv. [https://doi.org/10.48550/arXiv.2407.21024](https://doi.org/10.48550/arXiv.2407.21024). 
+The GeoData Retriever Agent is a plugin integration of an autonomous GIS agent for geospatial data retrieval and QGIS. This plugin simplifies the process of retrieving and loading geospatial data into the QGIS environment through natural language commands. It leverages [LLM-Find](https://github.com/gladcolor/LLM-Find), an autonomous framework designed to select and fetch geospatial data by generating and executing programs with self-debugging capabilities. For more details on the framework, please refer to our preprint manuscript: Huan Ning, Zhenlong Li, Temitope Akinboyewa, and M. Naser Lessani. 2024. “An Autonomous GIS Agent Framework for Geospatial Data Retrieval.” arXiv. [https://doi.org/10.48550/arXiv.2407.21024](https://doi.org/10.48550/arXiv.2407.21024). 
+
+QGIS Plugin page: https://plugins.qgis.org/plugins/AutonomousGIS_GeodataRetrieverAgent/
 
 # Installation
 - In QGIS, ```select Plugins``` > ```Manage and Install Plugins...```
@@ -16,10 +18,6 @@ The User Manual is available [here](https://github.com/Teakinboyewa/AutonomousGI
 # Plugin Interface
 
 ![Plugin Interface.png](Docs%2FPluginGUI.png)
-
-![Settings.png](Docs%2FPluginSetting.png)
-
-Note: API keys input here will only be stored locally on the user's computer ('plugin_dir/LLM-Find/config.ini').  
 
 # Usage
 Find some usage example on the Data Request [Examples](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md) page
