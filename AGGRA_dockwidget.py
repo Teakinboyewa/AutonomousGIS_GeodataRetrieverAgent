@@ -728,7 +728,7 @@ class ContributionDialog(QDialog):
 
     def upload_to_user_fork(self, token, file_path, username):
         repo = f"{username}/AutonomousGIS_GeodataRetrieverAgent"  # Target the user's fork
-        FOLDER_IN_REPO = "LLM_Find/Handbooks"  # Folder inside the repo
+        FOLDER_IN_REPO = "LLM_Find/Handbooks"  # Folder inside the repository
         file_name =os.path.basename(file_path)
         path_in_repo = f"{FOLDER_IN_REPO}/{file_name}"
         url = f"https://api.github.com/repos/{repo}/contents/{path_in_repo}"
