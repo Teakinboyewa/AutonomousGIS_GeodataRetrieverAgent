@@ -695,7 +695,7 @@ class ContributionDialog(QDialog):
         instructions = QLabel("""
         <h3>How to Contribute</h3>
         <ol>
-            <li><b>Fork this repository</b> on GitHub: <a href='https://github.com/Teakinboyewa/SpatialAnalysisAgent'>Click Here</a>.</li>
+            <li><b>Fork this repository</b> on GitHub: <a href='https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent'>Click Here</a>.</li>
             <li><b>Clone your fork</b> to your local machine.</li>
             <li>Upload a TOML file using this dialog (it will go to your forked repository).</li>
             <li>After uploading, go to GitHub and <b>open a pull request</b> from your fork to the main repository.</li>
