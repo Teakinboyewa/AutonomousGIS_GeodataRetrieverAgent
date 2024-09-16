@@ -10,6 +10,17 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -217,22 +228,7 @@
       <workItem from="1723638779668" duration="404000" />
       <workItem from="1724194427174" duration="304000" />
       <workItem from="1724195524360" duration="6254000" />
-    </task>
-    <task id="LOCAL-00031" summary="Help page updated">
-      <option name="closed" value="true" />
-      <created>1722982683053</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1722982683053</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Help page updated">
-      <option name="closed" value="true" />
-      <created>1722982689219</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1722982689219</updated>
+      <workItem from="1726481201532" duration="873000" />
     </task>
     <task id="LOCAL-00033" summary="Help page updated">
       <option name="closed" value="true" />
@@ -610,7 +606,23 @@
       <option name="project" value="LOCAL" />
       <updated>1726481092772</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="Few Update">
+      <option name="closed" value="true" />
+      <created>1726481224098</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1726481224098</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Few Update">
+      <option name="closed" value="true" />
+      <created>1726481322169</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1726481322170</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -673,6 +685,7 @@
     <MESSAGE value="Initial commits" />
     <MESSAGE value="Updated the Doc folder" />
     <MESSAGE value="Updated the AGGRA_dockwidget.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated the AGGRA_dockwidget.py" />
+    <MESSAGE value="Few Update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Few Update" />
   </component>
 </project>
