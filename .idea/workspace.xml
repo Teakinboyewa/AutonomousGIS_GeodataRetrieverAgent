@@ -52,21 +52,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Onedrive/OneDrive - The Pennsylvania State University/LLMFIND/Plugin/AutonomousGIS_GeodataRetrieverAgent-master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/AKINBOYEWA TEMITOPE/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/AutonomousGIS_GeodataRetrieverAgent",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Onedrive\OneDrive - The Pennsylvania State University\LLMFIND\Plugin\AutonomousGIS_GeodataRetrieverAgent-master" />
@@ -229,38 +229,7 @@
       <workItem from="1724194427174" duration="304000" />
       <workItem from="1724195524360" duration="6254000" />
       <workItem from="1726481201532" duration="873000" />
-    </task>
-    <task id="LOCAL-00033" summary="Help page updated">
-      <option name="closed" value="true" />
-      <created>1722984862306</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1722984862306</updated>
-    </task>
-    <task id="LOCAL-00034" summary="User manual updated">
-      <option name="closed" value="true" />
-      <created>1722994254274</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1722994254274</updated>
-    </task>
-    <task id="LOCAL-00035" summary="Data request examples page created">
-      <option name="closed" value="true" />
-      <created>1722994276956</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1722994276956</updated>
-    </task>
-    <task id="LOCAL-00036" summary="updated data request examples page">
-      <option name="closed" value="true" />
-      <created>1722994415228</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1722994415228</updated>
+      <workItem from="1726482122772" duration="712000" />
     </task>
     <task id="LOCAL-00037" summary="User manual updated">
       <option name="closed" value="true" />
@@ -622,7 +591,39 @@
       <option name="project" value="LOCAL" />
       <updated>1726481322170</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="Few Update">
+      <option name="closed" value="true" />
+      <created>1726482265901</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1726482265902</updated>
+    </task>
+    <task id="LOCAL-00083" summary="Few Update">
+      <option name="closed" value="true" />
+      <created>1726482290525</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1726482290525</updated>
+    </task>
+    <task id="LOCAL-00084" summary="Few Update">
+      <option name="closed" value="true" />
+      <created>1726482300380</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1726482300380</updated>
+    </task>
+    <task id="LOCAL-00085" summary="Few Update">
+      <option name="closed" value="true" />
+      <created>1726482326691</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1726482326691</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
