@@ -24,6 +24,7 @@
 import base64
 import configparser
 import os
+import shutil
 
 import requests
 from qgis.PyQt import QtGui, QtWidgets, uic
@@ -160,6 +161,9 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # Connect the button click to the method that adds a new row
         self.addkeyButton.clicked.connect(self.add_row)
         self.removekeyButton.clicked.connect(self.remove_row)
+        self.add_document_button.clicked.connect(self.add_documentation_file)
+        # self.add_document_github_button.clicked.connect(self.open_upload_dialog)
+        self.add_document_github_button.clicked.connect(self.show_contribution_dialog)
 
         # Initialize the row label counter
         self.row_label_counter = 0
@@ -168,6 +172,14 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # self.load_api_keys()
         self.setup_initial_rows()  # Set up initial rows in the table
         self.read_updated_config()
+
+
+    def show_contribution_dialog(self):
+        """Open the ContributionDialog for user interaction."""
+
+        self.contribution_dialog = ContributionDialog(self)
+
+        self.contribution_dialog.exec_()
 
     def setup_initial_rows(self):
         initial_keys = ["OpenAI_key", "US_Census_key", "OpenWeather_key", "OpenTopography"]
@@ -475,6 +487,41 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     def get_api_key(self, key_name):
         return self.self.api_keys.get(key_name)
+
+
+    def add_documentation_file(self):
+        try:
+            # current_script_dir = os.path.dirname(os.path.abspath(__file__))
+            # script_path = os.path.join(current_script_dir, "SpatialAnalysisAgent", "SpatialAnalysisAgent_MyScript.py")
+            destination_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"SpatialAnalysisAgent", "Tools_Documentation")
+
+            # Ensure the destination directory exists; if not, create it
+            if not os.path.exists(destination_dir):
+                os.makedirs(destination_dir)
+            # Open file dialog to select .toml files
+            files, _ = QFileDialog.getOpenFileNames(
+                None, 'Select Documentation Files', '', 'TOML Files (*.toml)'
+            )
+
+            # If files are selected, process them
+            if files:
+                for file_path in files:
+                    # Determine the new path for the file in the destination directory
+                    new_file_path = os.path.join(destination_dir, os.path.basename(file_path))
+                    # Copy the file to the new directory
+                    shutil.copy(file_path, new_file_path)
+                    # print(f"File {file_path} copied to {new_file_path}")  # or update your UI to reflect the change
+                    # Display success message
+                QMessageBox.information(None, 'Success',
+                                        f'Documentation files have been successfully uploaded to {destination_dir}')
+                # else:
+                #     # If no files were selected, show an info message
+                #     QMessageBox.information(None, 'No Files Selected', 'No documentation files were selected.')
+
+        except Exception as e:
+            # Display failure message in case of any errors
+            QMessageBox.critical(None, 'Error', f'Failed to upload documentation files: {str(e)}')
+
 
 class ScriptThread(QThread):
     output_line = pyqtSignal(str)
@@ -785,7 +832,7 @@ class ContributionDialog(QDialog):
         #     raise Exception(f"GitHub upload failed: {response.json()}")
 
     def prompt_pull_request(self, username):
-        pr_url = f"https://github.com/{username}/SpatialAnalysisAgent/compare"
+        pr_url = f"https://github.com/{username}/AutonomousGIS_GeodataRetrieverAgent/compare"
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
         msg.setText(
