@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Edit">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-    </list>
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Edit" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -239,14 +237,7 @@
       <workItem from="1727119180271" duration="774000" />
       <workItem from="1727238610340" duration="1734000" />
       <workItem from="1727240372073" duration="1545000" />
-    </task>
-    <task id="LOCAL-00046" summary="Initial commit">
-      <option name="closed" value="true" />
-      <created>1723097303922</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1723097303922</updated>
+      <workItem from="1727242286371" duration="335000" />
     </task>
     <task id="LOCAL-00047" summary="Updated User Manual">
       <option name="closed" value="true" />
@@ -632,7 +623,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727241781780</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="Edit">
+      <option name="closed" value="true" />
+      <created>1727242564204</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1727242564205</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
