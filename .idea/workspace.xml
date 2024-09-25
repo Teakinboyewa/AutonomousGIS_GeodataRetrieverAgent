@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Few Update">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Edit">
+      <change afterPath="$PROJECT_DIR$/AAA.ini" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -238,15 +238,7 @@
       <workItem from="1727039656609" duration="2927000" />
       <workItem from="1727119180271" duration="774000" />
       <workItem from="1727238610340" duration="1734000" />
-      <workItem from="1727240372073" duration="735000" />
-    </task>
-    <task id="LOCAL-00040" summary="User manual updated">
-      <option name="closed" value="true" />
-      <created>1723001262979</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1723001262979</updated>
+      <workItem from="1727240372073" duration="1072000" />
     </task>
     <task id="LOCAL-00041" summary="Updated config.ini">
       <option name="closed" value="true" />
@@ -632,7 +624,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727239245707</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <task id="LOCAL-00089" summary="Edit">
+      <option name="closed" value="true" />
+      <created>1727241117761</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1727241117761</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -696,6 +696,7 @@
     <MESSAGE value="Updated the Doc folder" />
     <MESSAGE value="Updated the AGGRA_dockwidget.py" />
     <MESSAGE value="Few Update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Few Update" />
+    <MESSAGE value="Edit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Edit" />
   </component>
 </project>
