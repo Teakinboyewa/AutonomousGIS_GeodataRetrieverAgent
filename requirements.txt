@@ -1,0 +1,7 @@
+ipython
+langchain_openai
+nest_asyncio
+openai
+osmnx
+pyvis
+rasterio
