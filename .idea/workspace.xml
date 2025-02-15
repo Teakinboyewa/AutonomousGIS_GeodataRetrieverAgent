@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Added Customized tool">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget.py" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget.py" afterDir="false" />
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated AGGRA_dockwidget.py">
+      <change afterPath="$PROJECT_DIR$/LLM_Find/Keys/Key 1.keys" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/LLM_Find/Keys/asasa.keys" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -271,15 +271,7 @@
       <workItem from="1732818658285" duration="10197000" />
       <workItem from="1733073825649" duration="1142000" />
       <workItem from="1733775263433" duration="2089000" />
-      <workItem from="1739614344407" duration="4037000" />
-    </task>
-    <task id="LOCAL-00066" summary="Updated the Doc folder">
-      <option name="closed" value="true" />
-      <created>1726477665557</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1726477665557</updated>
+      <workItem from="1739614344407" duration="4335000" />
     </task>
     <task id="LOCAL-00067" summary="Updated the AGGRA_dockwidget.py">
       <option name="closed" value="true" />
@@ -665,7 +657,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732886372359</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="Updated AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1739618532629</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1739618532631</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -731,7 +731,8 @@
     <MESSAGE value="Few Update" />
     <MESSAGE value="Edit" />
     <MESSAGE value="Added Customized tool" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Customized tool" />
+    <MESSAGE value="Updated AGGRA_dockwidget.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated AGGRA_dockwidget.py" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
