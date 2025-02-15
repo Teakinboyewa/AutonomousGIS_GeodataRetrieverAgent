@@ -196,6 +196,20 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.Add_new_key_btn.clicked.connect(self.show_add_key_dialog)
         self.remove_keyfile_btn.clicked.connect(self.show_remove_key_dialog)
 
+        # Let the table expand both horizontally and vertically
+        self.tableWidget.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+
+        # Set the second column to stretch, first column to resize-to-contents
+        header = self.tableWidget.horizontalHeader()
+        # First, set the default width of column 0
+        self.tableWidget.setColumnWidth(0, 200)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Interactive)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+
+        self.tableWidget.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
+
+
+
         # Initialize the row label counter
         self.row_label_counter = 0
         self.textBrowser.setOpenExternalLinks(True)
@@ -203,6 +217,8 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # self.load_api_keys()
         self.setup_initial_rows()  # Set up initial rows in the table
         # self.read_updated_config()
+
+
 
 
     def show_contribution_dialog(self):
@@ -353,7 +369,11 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         # Create a QWidget container for the QgsPasswordLineEdit
         container_widget = QtWidgets.QWidget()
+        # Ensure the container widget can expand
+        container_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         password_edit = QgsPasswordLineEdit(container_widget)
+        # Set the size policy for the password edit
+        password_edit.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
         # Set the layout for the container widget
         layout = QtWidgets.QHBoxLayout(container_widget)
@@ -362,6 +382,8 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         # Create a QComboBox for the first column
         combo_box = QtWidgets.QComboBox()
+        # Set size policy for the combo box
+        combo_box.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
         # Add a blank option first
         combo_box.addItem("")  # Blank option at the top
@@ -412,7 +434,9 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # Create a QLineEdit for the second column
         # password_edit = QgsPasswordLineEdit
         self.tableWidget.setCellWidget(row_count, 1, container_widget)
-        self.tableWidget.setColumnWidth(1, 160)  # Adjust the width as needed
+        # self.tableWidget.setColumnWidth(1, 160)  # Adjust the width as needed
+        # Let the table adjust the row height to fit the content
+        self.tableWidget.resizeRowToContents(row_count)
 
         # Increment the row label counter
         self.row_label_counter += 1
@@ -484,6 +508,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
             # Add the new key name to the existing combo boxes
             self.add_new_keyname_to_combo_boxes(new_key_name)
+            self.add_row(key_name=new_key_name, keys_directory=keys_directory)
 
     def add_new_keyname_to_combo_boxes(self, new_key_name):
         # Iterate over the rows in your table and update the QComboBox for each row
