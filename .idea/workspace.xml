@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated .gitignore">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-    </list>
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated .gitignore" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -271,15 +269,7 @@
       <workItem from="1733073825649" duration="1142000" />
       <workItem from="1733775263433" duration="2089000" />
       <workItem from="1739614344407" duration="4734000" />
-      <workItem from="1739619131961" duration="26000" />
-    </task>
-    <task id="LOCAL-00069" summary="Updated the AGGRA_dockwidget.py">
-      <option name="closed" value="true" />
-      <created>1726478932600</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1726478932600</updated>
+      <workItem from="1739619131961" duration="53000" />
     </task>
     <task id="LOCAL-00070" summary="Updated the AGGRA_dockwidget.py">
       <option name="closed" value="true" />
@@ -665,7 +655,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739619151905</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL-00118" summary="Updated .gitignore">
+      <option name="closed" value="true" />
+      <created>1739619164726</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1739619164726</updated>
+    </task>
+    <option name="localTasksCounter" value="119" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
