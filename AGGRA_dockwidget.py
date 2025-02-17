@@ -24,6 +24,7 @@
 import base64
 import configparser
 import os
+import re
 import shutil
 
 import requests
@@ -44,11 +45,13 @@ from qgis.utils import iface
 
 QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts)
 
-from PyQt5.QtCore import QUrl, QThread, pyqtSignal, pyqtSlot, QSettings
-from PyQt5.QtGui import QTextCursor
+from PyQt5.QtCore import QUrl, QThread, pyqtSignal, pyqtSlot, QSettings, QObject
+from PyQt5.QtGui import QTextCursor, QSyntaxHighlighter, QTextCharFormat, QColor
 
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QWidget, QPushButton, QFileDialog, QMenu, QAction, QCompleter, \
     QVBoxLayout, QLineEdit, QTableWidgetItem, QDialog, QLabel, QMessageBox, QInputDialog, QComboBox
+
+
 from qgis.gui import QgsPasswordLineEdit
 from qgis.PyQt.QtWebKitWidgets import QWebView
 
@@ -160,6 +163,10 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # Set the initial tab to the first tab (change this to the desired tab)
         self.tabWidget.setCurrentIndex(0)
 
+        # Apply the syntax highlighter
+        self.highlighter = PythonHighlighter(self.output_text_edit.document())
+        self.code_highlighter = PythonHighlighter(self.CodeEditor.document(), always_highlight=True)
+
 
 
     def initUI(self):
@@ -180,6 +187,13 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.interrupt_button.clicked.connect(self.stop_script)
 
+        self.save_code_button.clicked.connect(self.save_code_to_file)
+        self.open_code_button.clicked.connect(self.load_code_from_file)
+        self.clear_code_editorBtn.clicked.connect(self.clear_output_window)
+        self.Run_Generated_code.clicked.connect(self.run_generated_code)
+
+
+
         self.SelectDataPath_ToolBtn.clicked.connect(self.save_settings)
 
         self.task_LineEdit.textChanged.connect(self.save_settings)
@@ -188,8 +202,8 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.modelNameComboBox.currentIndexChanged.connect(self.save_settings)
         self.SelectDataPath_ToolBtn.clicked.connect(self.save_settings)
         # Connect the button click to the method that adds a new row
-        self.addkeyButton.clicked.connect(self.add_row)
-        self.removekeyButton.clicked.connect(self.remove_row)
+        self.addrowButton.clicked.connect(self.add_row)
+        self.removerowButton.clicked.connect(self.remove_row)
         self.add_document_button.clicked.connect(self.add_documentation_file)
         # self.add_document_github_button.clicked.connect(self.open_upload_dialog)
         self.add_document_github_button.clicked.connect(self.show_contribution_dialog)
@@ -616,10 +630,15 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def send_button_clicked(self):
         """Slot to handle the send button click."""
         user_message = self.task_LineEdit.toPlainText().strip()
+        self.CodeEditor.clear()
 
         if not user_message:
             self.update_chatgpt_ans(f"AI: Please enter a data request in the request field.", is_user=False)
             return  # Stop further execution if the task is empty
+
+        self.update_chatgpt_ans(
+            f"--------------------------------------------------------------------------------------------",
+            is_user=None)
 
         self.append_message(user_message)
 
@@ -745,6 +764,116 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             # Set the chosen path in the line edit widget
             self.saved_fnameLineEdit.setText(f"{saved_fname}")
 
+
+    def save_code_to_file(self):
+        code = self.CodeEditor.toPlainText()
+        if not code.strip():
+            QMessageBox.warning(self, "No Code", "There is no code to save.")
+            return
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save Code As",
+            "",
+            "Python(*.py);;Text file (*.txt);;All Files (*),",
+            options=options
+        )
+        if file_name:
+            try:
+                with open(file_name, "w", encoding = 'utf-8') as file:
+                    file.write(code)
+                QMessageBox.information(self, "Success", f"Code saved to:\n{file_name}")
+            except Exception as e:
+                QMessageBox.warning(self, "Error", f"Failed to save code:\n{str(e)}")
+
+
+    def load_code_from_file(self):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(
+            self,
+            "Open Code File",
+            "",
+            "Python(*.py);;Text file (*.txt);;All Files (*),",
+            options=options
+        )
+        if file_name:
+            try:
+                with open(file_name, "r", encoding = 'utf-8') as file:
+                    code = file.read()
+                self.CodeEditor.setPlainText(code)
+            except Exception as e:
+                QMessageBox.information(self, "Error", f"Failed to load code:\n{str(e)}")
+
+
+    def clear_output_window(self):
+        self.execution_output_text_edit.clear()
+
+
+    def run_generated_code(self):
+        self.append_execution_output("Running code ...")
+        code_to_run = self.CodeEditor.toPlainText()
+
+        if not code_to_run.strip():
+            QMessageBox.warning(self, "No Code", "There is no code to run.")
+            return
+
+        import __main__
+
+        if 'processing' not in __main__.__dict__:
+            import processing
+            __main__.processing = processing
+
+        exec_globals = __main__.__dict__
+        exec_locals = {}
+
+
+        self.generated_code_thread = RunGeneratedCodeThread(code_to_run, exec_globals)
+        self.generated_code_thread.CodeEditor_output_line.connect(self.append_execution_output)
+        self.generated_code_thread.execution_error.connect(self.append_execution_output)
+        self.generated_code_thread.finished.connect(self.generated_code_execution_finished)
+        self.generated_code_thread.start()
+
+    def append_execution_output(self, line):
+
+        if not line.strip():
+            return
+        lines = line.strip().split("\n")
+        for line in lines:
+            formatted_line = f">>> {line}"
+
+            if "Traceback" in line or "Error" in line:
+                color = QColor("red")
+            elif "Warning" in line:
+                color = QColor("orange")
+            elif "Execution completed" in line:
+                color = QColor("green")
+            else:
+                color = QColor("black")
+
+            self.append_colored_text(self.execution_output_text_edit, formatted_line, color)
+
+        self.execution_output_text_edit.moveCursor(QTextCursor.End)
+        self.execution_output_text_edit.verticalScrollBar().setValue(
+            self.execution_output_text_edit.verticalScrollBar().maximum()
+        )
+
+    def append_colored_text(self, text_edit, text, color):
+        cursor = text_edit.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        text_edit.setTextCursor(cursor)
+
+        format = QTextCharFormat()
+        format.setForeground(color)
+
+        cursor.insertText(text + '\n', format)
+
+    def generated_code_execution_finished(self):
+        # QMessageBox.information(self, "Execution Complete", "The generated code has finished executing.")
+        if self.generated_code_thread.success:
+            self.append_execution_output("Execution completed")
+        else:
+            self.append_execution_output("The script finished with errors.")
+
     def run_script(self):
         # self.update_api_keys()
         # self.tabWidget.setCurrentIndex(self.tab_3_index)
@@ -792,6 +921,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.thread.output_line.connect(self.update_output)
         self.thread.chatgpt_update.connect(self.update_chatgpt_ans)
+        self.thread.generated_code_ready.connect(self.update_code_editor)
         self.thread.finished.connect(self.thread_finished)
         self.thread.start()
 
@@ -801,6 +931,11 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.task_LineEdit.setEnabled(False)
         self.saved_fnameLineEdit.setEnabled(False)
         self.SelectDataPath_ToolBtn.setEnabled(False)
+
+    def update_code_editor(self, code):
+        """Update the code_editor widget with the last extracted code block."""
+        self.CodeEditor.setPlainText(code)
+
 
     def stop_script(self):
         if self.thread:
@@ -899,8 +1034,6 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     def add_documentation_file(self):
         try:
-            # current_script_dir = os.path.dirname(os.path.abspath(__file__))
-            # script_path = os.path.join(current_script_dir, "SpatialAnalysisAgent", "SpatialAnalysisAgent_MyScript.py")
             destination_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"LLM_Find", "Handbooks")
 
             # Ensure the destination directory exists; if not, create it
@@ -936,6 +1069,7 @@ class ScriptThread(QThread):
     chatgpt_update = pyqtSignal(str)
     # graph_ready = pyqtSignal(str)
     # GraphReady = pyqtSignal(str)
+    generated_code_ready = pyqtSignal(str)
     finished = pyqtSignal(bool)
 
     def __init__(self, script_path, task, saved_fname, OpenAI_key, model_name):
@@ -1049,6 +1183,12 @@ class ScriptThread(QThread):
             sys.stdout = original_stdout
             sys.stderr = original_stderr
 
+            if 'generated_code' in exec_locals:
+                self.generated_code_ready.emit(exec_locals['generated_code'])
+
+            else:
+                self.output_line.emit("Error: 'generated_code' not found after script execution.")
+
             # Emit success signal
             self.finished.emit(True)
 
@@ -1139,6 +1279,56 @@ class GPTRequestThread(QThread):
             self.output_line.emit(f"Error: {str(e)}")
         finally:
             self.finished_signal.emit()
+
+class PythonHighlighter(QSyntaxHighlighter):
+    def __init__(self, document, always_highlight=False):
+        super(PythonHighlighter, self).__init__(document)
+        self.always_highlight = always_highlight
+        self.python_block = False
+
+        self.highlighting_rules = []
+
+        keyword_format = QTextCharFormat()
+        keyword_format.setForeground(QColor("blue"))
+        keywords = [
+            "def", "class", "if", "else", "elif", "while", "for", "return", "import", "from", "as", "with", "try",
+            "except", "finally", "raise", "yield", "lambda", "pass", "break", "continue", "global", "nonlocal",
+            "assert", "del", "and", "as", "assert", "break", "class", "continue", "del", "elif", "else", "except",
+            "False", "finally", "for", "in", "is", "None", "not", "or", "pass", "raise", "return", "True", "print"
+        ]
+
+        for keyword in keywords:
+            pattern = re.compile(r'\b' + keyword + r'\b')
+            self.highlighting_rules.append((pattern, keyword_format))
+
+        # Strings
+        string_format = QTextCharFormat()
+        string_format.setForeground(QColor("green"))
+        self.highlighting_rules.append((re.compile(r'"[^"\\]*(\\.[^"\\]*)*"'), string_format))
+        self.highlighting_rules.append((re.compile(r"'[^'\\]*(\\.[^'\\]*)*'"), string_format))
+
+        # Comments
+        comment_format = QTextCharFormat()
+        comment_format.setForeground(QColor("gray"))
+        self.highlighting_rules.append((re.compile(r'#.*'), comment_format))
+
+    def highlightBlock(self, text):
+        if not self.always_highlight:
+            if text.strip() == "```python":
+                self.python_block = True
+                return  # Don't highlight the marker line
+            elif text.strip() == "```":
+                self.python_block = False
+                return  # Don't highlight the marker line
+
+        # Apply syntax highlighting only if we're inside a Python block
+        # if self.python_block:
+        if self.always_highlight or self.python_block:
+            for pattern, format in self.highlighting_rules:
+                for match in pattern.finditer(text):
+                    start, end = match.span()
+                    self.setFormat(start, end - start, format)
+
 
 class ContributionDialog(QDialog):
     def __init__(self, parent=None):
@@ -1382,7 +1572,7 @@ class AddKeyDialog(QDialog):
                 key_file.write(content)
 
             # Show success message
-            QMessageBox.information(self, "Success", f"New key file '{file_name}' created successfully.")
+            # QMessageBox.information(self, "Success", f"New key file '{file_name}' created successfully.")
 
             # Close the dialog
             self.accept()
@@ -1445,3 +1635,65 @@ class RemoveKeyDialog(QDialog):
 
             except Exception as e:
                 QMessageBox.warning(self, "File Error", f"Failed to remove the key file: {file_path}\nError: {str(e)}")
+
+class StreamRedirector(QObject):
+    output_written = pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.buffer = ''
+
+    def write(self, text):
+        if text:
+            self.buffer += text
+            while '\n' in self.buffer:
+                line, self.buffer = self.buffer.split('\n', 1)
+                self.output_written.emit(line)
+
+    def flush(self):
+        if self.buffer:
+            self.output_written.emit(self.buffer)
+            self.buffer = ''
+
+class RunGeneratedCodeThread(QThread):
+    CodeEditor_output_line = pyqtSignal(str)
+    execution_error = pyqtSignal(str)
+    report_ready = pyqtSignal(str)
+
+    def __init__(self, code_to_run, exec_globals):
+        super().__init__()
+        self.code_to_run = code_to_run
+        self.exec_globals = exec_globals  # Store exec_globals
+
+    def run(self):
+        self.success = True
+        # Redirect stdout and stderr
+        original_stdout = sys.stdout
+        original_stderr = sys.stderr
+        sys.stdout = StreamRedirector()
+        sys.stderr = StreamRedirector()
+
+        sys.stdout.output_written.connect(self.handle_output_line)
+        # sys.stdout.output_written.connect(self.CodeEditor_output_line.emit)
+        sys.stderr.output_written.connect(self.CodeEditor_output_line.emit)
+
+        try:
+            # exec_locals = {}
+            exec(self.code_to_run, self.exec_globals)
+        except Exception as e:
+            self.success = False
+            traceback_str = traceback.format_exc()
+            self.execution_error.emit(f"Error executing code:\n{traceback_str}")
+        finally:
+            sys.stdout = original_stdout
+            sys.stderr = original_stderr
+
+    def handle_output_line(self, line):
+        # Emit the line to the execution output
+        self.CodeEditor_output_line.emit(line)
+        path_pattern = re.compile(r'([A-Za-z]:\\[^\\/:*?"<>|\r\n]+(?:\\[^\\/:*?"<>|\r\n]+)*\.\w+|/[^/ ]+/[^ ]+)')
+        match = path_pattern.search(line)
+        if match:
+            generated_output = match.group(0)
+            if generated_output:
+                self.report_ready.emit(generated_output)

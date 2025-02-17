@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated .gitignore" />
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated .gitignore">
+      <change beforePath="$PROJECT_DIR$/.idea/AutonomousGIS_GeodataRetrieverAgent.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AutonomousGIS_GeodataRetrieverAgent.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget.py" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget_base.ui" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget_base.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LLM_Find/LLM_FIND.py" beforeDir="false" afterPath="$PROJECT_DIR$/LLM_Find/LLM_FIND.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -59,25 +66,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Python.AAA.executor&quot;: &quot;Run&quot;,
-    &quot;Python.LLM_FIND.executor&quot;: &quot;Run&quot;,
-    &quot;Python.handbook.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ss.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/AKINBOYEWA TEMITOPE/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/AutonomousGIS_GeodataRetrieverAgent&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Python.AAA.executor": "Run",
+    "Python.LLM_FIND.executor": "Run",
+    "Python.handbook.executor": "Run",
+    "Python.ss.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/AKINBOYEWA TEMITOPE/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/SpatialAnalysisAgent-master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\AKINBOYEWA TEMITOPE\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\AutonomousGIS_GeodataRetrieverAgent\LLM_Find\Keys" />
@@ -90,6 +98,20 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
+      <module name="AGGRA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="ADDITIONAL_ARGS" value="" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType">
       <module name="AGGRA" />
       <option name="ENV_FILES" value="" />
@@ -109,20 +131,6 @@
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
-      <module name="AGGRA" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="ADDITIONAL_ARGS" value="" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
@@ -213,8 +221,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
-        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PY-243.24978.54" />
+        <option value="bundled-python-sdk-91e3b7efe1d4-466328ff949b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.24978.54" />
       </set>
     </attachedChunks>
   </component>
@@ -270,6 +278,9 @@
       <workItem from="1733775263433" duration="2089000" />
       <workItem from="1739614344407" duration="4734000" />
       <workItem from="1739619131961" duration="53000" />
+      <workItem from="1739766260167" duration="300000" />
+      <workItem from="1739766594187" duration="102000" />
+      <workItem from="1739767564694" duration="12182000" />
     </task>
     <task id="LOCAL-00070" summary="Updated the AGGRA_dockwidget.py">
       <option name="closed" value="true" />
@@ -737,7 +748,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" log-message="true" suspend="NONE" type="python-line">
           <url>file://$PROJECT_DIR$/AGGRA_dockwidget.py</url>
-          <line>59</line>
+          <line>62</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
