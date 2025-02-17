@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>881</width>
-    <height>941</height>
+    <width>873</width>
+    <height>922</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -59,7 +59,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -517,7 +517,7 @@ padding: 5px; /* padding inside the text edit */
               </font>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; color:#6f6f53;&quot;&gt;You're welcome to contribute to this plugin! You can add tool documentation for any QGIS geoprocessing tool or custom tools, like geopandas functions. &lt;/span&gt;&lt;a href=&quot;https://github.com/gladcolor/LLM-Find/blob/master/Documents/Customized_handbook.MD&quot;&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; text-decoration: underline; color:#0000ff;&quot;&gt;Learn more&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; color:#6f6f53;&quot;&gt;This function allows user to add new data source. &lt;/span&gt;&lt;a href=&quot;https://github.com/gladcolor/LLM-Find/blob/master/Documents/Customized_handbook.MD&quot;&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; text-decoration: underline; color:#0000ff;&quot;&gt;Learn more&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>

@@ -4,13 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated .gitignore">
-      <change beforePath="$PROJECT_DIR$/.idea/AutonomousGIS_GeodataRetrieverAgent.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AutonomousGIS_GeodataRetrieverAgent.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget.py" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget.py" afterDir="false" />
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated AGGRA_dockwidget.py">
       <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget_base.ui" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget_base.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LLM_Find/LLM_FIND.py" beforeDir="false" afterPath="$PROJECT_DIR$/LLM_Find/LLM_FIND.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,15 +275,7 @@
       <workItem from="1739619131961" duration="53000" />
       <workItem from="1739766260167" duration="300000" />
       <workItem from="1739766594187" duration="102000" />
-      <workItem from="1739767564694" duration="12182000" />
-    </task>
-    <task id="LOCAL-00070" summary="Updated the AGGRA_dockwidget.py">
-      <option name="closed" value="true" />
-      <created>1726479578701</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
-      <option name="project" value="LOCAL" />
-      <updated>1726479578701</updated>
+      <workItem from="1739767564694" duration="12688000" />
     </task>
     <task id="LOCAL-00071" summary="Updated the AGGRA_dockwidget.py">
       <option name="closed" value="true" />
@@ -674,7 +661,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739619164726</updated>
     </task>
-    <option name="localTasksCounter" value="119" />
+    <task id="LOCAL-00119" summary="Updated AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1739781005275</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1739781005275</updated>
+    </task>
+    <option name="localTasksCounter" value="120" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -739,9 +734,9 @@
     <MESSAGE value="Few Update" />
     <MESSAGE value="Edit" />
     <MESSAGE value="Added Customized tool" />
-    <MESSAGE value="Updated AGGRA_dockwidget.py" />
     <MESSAGE value="Updated .gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated .gitignore" />
+    <MESSAGE value="Updated AGGRA_dockwidget.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated AGGRA_dockwidget.py" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
