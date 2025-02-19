@@ -206,7 +206,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.removerowButton.clicked.connect(self.remove_row)
         self.add_document_button.clicked.connect(self.add_documentation_file)
         # self.add_document_github_button.clicked.connect(self.open_upload_dialog)
-        self.add_document_github_button.clicked.connect(self.show_contribution_dialog)
+        # self.add_document_github_button.clicked.connect(self.show_contribution_dialog) ## For adding data source to GitHub
         self.Add_new_key_btn.clicked.connect(self.show_add_key_dialog)
         self.remove_keyfile_btn.clicked.connect(self.show_remove_key_dialog)
 
@@ -980,7 +980,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         if message.strip():  # Check if message is not empty
             # self.conversation_history.append(f"User: {message}")
             self.update_chatgpt_ans(f"User: {message}", is_user=True)
-            self.update_chatgpt_ans(f"LLM-Find:Loading ...", is_user=False)
+            self.update_chatgpt_ans(f"AI:Loading ...", is_user=False)
             # Clear the input field after sending the message
             # self.task_LineEdit.clear()
 
@@ -996,11 +996,11 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         if success:
             # self.output_text_edit.append("The script ran successfully.")
             self.output_text_edit.insertPlainText("The script ran successfully.")
-            self.update_chatgpt_ans(f"LLM-FIND: Done")
+            self.update_chatgpt_ans(f"AI: Done")
         else:
             # self.output_text_edit.append("The script finished with errors.")
             self.output_text_edit.insertPlainText("The script finished with errors.")
-            self.update_chatgpt_ans(f"LLMFIND: The script finished with errors.")
+            self.update_chatgpt_ans(f"AI: The script finished with errors.")
 
         # Re-enable the send_button    #Not working
         self.run_button.setEnabled(True)

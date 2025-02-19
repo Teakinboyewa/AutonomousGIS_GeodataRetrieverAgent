@@ -1,4 +1,4 @@
-You can add your customized data source by adding an associated handbook following these requirements.
+# You can add your customized data source by adding an associated handbook following these requirements.
 
 # Handbook format
 
@@ -38,4 +38,24 @@ You need to replace the `XXX` using your real key and name the key. In the requi
 # Handbook organization
 All handbooks are stored in the `Handbooks` directory, and the associated API keys are stored in the `Keys` directory. 
 
+# How to add a new data source documentation file to the agent
+To add a documentation file (.toml) on your local machine, on the ```Add New Data Source``` panel, use the ```Local Machine``` button within the plugin. This allows you to select and automatically add a documentation file from any location on your local machine to the documentation folder within the plugin directory (C:\Users\YOUR_USERENAME\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\AutonomousGIS_GeodataRetrieverAgent\LLM_Find\Handbooks). Note: Replace "YOUR_USERNAME" with your actual username in the file path. Alternatively, you can manually add the documentation file by copying it directly to the specified plugin directory.
 
+# How to add a key associated to a data source (if needed)
+Many data sources require API keys to access. This can also be added within the plugin by following these processes described below:
+* On the ```Add New Data Source``` panel, select the ```+``` button on the New key tab
+
+![Add key 1.png](../Docs/Add%20key%201.png)
+
+* On the ```Add New Key``` dialog box, enter the key name and the key and click save. **Note: The key name must be same with the corresponding data source name. For example, the key name for ```OpenStreetMap.toml``` data source documentation must be ```OpenStreetMap```**
+
+![Add key 2.png](../Docs/Add%20key%202.png)
+
+* The new Key will be added to the local machine (C:\Users\AKINBOYEWA TEMITOPE\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\AutonomousGIS_GeodataRetrieverAgent\LLM_Find\Keys) and will be automatically added to the Data source API keys panel.
+
+![Add key 3.png](../Docs/Add%20key%203.png)
+
+* Additionally, user can remove any API automatically by using the ```-``` button on the New Key tab. 
+* Also, if there is a need to add/remove a row manually within the ```Data Sources API Keys``` panel, user can use the New rows buttons (i.e ```+``` and ```-```).
+
+![Add key 4.png](../Docs/Add%20key%204.png)
