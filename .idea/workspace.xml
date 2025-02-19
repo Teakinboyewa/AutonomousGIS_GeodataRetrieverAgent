@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated AGGRA_dockwidget.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget.py" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget_base.ui" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget_base.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LLM_Find/Customized_handbook.md" beforeDir="false" afterPath="$PROJECT_DIR$/LLM_Find/Adding a new data source.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/User_manual.md" beforeDir="false" afterPath="$PROJECT_DIR$/User_manual.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -279,15 +279,7 @@
       <workItem from="1739766260167" duration="300000" />
       <workItem from="1739766594187" duration="102000" />
       <workItem from="1739767564694" duration="12831000" />
-      <workItem from="1739982000022" duration="4553000" />
-    </task>
-    <task id="LOCAL-00072" summary="Updated the AGGRA_dockwidget.py">
-      <option name="closed" value="true" />
-      <created>1726479730015</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1726479730016</updated>
+      <workItem from="1739982000022" duration="5451000" />
     </task>
     <task id="LOCAL-00073" summary="Updated the AGGRA_dockwidget.py">
       <option name="closed" value="true" />
@@ -673,7 +665,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739808317920</updated>
     </task>
-    <option name="localTasksCounter" value="121" />
+    <task id="LOCAL-00121" summary="Updated AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1739986907965</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1739986907965</updated>
+    </task>
+    <option name="localTasksCounter" value="122" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

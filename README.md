@@ -22,6 +22,10 @@ The User Manual is available [here](https://github.com/Teakinboyewa/AutonomousGI
 # Usage
 Find some usage example on the Data Request [Examples](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md) page
 
+# Adding a New Data Source
+This framework is designed to be extendable to accommodate various data sources across different application scenarios. Therefore users are allowed to add new data source to the agent. Please find more details on the steps needed to add new data source in the  [Add a new data source](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/LLM_Find/Adding%20a%20new%20data%20source.md) page
+
+
 # MacOS users
 ## After the installation of the plugin, you need to install the "nest_asyncio" manually. Follow the steps below:
 - Open the QGIS Python Console by navigating to ```Plugins``` > ```Python Console``` or press ```Ctrl+Alt+P```

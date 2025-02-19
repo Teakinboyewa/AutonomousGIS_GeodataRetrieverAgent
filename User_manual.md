@@ -148,3 +148,8 @@ To make a data request, follow these steps:
 - Download the Nigeria satellite image at level 7
 
 ![Nigeria_Case.png](Docs%2FData%20request%20examples%2FNigeria_Case.png)
+
+* You can find more example in the [Data Request Examples](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/Data%20request%20examples.md) page.
+
+# Adding a New Data Source
+This framework is designed to be extendable to accommodate various data sources across different application scenarios. Therefore users are allowed to add new data source to the agent. Please find more details on the steps needed to add new data source in the  [Add a new data source](https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/LLM_Find/Adding%20a%20new%20data%20source.md) page

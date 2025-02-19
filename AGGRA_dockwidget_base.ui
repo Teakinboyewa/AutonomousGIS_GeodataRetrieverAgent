@@ -59,7 +59,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -439,7 +439,7 @@ padding: 5px; /* padding inside the text edit */
               </font>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; color:#6f6f53;&quot;&gt;This function allows user to add new data source. &lt;/span&gt;&lt;a href=&quot;https://github.com/gladcolor/LLM-Find/blob/master/Documents/Customized_handbook.MD&quot;&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; text-decoration: underline; color:#0000ff;&quot;&gt;Learn more&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; color:#6f6f53;&quot;&gt;This function allows user to add new data source. &lt;/span&gt;&lt;a href=&quot;https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/LLM_Find/Adding%20a%20new%20data%20source.md&quot;&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; text-decoration: underline; color:#0000ff;&quot;&gt;Learn more&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
