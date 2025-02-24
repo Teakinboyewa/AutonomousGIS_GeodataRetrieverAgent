@@ -1,13 +1,14 @@
+# Data source name. Should be clear, meaningful, and human readable. A good example is the one provided below
+data_source_name = 'DataSourceName'
+
+
 # provide a brief introduction of the data source to inform AI whether need to use this data source.
-brief_introduction = '''
+brief_description = '''
 
 '''
 
-# Put the API key below if the data source needs
-API_key = ''
-
 # Put the technical requirements or details for the data source. One line for a requirement. No need to number them.
-hand_books = '''
+hand_book = '''
 
 '''
 
