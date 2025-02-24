@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated AGGRA_dockwidget.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AGGRA_dockwidget_base.ui" beforeDir="false" afterPath="$PROJECT_DIR$/AGGRA_dockwidget_base.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LLM_Find/Handbooks/template.toml" beforeDir="false" afterPath="$PROJECT_DIR$/LLM_Find/Handbooks/template.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata.txt" beforeDir="false" afterPath="$PROJECT_DIR$/metadata.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -279,15 +278,7 @@
       <workItem from="1739766594187" duration="102000" />
       <workItem from="1739767564694" duration="12831000" />
       <workItem from="1739982000022" duration="7242000" />
-      <workItem from="1740376593191" duration="278000" />
-    </task>
-    <task id="LOCAL-00074" summary="Updated the AGGRA_dockwidget.py">
-      <option name="closed" value="true" />
-      <created>1726480658948</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
-      <option name="project" value="LOCAL" />
-      <updated>1726480658948</updated>
+      <workItem from="1740376593191" duration="1202000" />
     </task>
     <task id="LOCAL-00075" summary="Updated the AGGRA_dockwidget.py">
       <option name="closed" value="true" />
@@ -673,7 +664,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739987788178</updated>
     </task>
-    <option name="localTasksCounter" value="123" />
+    <task id="LOCAL-00123" summary="Updated AGGRA_dockwidget.py">
+      <option name="closed" value="true" />
+      <created>1740376903550</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1740376903550</updated>
+    </task>
+    <option name="localTasksCounter" value="124" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
