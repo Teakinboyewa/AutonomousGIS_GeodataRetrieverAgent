@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated AGGRA_dockwidget.py">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metadata.txt" beforeDir="false" afterPath="$PROJECT_DIR$/metadata.txt" afterDir="false" />
-    </list>
+    <list default="true" id="81a7ee52-ce3c-4532-a39f-d76476ed406c" name="Changes" comment="Updated metadata.txt" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -278,15 +275,7 @@
       <workItem from="1739766594187" duration="102000" />
       <workItem from="1739767564694" duration="12831000" />
       <workItem from="1739982000022" duration="7242000" />
-      <workItem from="1740376593191" duration="1202000" />
-    </task>
-    <task id="LOCAL-00075" summary="Updated the AGGRA_dockwidget.py">
-      <option name="closed" value="true" />
-      <created>1726480663649</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
-      <option name="project" value="LOCAL" />
-      <updated>1726480663649</updated>
+      <workItem from="1740376593191" duration="1743000" />
     </task>
     <task id="LOCAL-00076" summary="Updated the AGGRA_dockwidget.py">
       <option name="closed" value="true" />
@@ -672,7 +661,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740376903550</updated>
     </task>
-    <option name="localTasksCounter" value="124" />
+    <task id="LOCAL-00124" summary="Updated metadata.txt">
+      <option name="closed" value="true" />
+      <created>1740377823533</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1740377823533</updated>
+    </task>
+    <option name="localTasksCounter" value="125" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -714,7 +711,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="User_Manual Added" />
     <MESSAGE value="Shapefile included as an output option&quot;" />
     <MESSAGE value="Updated User_manual" />
     <MESSAGE value="Help page updated" />
@@ -739,7 +735,8 @@
     <MESSAGE value="Added Customized tool" />
     <MESSAGE value="Updated .gitignore" />
     <MESSAGE value="Updated AGGRA_dockwidget.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated AGGRA_dockwidget.py" />
+    <MESSAGE value="Updated metadata.txt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated metadata.txt" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
