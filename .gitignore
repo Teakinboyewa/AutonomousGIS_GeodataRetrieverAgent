@@ -2,5 +2,8 @@
 *.keys
 *.ini
 
+# Exclude versioned AGGRA_dockwidget.py files
+AGGRA_dockwidget_v*.py
+
 **/__pycache__/
 
