@@ -1,0 +1,234 @@
+# The ID of the data source is the name of this file. Should be short, consists of one or two words. No space and special characters. Hyphen ("_") is allowed. The ID is for the program identify the data source.
+
+# Data source name. Should be clear, meaningful, and human readable.
+data_source_name = 'USGS_Earthquake'
+
+# provide a brief description (1 line) of the data source to inform AI whether need to use this data source.
+# Need to contain critical information such as extent and period.
+brief_description = '''
+This is an implementation of the FDSN Event Web Service Specification, and allows custom searches for earthquake information using a variety of parameters.
+https://earthquake.usgs.gov/fdsnws/event/1/
+'''
+
+# Put the technical requirements or details for the data source. One line for a requirement. No need to number them.
+# Line by line.
+# If the data source need s API key, put the key in a separate text file (e.g., "OpenWeather.keys") in the "Keys" directory. Note that the file name is the data source ID! The content in the file is like: OpenWeather_key = "XXX". The double quotation mark is needed. Then, in the first line of handbook use the key as "The OpenWeather API key is: {OpenWeather_key}". NEVER share the key in the handbook!
+# Note that the placeholder of "{OpenWeather_key}" will be replaced by the real key in the .keys file.
+handbook = '''
+Query method Parameters
+These parameters should be submitted as key=value pairs using the HTTP GET method and may not be specified more than once; if a parameter is submitted multiple times the result is undefined.
+
+Formats
+If no format is specified quakeml will be returned by default.
+
+parameter	type	default	description
+format	String	quakeml	Specify the output format.
+format=csv
+Response format is CSV. Mime-type is “text/csv”.
+format=geojson
+Response format is GeoJSON. Mime-type is “application/json”.
+format=kml
+Response format is KML. Mime-type is “vnd.google-earth.kml+xml”.
+format=quakeml
+Alias for "xml" format.
+format=text
+Response format is plain text. Mime-type is “text/plain”.
+format=xml
+The xml format is dependent upon the request method used.
+format=geojson
+When format=geojson is defined there are additional parameters that can be specified that control how the geojson output is generated. The additional web service parameters are:
+
+callback
+jsonerror
+format=kml
+When format=kml is defined there are additional parameters that can be specified that control how the KML output is generated. The additional web service parameters are:
+
+kmlanimated
+kmlcolorby
+format=text
+This format is only available for the count, query, and version methods.
+
+format=xml
+The xml format is dependent upon the request method used.
+
+method=query
+Response format is Quakeml 1.2. Mime-type is "application/xml".
+method=count
+Response format is xml. Mime-type is “application/xml”.
+Time
+All times use ISO8601 Date/Time format. Unless a timezone is specified, UTC is assumed. Examples:
+
+2024-09-08, Implicit UTC timezone, and time at start of the day (00:00:00)
+2024-09-08T01:01:01, Implicit UTC timezone.
+2024-09-08T01:01:01+00:00, Explicit timezone.
+parameter	type	default	description
+endtime	String	present time	Limit to events on or before the specified end time. NOTE: All times use ISO8601 Date/Time format. Unless a timezone is specified, UTC is assumed.
+starttime	String	NOW - 30 days	Limit to events on or after the specified start time. NOTE: All times use ISO8601 Date/Time format. Unless a timezone is specified, UTC is assumed.
+updatedafter	String	null	Limit to events updated after the specified time. NOTE: All times use ISO8601 Date/Time format. Unless a timezone is specified, UTC is assumed.
+Location
+Requests that use both rectangle and circle will return the intersection, which may be empty, use with caution.
+
+Rectangle
+Requests may use any combination of these parameters.
+
+parameter	type	default	description
+minlatitude	Decimal [-90,90] degrees	-90	Limit to events with a latitude larger than the specified minimum. NOTE: min values must be less than max values.
+minlongitude	Decimal [-360,360] degrees	-180	Limit to events with a longitude larger than the specified minimum. NOTE: rectangles may cross the date line by using a minlongitude < -180 or maxlongitude > 180. NOTE: min values must be less than max values.
+maxlatitude	Decimal [-90,90] degrees	90	Limit to events with a latitude smaller than the specified maximum. NOTE: min values must be less than max values.
+maxlongitude	Decimal [-360,360] degrees	180	Limit to events with a longitude smaller than the specified maximum. NOTE: rectangles may cross the date line by using a minlongitude < -180 or maxlongitude > 180. NOTE: min values must be less than max values.
+Circle
+Requests must include all of latitude, longitude, and maxradius to perform a circle search.
+
+parameter	type	default	description
+latitude	Decimal [-90,90] degrees	null	Specify the latitude to be used for a radius search.
+longitude	Decimal [-180,180] degrees	null	Specify the longitude to be used for a radius search.
+maxradius	Decimal [0, 180] degrees	180	Limit to events within the specified maximum number of degrees from the geographic point defined by the latitude and longitude parameters. NOTE: This option is mutually exclusive with maxradiuskm and specifying both will result in an error.
+maxradiuskm	Decimal [0, 20001.6] km	20001.6	Limit to events within the specified maximum number of kilometers from the geographic point defined by the latitude and longitude parameters. NOTE: This option is mutually exclusive with maxradius and specifying both will result in an error.
+Other
+parameter	type	default	description
+catalog	String	null	Limit to events from a specified catalog. Use the Catalogs Method to find available catalogs. NOTE: when catalog and contributor are omitted, the most preferred information from any catalog or contributor for the event is returned.
+contributor	String	null	Limit to events contributed by a specified contributor. Use the Contributors Method to find available contributors. NOTE: when catalog and contributor are omitted, the most preferred information from any catalog or contributor for the event is returned.
+eventid	String	null	Select a specific event by ID; event identifiers are data center specific. NOTE: Selecting a specific event implies includeallorigins, includeallmagnitudes, and, additionally, associated moment tensor and focal-mechanisms are included.
+includeallmagnitudes	Boolean	false	Specify if all magnitudes for the event should be included, default is data center dependent but is suggested to be the preferred magnitude only. NOTE: because magnitudes and origins are strongly associated, this parameter is interchangeable with includeallmagnitudes
+includeallorigins	Boolean	false	Specify if all origins for the event should be included, default is data center dependent but is suggested to be the preferred origin only. NOTE: because magnitudes and origins are strongly associated, this parameter is interchangable with includeallmagnitudes
+includearrivals	Boolean	false	Specify if phase arrivals should be included. NOTE: NOT CURRENTLY IMPLEMENTED
+includedeleted	Boolean, or "only"	false	Specify if deleted products and events should be included. The value only returns only deleted events.
+Deleted events otherwise return the HTTP status 409 Conflict.
+
+NOTE: Only supported by the csv and geojson formats, which include status.
+
+include superseded	Boolean	false	Specify if superseded products should be included. This also includes all deleted products, and is mutually exclusive to the includedeleted parameter. NOTE: Only works when specifying eventid parameter.
+limit	Integer [1,20000]	null	Limit the results to the specified number of events. NOTE: The service limits queries to 20000, and any that exceed this limit will generate a HTTP response code “400 Bad Request”.
+maxdepth	Decimal [-100, 1000] km	1000	Limit to events with depth less than the specified maximum.
+maxmagnitude	Decimal	null	Limit to events with a magnitude smaller than the specified maximum.
+mindepth	Decimal [-100, 1000] km	-100	Limit to events with depth more than the specified minimum.
+minmagnitude	Decimal	null	Limit to events with a magnitude larger than the specified minimum.
+offset	Integer[1,∞]	1	Return results starting at the event count specified, starting at 1.
+orderby	String	time	Order the results. The allowed values are:
+orderby=time
+order by origin descending time
+orderby=time-asc
+order by origin ascending time
+orderby=magnitude
+order by descending magnitude
+orderby=magnitude-asc
+order by ascending magnitude
+Extensions
+parameter	type	default	description
+alertlevel	String	null	Limit to events with a specific PAGER alert level. The allowed values are:
+alertlevel=green
+Limit to events with PAGER alert level "green".
+alertlevel=yellow
+Limit to events with PAGER alert level "yellow".
+alertlevel=orange
+Limit to events with PAGER alert level "orange".
+alertlevel=red
+Limit to events with PAGER alert level "red".
+callback	String	null	Convert GeoJSON output to a JSONP response using this callback. Mime-type is “text/javascript”.
+Callback values are restricted to the characters [A-Za-z0-9\._]+
+
+NOTE: Must be used with format=geojson
+eventtype	String	null	Limit to events of a specific type. NOTE: “earthquake” will filter non-earthquake events.
+jsonerror	Boolean	false	Request JSON(P) formatted output even on API error results. NOTE: Must be used with format=geojson
+kmlanimated	Boolean	false	Whether to include timestamp in generated kml, for google earth animation support. NOTE: Must be used with format=kml
+kmlcolorby	String	age	How earthquakes are colored. Accepted values are:
+kmlcolorby=age
+Color events in KML by age.
+kmlcolorby=depth
+Color events in KML by depth.
+NOTE: Must be used with format=kml
+maxcdi	Decimal [0,12]	null	Maximum value for Maximum Community Determined Intensity reported by DYFI.
+maxgap	Decimal [0,360] degrees	null	Limit to events with no more than this azimuthal gap.
+maxmmi	Decimal [0,12]	null	Maximum value for Maximum Modified Mercalli Intensity reported by ShakeMap.
+maxsig	Integer	null	Limit to events with no more than this significance.
+mincdi	Decimal	null	Minimum value for Maximum Community Determined Intensity reported by DYFI.
+minfelt	Integer[1,∞]	null	Limit to events with this many DYFI responses.
+mingap	Decimal[0,360] degrees	null	Limit to events with no less than this azimuthal gap.
+minsig	Integer	null	Limit to events with no less than this significance.
+nodata	Integer (204|404)	204	Define the error code that will be returned when no data is found.
+producttype	String	null	Limit to events that have this type of product associated. Example producttypes:
+moment-tensor
+focal-mechanism
+shakemap
+losspager
+dyfi
+productcode	String	null	Return the event that is associated with the productcode. The event will be returned even if the productcode is not the preferred code for the event. Example productcodes:
+nn00458749
+at00ndf1fr
+reviewstatus	String	all	Limit to events with a specific review status. The different review statuses are:
+reviewstatus=automatic
+Limit to events with review status "automatic".
+reviewstatus=reviewed
+Limit to events with review status "reviewed".
+
+
+Output GeoJSON format: 
+{
+  type: "FeatureCollection",
+  metadata: {
+    generated: Long Integer,
+    url: String,
+    title: String,
+    api: String,
+    count: Integer,
+    status: Integer
+  },
+  bbox: [
+    minimum longitude,
+    minimum latitude,
+    minimum depth,
+    maximum longitude,
+    maximum latitude,
+    maximum depth
+  ],
+  features: [
+    {
+      type: "Feature",
+      properties: {
+        mag: Decimal,
+        place: String,
+        time: Long Integer,
+        updated: Long Integer,
+        tz: Integer,
+        url: String,
+        detail: String,
+        felt:Integer,
+        cdi: Decimal,
+        mmi: Decimal,
+        alert: String,
+        status: String,
+        tsunami: Integer,
+        sig:Integer,
+        net: String,
+        code: String,
+        ids: String,
+        sources: String,
+        types: String,
+        nst: Integer,
+        dmin: Decimal,
+        rms: Decimal,
+        gap: Decimal,
+        magType: String,
+        type: String
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [
+          longitude,
+          latitude,
+          depth
+        ]
+      },
+      id: String
+    },
+    …
+  ]
+}
+
+
+'''
+
+# Python code example for the data source. If no, just leave the empty as below. Do not remove it.
+code_example = '''
+
+'''
