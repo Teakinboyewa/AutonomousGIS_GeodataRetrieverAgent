@@ -59,7 +59,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -1003,26 +1003,6 @@ p, li { white-space: pre-wrap; }
             <item>
              <property name="text">
               <string>gpt-5</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>gpt-oss:120b</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>gpt-oss:20b</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>llama4:latest</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>llama3.1:70b</string>
              </property>
             </item>
            </widget>
