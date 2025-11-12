@@ -26,6 +26,7 @@ import configparser
 import os
 import re
 import shutil
+import urllib
 
 import requests
 from qgis.PyQt import QtGui, QtWidgets, uic
@@ -46,10 +47,10 @@ from qgis.utils import iface
 QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts)
 
 from PyQt5.QtCore import QUrl, QThread, pyqtSignal, pyqtSlot, QSettings, QObject
-from PyQt5.QtGui import QTextCursor, QSyntaxHighlighter, QTextCharFormat, QColor
+from PyQt5.QtGui import QTextCursor, QSyntaxHighlighter, QTextCharFormat, QColor, QDesktopServices
 
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QWidget, QPushButton, QFileDialog, QMenu, QAction, QCompleter, \
-    QVBoxLayout, QLineEdit, QTableWidgetItem, QDialog, QLabel, QMessageBox, QInputDialog, QComboBox
+    QVBoxLayout, QLineEdit, QTableWidgetItem, QDialog, QLabel, QMessageBox, QInputDialog, QComboBox,QTextEdit
 
 from qgis.gui import QgsPasswordLineEdit
 from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -132,6 +133,15 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.load_OpenAI_key()
 
+        # Store request tracking information for feedback
+        self.current_request_id = None
+        self.current_task = None
+        self.error_message = None
+        self.error_traceback = None
+        self.generated_code = None
+        self.current_feedback = ""  # Track the currently selected feedback (good/bad/empty)
+        self.current_feedback_message = ""  # Track the feedback message
+
         self.initUI()
 
         # Initialize conversation history
@@ -153,7 +163,17 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.saved_fname_completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.saved_fnameLineEdit.setCompleter(self.saved_fname_completer)
 
-        self.ChatMode_checkbox.toggled.connect(self.toggle_saved_fnameLineEdit)
+        # self.ChatMode_checkbox.toggled.connect(self.toggle_saved_fnameLineEdit)
+
+        # Connect model selection to reasoning effort visibility
+        self.modelNameComboBox.currentTextChanged.connect(self.on_model_changed)
+
+        # Initially hide reasoning effort controls
+        self.toggle_reasoning_effort_visibility()
+
+        # Initialize OpenAI key field state based on current model
+        current_model = self.modelNameComboBox.currentText()
+        self.toggle_openai_key_field(current_model)
 
         self.tabWidget = self.findChild(QtWidgets.QTabWidget, 'tabWidget')
         self.tab_3_index = self.tabWidget.indexOf(self.tab_3)
@@ -175,10 +195,26 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.interrupt_button.clicked.connect(self.interrupt)
 
         # self.chatgpt_ans.setReadOnly(True)  # Make the text edit read-only (if desired)
-        self.chatgpt_ans.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+        # self.chatgpt_ans.setOpenExternalLinks(False)  # Use custom link handler
+        self.chatgpt_ans_textBrowser.setOpenExternalLinks(False)
+        self.chatgpt_ans_textBrowser.setOpenLinks(False)
+        self.chatgpt_ans_textBrowser.anchorClicked.connect(self.open_link)
+
+        # self.chatgpt_ans.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard | Qt.LinksAccessibleByMouse)
+        # self.chatgpt_ans.anchorClicked.connect(self.open_link)
         self.SelectDataPath_ToolBtn.clicked.connect(self.select_output_directory)
         self.clear_chatgpt_ansBtn.clicked.connect(self.clear_textboxes)
         self.interrupt_button.clicked.connect(self.stop_script)
+
+        self.thumbs_up_button.clicked.connect(self.send_request_feedback)
+        self.thumbs_down_button.clicked.connect(self.send_request_feedback)
+        self.feedback_message_button.clicked.connect(self.send_request_feedback)
+        # Disable feedback buttons by default (enabled only after a request is made)
+        # self.thumbs_up_button.setEnabled(False)
+        # self.thumbs_down_button.setEnabled(False)
+        # self.feedback_message_button.setEnabled(False)
+
+
         self.save_code_button.clicked.connect(self.save_code_to_file)
         self.open_code_button.clicked.connect(self.load_code_from_file)
         self.clear_code_editorBtn.clicked.connect(self.clear_output_window)
@@ -354,18 +390,26 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # Insert a new row at the end
         self.tableWidget.insertRow(row_count)
 
-        # Create a QWidget container for the QgsPasswordLineEdit
+        # Create a QWidget container for the password field
         container_widget = QtWidgets.QWidget()
         # Ensure the container widget can expand
         container_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+
+        # Create the password field
         password_edit = QgsPasswordLineEdit(container_widget)
         # Set the size policy for the password edit
         password_edit.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+
+        # Set placeholder text for when API key is required
+        password_edit.setPlaceholderText("Input your data source API key")
 
         # Set the layout for the container widget
         layout = QtWidgets.QHBoxLayout(container_widget)
         layout.addWidget(password_edit)
         layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
+
+        # Store reference to password field in the container for easy access
+        container_widget.password_edit = password_edit
 
         # Create a QComboBox for the first column
         combo_box = QtWidgets.QComboBox()
@@ -383,11 +427,11 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         combo_box.addItems(sorted(all_datasources))
 
             # Connect the combo box change signal to a function that sets the corresponding API key
-        combo_box.currentIndexChanged.connect(lambda: self.set_api_key(combo_box, password_edit, keys_directory))
+        combo_box.currentIndexChanged.connect(lambda: self.set_api_key(combo_box, container_widget, keys_directory))
 
         # Connect the password field change signal to update the .keys file when edited
         password_edit.textChanged.connect(
-            lambda: self.update_datasources_api_key_file(combo_box, password_edit, keys_directory))
+            lambda: self.update_datasources_api_key_file(combo_box, container_widget, keys_directory))
 
         if key_name:
             combo_box.setCurrentText(key_name)
@@ -401,7 +445,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         # Load the API key from the corresponding file
         if key_name and keys_directory:
-            self.set_api_key(combo_box, password_edit, keys_directory)
+            self.set_api_key(combo_box, container_widget, keys_directory)
             # key_file_path = os.path.join(keys_directory, f"{key_name}.keys")
             # try:
             #     with open(key_file_path, 'r') as key_file:
@@ -426,9 +470,12 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # # Adjust the table height
         # self.adjust_table_height()
 
-    def set_api_key(self, combo_box, password_edit, keys_directory):
+    def set_api_key(self, combo_box, container_widget, keys_directory):
         # Get the selected key name from the combo box
         selected_key_name = combo_box.currentText()
+
+        # Get reference to password field from the container
+        password_edit = container_widget.password_edit
 
         if selected_key_name:
             # Construct the path to the corresponding .keys file
@@ -440,19 +487,45 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                     for line in key_file:
                         if "=" in line:
                             key_value = line.split('=')[1].strip()
-                            password_edit.setText(key_value)  # Set the API key in the password field
+
+                            # Check if the key value indicates no API key is required
+                            if "do not require" in key_value.lower() or "don not require" in key_value.lower():
+                                # Make read-only and show "no key required" message
+                                password_edit.setReadOnly(True)
+                                password_edit.setEchoMode(QLineEdit.Normal)  # Show text normally, not masked
+                                password_edit.setText("Data source do not require API Key")
+                                password_edit.setStyleSheet("QLineEdit { color: gray; font-style: italic; }")
+                            else:
+                                # Make editable and show the API key
+                                password_edit.setReadOnly(False)
+                                password_edit.setEchoMode(QLineEdit.Password)  # Mask the API key
+                                password_edit.setStyleSheet("")  # Reset style
+                                password_edit.setText(key_value)  # Set the API key in the password field
                             break  # Only expecting one key per file
             except FileNotFoundError:
                 # If no .keys file exists, this datasource doesn't need an API key
-                # Leave the field blank (don't show error for public datasources)
-                password_edit.clear()
+                # Make read-only and show "no key required" message
+                password_edit.setReadOnly(True)
+                password_edit.setEchoMode(QLineEdit.Normal)  # Show text normally, not masked
+                password_edit.setText("Data source do not require API Key")
+                password_edit.setStyleSheet("QLineEdit { color: gray; font-style: italic; }")
         else:
-            # Clear the API key field if no valid key is selected
+            # Clear the field if no valid key is selected
+            password_edit.setReadOnly(False)
+            password_edit.setEchoMode(QLineEdit.Password)  # Reset to password mode
+            password_edit.setStyleSheet("")  # Reset style
             password_edit.clear()
 
-    def update_datasources_api_key_file(self, combo_box, password_edit, keys_directory):
+    def update_datasources_api_key_file(self, combo_box, container_widget, keys_directory):
         # Get the selected key name from the combo box
         selected_key_name = combo_box.currentText()
+
+        # Get reference to password field from the container
+        password_edit = container_widget.password_edit
+
+        # Don't update if the field is read-only (data source doesn't require API key)
+        if password_edit.isReadOnly():
+            return
 
         # Ensure a key name is selected
         if selected_key_name:
@@ -484,7 +557,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                     if new_api_key.strip():
                         with open(key_file_path, 'w') as key_file:
                             key_file.write(f"[API_Key]\n{API_keyname} = {new_api_key}\n")
-                        
+
                         # Update all combo boxes to reflect that this datasource now has a key
                         # (This ensures consistency across all rows in the table)
                         self.add_new_keyname_to_combo_boxes(selected_key_name)
@@ -551,6 +624,51 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                     # Remove the key from the combo box if it exists
                     combo_box.removeItem(index)
 
+    def on_model_changed(self, model_name):
+        """Handle model selection change"""
+        self.toggle_reasoning_effort_visibility(model_name == 'gpt-5')
+        self.toggle_openai_key_field(model_name)
+
+    def toggle_reasoning_effort_visibility(self, show=None):
+        """Show or hide reasoning effort controls based on model selection"""
+        if show is None:
+            # Check current model selection
+            show = self.modelNameComboBox.currentText() == 'gpt-5'
+
+        # Show/hide the reasoning effort controls
+        self.reasoningEffortLabel.setVisible(show)
+        self.reasoningEffortComboBox.setVisible(show)
+
+        # Set default reasoning effort if GPT-5 is selected
+        if show and self.reasoningEffortComboBox.currentText() == "":
+            self.reasoningEffortComboBox.setCurrentText("medium")
+
+    def toggle_openai_key_field(self, model_name):
+        """Enable or disable OpenAI key field based on model selection"""
+        try:
+            current_script_dir = os.path.dirname(os.path.abspath(__file__))
+            sys.path.insert(0, os.path.join(current_script_dir, 'SpatialAnalysisAgent'))
+            from SpatialAnalysisAgent_ModelProvider import ModelProviderFactory
+
+            provider_name = ModelProviderFactory._model_providers.get(model_name, 'openai')
+
+            if provider_name == 'ollama':
+                # Local model doesn't need OpenAI key - make field read-only and show placeholder
+                self.OpenAI_key_LineEdit.setReadOnly(True)
+                self.OpenAI_key_LineEdit.setPlaceholderText("API key not required for local models")
+                self.OpenAI_key_LineEdit.setStyleSheet("QLineEdit { background-color: #f0f0f0; color: #666666; }")
+            else:
+                # OpenAI model needs key - make field editable
+                self.OpenAI_key_LineEdit.setReadOnly(False)
+                self.OpenAI_key_LineEdit.setPlaceholderText("Enter your OpenAI API key or GIBD API key")
+                self.OpenAI_key_LineEdit.setStyleSheet("QLineEdit { background-color: white; color: black; }")
+
+        except ImportError:
+            # Fallback: keep field editable for all models
+            self.OpenAI_key_LineEdit.setReadOnly(False)
+            self.OpenAI_key_LineEdit.setPlaceholderText("Enter your OpenAI API key or GIBD API key")
+            self.OpenAI_key_LineEdit.setStyleSheet("QLineEdit { background-color: white; color: black; }")
+
         # # Get the selected key name from the combo box
         # selected_key_name = combo_box.currentText()
         #
@@ -608,12 +726,20 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         """Slot to handle the send button click."""
         user_message = self.task_LineEdit.toPlainText().strip()
         self.CodeEditor.clear()
+        self.execution_output_text_edit.clear()
+
+        # Check if API key is empty
+        api_key = self.OpenAI_key_LineEdit.text().strip()
+        if not api_key:
+            self.update_chatgpt_ans_textBrowser(f"API key is empty. Enter your OpenAI API key or GIBD API key", is_user=False)
+            return
 
         if not user_message:
-            self.update_chatgpt_ans(f"AI: Please enter a data request in the request field.", is_user=False)
+            # self.update_chatgpt_ans(f"AI: Please enter a data request in the request field.", is_user=False)
+            self.update_chatgpt_ans_textBrowser(f"AI: Please enter a data request in the request field.", is_user=False)
             return  # Stop further execution if the task is empty
 
-        self.update_chatgpt_ans(
+        self.update_chatgpt_ans_textBrowser(
             f"--------------------------------------------------------------------------------------------",
             is_user=None)
 
@@ -625,12 +751,18 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # Now read the updated config file to refresh the API key
         self.read_updated_config()
 
-        if not self.ChatMode_checkbox.isChecked() and self.saved_fnameLineEdit.isEnabled() and not self.saved_fnameLineEdit.text().strip():
-            self.update_chatgpt_ans(f"AI: Please specify the output directory.", is_user=False)
+        if not self.saved_fnameLineEdit.isEnabled() and not self.saved_fnameLineEdit.text().strip():
+            # self.update_chatgpt_ans(f"AI: Please specify the output directory.", is_user=False)
+            self.update_chatgpt_ans_textBrowser(f"AI: Please specify the output directory.", is_user=False)
             return  # Stop further execution if data path is required but empty
 
-        if self.ChatMode_checkbox.isChecked():  # Assuming SwitchControl behaves like a checkbox
-            self.chatgpt_direct_answer(user_message)
+        # if not self.ChatMode_checkbox.isChecked() and self.saved_fnameLineEdit.isEnabled() and not self.saved_fnameLineEdit.text().strip():
+        #     # self.update_chatgpt_ans(f"AI: Please specify the output directory.", is_user=False)
+        #     self.update_chatgpt_ans(f"AI: Please specify the output directory.", is_user=False)
+        #     return  # Stop further execution if data path is required but empty
+
+        # if self.ChatMode_checkbox.isChecked():  # Assuming SwitchControl behaves like a checkbox
+        #     self.chatgpt_direct_answer(user_message)
 
         else:
             self.run_script()
@@ -645,7 +777,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                                            self.conversation_history)  # your-api-key-here
         # self.gpt_thread = GPTRequestThread(user_message, "AAzz", self.conversation_history)#your-api-key-here
         self.gpt_thread.output_line.connect(self.update_output)
-        self.gpt_thread.finished_signal.connect(lambda: self.update_chatgpt_ans("AI: Done", is_user=False))
+        self.gpt_thread.finished_signal.connect(lambda: self.update_chatgpt_ans_textBrowser("AI: Done", is_user=False))
 
         self.gpt_thread.start()
 
@@ -687,10 +819,10 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         file_dialog = QFileDialog(self, "Select Output Directory and Filename")
         file_dialog.setAcceptMode(QFileDialog.AcceptSave)
         file_dialog.setFileMode(QFileDialog.AnyFile)
-        file_dialog.setDefaultSuffix("gpkg")
+        file_dialog.setDefaultSuffix("shp")
         file_dialog.setNameFilters([
-            "GeoPackage (*.gpkg *.GPKG)",
             "Shapefile (*.shp)",
+            "GeoPackage (*.gpkg *.GPKG)",
             "CSV files (*.csv)",
             "TIFF files (*.tif *.tiff *.TIF *.TIFF)",
             "PNG files (*.png *.PNG)",
@@ -849,20 +981,28 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # self.update_api_keys()
         # self.tabWidget.setCurrentIndex(self.tab_3_index)
 
+        # Clear the output_text_edit before starting
+        self.output_text_edit.clear()
+
         current_script_dir = os.path.dirname(os.path.abspath(__file__))
         script_path = os.path.join(current_script_dir, 'LLM_Find', 'LLM_FIND.py')
         # OpenAI_key = helper.load_OpenAI_key()
         self.OpenAI_key = self.get_openai_key()  # Retrieve the API key from the line edit
         # self.OpenAI_key = self.api_keys.get("OpenAI_key")
-        if not self.OpenAI_key:
-            self.update_chatgpt_ans(f"AI: Please enter a valid OpenAI API key.", is_user=False)
-            return
+
         self.model_name = self.modelNameComboBox.currentText()
 
         # self.task = self.task_LineEdit.text()
         self.task = self.task_LineEdit.toPlainText()
+        self.current_task=self.task
         self.saved_fname = self.saved_fnameLineEdit.text()
         filename_only = os.path.basename(self.saved_fname)  # .split('.')[0]
+
+        # # Enable feedback buttons only if using gibd-services API key
+        # if 'gibd-services' in (self.OpenAI_key or ''):
+        #     self.thumbs_up_button.setEnabled(True)
+        #     self.thumbs_down_button.setEnabled(True)
+        #     self.feedback_message_button.setEnabled(True)
 
         # Add task to history and update completer
         if self.task not in self.task_history:
@@ -874,7 +1014,12 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             self.saved_fname_history.append(self.saved_fname)
             self.saved_fname_completer.model().setStringList(self.saved_fname_history)
 
-        self.thread = ScriptThread(script_path, self.task, self.saved_fname, self.api_keys, self.model_name)
+        # Get reasoning effort if GPT-5 is selected
+        self.reasoning_effort_value = 'medium'  # default
+        if self.model_name == 'gpt-5':
+            self.reasoning_effort_value = self.reasoningEffortComboBox.currentText()
+
+        self.thread = ScriptThread(script_path, self.task, self.saved_fname, self.api_keys, self.model_name, self.reasoning_effort_value)
 
         # self.task = self.task_LineEdit.text()
         # self.saved_fname = self.saved_fnameLineEdit.text()
@@ -891,7 +1036,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             self.saved_fname_completer.model().setStringList(self.saved_fname_history)
 
         self.thread.output_line.connect(self.update_output)
-        self.thread.chatgpt_update.connect(self.update_chatgpt_ans)
+        self.thread.chatgpt_update.connect(self.update_chatgpt_ans_textBrowser)
         self.thread.generated_code_ready.connect(self.update_code_editor)
         self.thread.finished.connect(self.thread_finished)
         self.thread.start()
@@ -910,7 +1055,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def stop_script(self):
         if self.thread:
             self.thread.terminate()
-            self.update_chatgpt_ans(f"AI: Script terminated")
+            self.update_chatgpt_ans_textBrowser(f"AI: Script terminated")
 
             # print("Script terminated")
         self.run_button.setEnabled(True)
@@ -919,58 +1064,303 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.saved_fnameLineEdit.setEnabled(True)
         self.SelectDataPath_ToolBtn.setEnabled(True)
 
-    def update_chatgpt_ans(self, message, is_user=False):
+    def update_chatgpt_ans_textBrowser(self, message, is_user=False):
         # Append new message to conversation history
         self.conversation_history.append((message, is_user))
-        self.chatgpt_ans.clear()
+        self.chatgpt_ans_textBrowser.clear()
         for msg, user in self.conversation_history:
             self.append_text_with_format(msg, user)
             # self.chatgpt_ans.append(msg)
-        self.chatgpt_ans.repaint()
-        self.chatgpt_ans.verticalScrollBar().setValue(self.chatgpt_ans.verticalScrollBar().maximum())
+        self.chatgpt_ans_textBrowser.repaint()
+        self.chatgpt_ans_textBrowser.verticalScrollBar().setValue(self.chatgpt_ans_textBrowser.verticalScrollBar().maximum())
+
+    # def append_text_with_format(self, text, is_user=True):
+    #     cursor = self.chatgpt_ans.textCursor()
+    #     cursor.movePosition(QTextCursor.End)
+    #
+    #     if is_user:
+    #         html = f'<div style="text-align: left; padding: 10px; margin: 5px; border: 2px solid blue; border-radius: 10px;">{text}</div>'
+    #     else:
+    #         html = f'<div style="text-align: right; padding: 10px; margin: 5px; border: 2px solid green; border-radius: 10px;">{text}</div>'
+    #
+    #     cursor.insertHtml(html)
+    #     cursor.insertHtml('<br>')  # Add a line break between messages
+    #     # self.task_LineEdit.clear()
+    #
+    #     self.chatgpt_ans_textBrowser.setTextCursor(cursor)
 
     def append_text_with_format(self, text, is_user=True):
-        cursor = self.chatgpt_ans.textCursor()
+        # Check if the text already contains HTML links (tool documentation, AI thoughts, data overview links, or any anchor tags)
+        # Also skip URL processing for trial messages to avoid making numbers clickable
+        # if ('<a href="tool-doc:' in text or '<a href="ai-thoughts:' in text or '<a href="data-attributes:' in text or
+        if ('<a href=' in text or
+                "Executing the code" in text or "Trial" in text):
+            # Don't process URLs if it already contains formatted links or is a trial message
+            pass
+        else:
+            # Only apply URL processing for non-tool-link messages
+            url_pattern = re.compile(
+                r'((?:https?://|file:///)[^\s]+)'  # URLs starting with http://, https://, or file:///
+                r'|'
+                r'((?:[A-Za-z]:)?[\\/][^\n]+)'  # Windows or Unix file paths, allowing spaces
+            )
+
+            def replace_urls(match):
+                url = match.group(0)
+                if url.startswith(('http://', 'https://', 'file:///')):
+                    # URL is already in correct format
+                    return f'<a href="{url}">{url}</a>'
+                else:
+                    # It's a local file path; convert it to a file URL
+                    # Normalize the path separators
+                    file_path = os.path.normpath(url).replace('\\', '/')
+                    # Handle spaces and special characters
+                    file_url = 'file:///' + urllib.parse.quote(file_path)
+                    display_path = url  # Keep the original path for display
+                    return f'<a href="{file_url}">{display_path}</a>'
+
+            # Process the text to replace URLs and file paths with HTML links
+            text = url_pattern.sub(replace_urls, text)
+
+        cursor = self.chatgpt_ans_textBrowser.textCursor()
+        cursor.movePosition(QTextCursor.End)
+
+        cursor = self.chatgpt_ans_textBrowser.textCursor()
         cursor.movePosition(QTextCursor.End)
 
         if is_user:
-            html = f'<div style="text-align: left; padding: 10px; margin: 5px; border: 2px solid blue; border-radius: 10px;">{text}</div>'
+            prefix = "User: "
+            color_prefix = "green"
+            color_message = "black"
+            message = text
+        elif is_user is False:
+            prefix = "AI: "
+            color_prefix = 'blue'
+            color_message = 'black'
+
         else:
-            html = f'<div style="text-align: right; padding: 10px; margin: 5px; border: 2px solid green; border-radius: 10px;">{text}</div>'
+            prefix = ""  # No prefix
+            color_prefix = ""  # No color
+            color_message = 'black'
+
+        message = text
+
+        is_processing_status = message.endswith("...") or "Executing the code" in message
+
+        # Apply special styling for processing status messages and regular AI messages
+        if is_processing_status and is_user is False:
+            message_style = f"color: orange; font-style: italic; font-size: 90%;"
+        elif is_user is False:
+            # Regular AI informational messages in green
+            message_style = f"color: green;"
+        else:
+            message_style = f"color: {color_message};"
+
+        html = f'''
+                    <div style= "text-align: left; padding: 10px; margin: 5px; border: 2px solid gray; border-radius: 10px; ">
+                        <span style="color: {color_prefix};">{prefix}</span><span style="{message_style}">{message}</span>
+
+                    </div>
+                    '''
 
         cursor.insertHtml(html)
         cursor.insertHtml('<br>')  # Add a line break between messages
         # self.task_LineEdit.clear()
 
-        self.chatgpt_ans.setTextCursor(cursor)
+        self.chatgpt_ans_textBrowser.setTextCursor(cursor)
+
+    def open_link(self, url):
+        if url.scheme() == 'datasource-doc':
+            datasource_id = url.path()  # Get the tool ID from the URL path
+            self.show_datasource_documentation(datasource_id)
+
+    def show_datasource_documentation(self, datasource_id):
+        """Open tool documentation file with the default system editor"""
+        try:
+            # Find the documentation file for the tool
+            current_script_dir = os.path.dirname(os.path.abspath(__file__))
+            docs_dir = os.path.join(current_script_dir, 'LLM_Find', 'Handbooks')
+
+            # Convert tool_id to filename format (replace : with _)
+            # datasource_filename = datasource_id.replace(':', '_')
+            datasource_filename = datasource_id
+
+            # Look for the tool documentation file in all subdirectories
+            doc_file = None
+            for root, dirs, files in os.walk(docs_dir):
+                for file in files:
+                    if file.endswith('.toml'):
+                        # Check if the tool filename is in the file name
+                        if datasource_filename in file or datasource_id in file:
+                            doc_file = os.path.join(root, file)
+                            break
+                        # Also check for exact matches like "native_buffer.toml"
+                        file_without_ext = os.path.splitext(file)[0]
+                        if file_without_ext == datasource_filename:
+                            doc_file = os.path.join(root, file)
+                            break
+                if doc_file:
+                    break
+
+            if doc_file:
+                # Open the file with the default system editor
+                QDesktopServices.openUrl(QUrl.fromLocalFile(doc_file))
+            else:
+                QMessageBox.information(self, "Documentation Not Found",
+                                        f"No documentation found for tool: {datasource_id}\nSearched for: {datasource_filename}")
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Failed to open tool documentation: {str(e)}")
+
+    # @pyqtSlot(str)
+    # def append_message(self, message):
+    #     message = self.task_LineEdit.toPlainText()
+    #     if message.strip():  # Check if message is not empty
+    #         # self.conversation_history.append(f"User: {message}")
+    #         self.update_chatgpt_ans(f"User: {message}", is_user=True)
+    #         self.update_chatgpt_ans(f"AI:Loading ...", is_user=False)
+    #         # Clear the input field after sending the message
+    #         # self.task_LineEdit.clear()
 
     @pyqtSlot(str)
     def append_message(self, message):
-        message = self.task_LineEdit.toPlainText()
+        # message = self.task_LineEdit.toPlainText()
         if message.strip():  # Check if message is not empty
-            # self.conversation_history.append(f"User: {message}")
-            self.update_chatgpt_ans(f"User: {message}", is_user=True)
-            self.update_chatgpt_ans(f"AI:Loading ...", is_user=False)
-            # Clear the input field after sending the message
-            # self.task_LineEdit.clear()
+            self.update_chatgpt_ans_textBrowser(f"{message}", is_user=True)
+            self.update_output(
+                "\n*************************************************************************")  # Separator in the output window
+            self.update_output(f"{message}")
+
+    def strip_ansi_sequences(self, text):
+        ansi_escape = re.compile(r'\x1b\[[0-9;]*[A-Za-z]')
+        return ansi_escape.sub('', text)
+
+    # def update_output(self, line):
+    #     # self.output_text_edit.append(line)
+    #
+    #     self.output_text_edit.insertPlainText(line)
+    #     self.output_text_edit.insertPlainText('\n')  # Add a newline after each line
+    #     self.output_text_edit.moveCursor(QTextCursor.End)  # Ensure cursor is at the end
+    #     self.output_text_edit.repaint()
 
     def update_output(self, line):
-        # self.output_text_edit.append(line)
+        clean_line = self.strip_ansi_sequences(line)
 
-        self.output_text_edit.insertPlainText(line)
-        self.output_text_edit.insertPlainText('\n')  # Add a newline after each line
-        self.output_text_edit.moveCursor(QTextCursor.End)  # Ensure cursor is at the end
+        # Code for handling the output text edit
+        self.output_text_edit.insertPlainText(clean_line)
+        if not clean_line.endswith('\n'):
+            self.output_text_edit.insertPlainText('\n')
+        self.output_text_edit.moveCursor(QTextCursor.End)
         self.output_text_edit.repaint()
+        self.output_text_edit.verticalScrollBar().setValue(self.output_text_edit.verticalScrollBar().maximum())
+
+        # Code for handling the chatgpt_ans_textBrowser
+        if "AI IS SELECTING DATA SOURCE ..." in line:
+            current_model = self.modelNameComboBox.currentText()
+            if current_model == 'gpt-5':
+                self.update_chatgpt_ans_textBrowser(
+                    "Selecting data source (may take some time while GPT-5 is reasoning)...",
+                    is_user=False)
+            else:
+                self.update_chatgpt_ans_textBrowser("Selecting data source...", is_user=False)
+
+        # Capture REQUEST_ID from output
+
+        if "RequestID:" in line:
+            # request_id = line.split("REQUEST_ID:")[1].strip()
+            request_id = line.split("RequestID:")[1].strip()
+            self.current_request_id = request_id
+            # Don't display this line to the user
+            return
+
+        elif "data_source_ID:" in line:
+            data_source_IDs = line.split("data_source_ID:")[1].strip()
+            if data_source_IDs:
+                # self.update_chatgpt_ans_textBrowser_textBrowser("Selecting tools...", is_user=False)
+                # Format tool IDs as clickable links
+                linked_data_sources = self.format_datasource_ids_as_links(data_source_IDs)
+                self.update_chatgpt_ans_textBrowser(f"Selected data_source(s): {linked_data_sources}")
+
+        elif "AI IS GENERATING THE DATA FETCHING PROGRAM ..." in line:
+            current_model = self.modelNameComboBox.currentText()
+            if current_model == 'gpt-5':
+                self.update_chatgpt_ans_textBrowser(
+                    "Generating code for data retriever (may take some time while GPT-5 is reasoning)...", is_user=False)
+            else:
+                self.update_chatgpt_ans_textBrowser("Generating code for data retriever...", is_user=False)
+
+        elif "CODE GENERATED SUCCESSFULLY" in line:
+            self.update_chatgpt_ans_textBrowser("Code generation completed (see Generated Code tab).",
+                                                is_user=False)
+
+            self.update_chatgpt_ans_textBrowser("Executing generated code...",
+                                                is_user=False)
+
+
+
+        # elif "CODE_READY_URLENCODED:" in line:
+        #     try:
+        #         import urllib.parse
+        #         encoded = line.split("CODE_READY_URLENCODED:", 1)[1].strip()
+        #         decoded_code = urllib.parse.unquote(encoded)
+        #         # cache + show
+        #         self.latest_generated_code = decoded_code
+        #         self.CodeEditor.setPlainText(self.latest_generated_code)
+        #         self.CodeEditor.moveCursor(QTextCursor.Start)
+        #         # Also give a friendly nudge in the chat panel (optional)
+        #         self.update_chatgpt_ans_textBrowser("Code generation completed (see Generated Code tab).",
+        #                                             is_user=False)
+        #     except Exception as e:
+        #         self.update_chatgpt_ans_textBrowser(f"Failed to decode generated code: {e}", is_user=False)
+        #     return  # Don't add code pattern to output_text_edit
+
+        elif "Successfully executed code:" in line:
+            self.update_chatgpt_ans_textBrowser("Code execution completed", is_user=False)
+
+
+
+    def format_datasource_ids_as_links(self, datasource_ids_text):
+        """Convert tool IDs to clickable HTML links"""
+        import re
+        import ast
+
+        try:
+            # Parse the tool IDs list (remove quotes and brackets)
+            datasource_ids_text = datasource_ids_text.strip()
+            if datasource_ids_text.startswith('[') and datasource_ids_text.endswith(']'):
+                datasource_ids = ast.literal_eval(datasource_ids_text)
+            else:
+                # Handle cases where it's not a proper list format
+                datasource_ids = [datasource_ids_text.strip("[]'\"")]
+
+            # Create HTML links for each tool ID
+            links = []
+            for datasource_id in datasource_ids:
+                datasource_id = datasource_id.strip("'\"")  # Remove quotes
+                link = f'<a href="datasource-doc:{datasource_id}" style="color: blue; text-decoration: underline;">{datasource_id}</a>'
+                links.append(link)
+
+            return ', '.join(links)
+
+        except Exception as e:
+            # If parsing fails, return the original text
+            return datasource_ids_text
+
+
+
+
+
+
 
     def thread_finished(self, success):
         if success:
             # self.output_text_edit.append("The script ran successfully.")
             self.output_text_edit.insertPlainText("The script ran successfully.")
-            self.update_chatgpt_ans(f"AI: Done")
+            self.update_chatgpt_ans_textBrowser(f"Done")
         else:
             # self.output_text_edit.append("The script finished with errors.")
             self.output_text_edit.insertPlainText("The script finished with errors.")
-            self.update_chatgpt_ans(f"AI: The script finished with errors.")
+            self.update_chatgpt_ans_textBrowser(f"AI: The script finished with errors.")
 
         # Re-enable the send_button    #Not working
         self.run_button.setEnabled(True)
@@ -982,7 +1372,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def clear_textboxes(self):
         self.output_text_edit.clear()
         self.task_LineEdit.clear()
-        self.chatgpt_ans.clear()
+        self.chatgpt_ans_textBrowser.clear()
         # self.output_text_edit_2.clear()
         # Clear conversation history to ensure no previous responses are carried forward
         self.conversation_history = []
@@ -999,7 +1389,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def get_openai_key(self):
         api_key = self.OpenAI_key_LineEdit.text()
         if not api_key:
-            raise ValueError("API key is empty. Please enter a valid OpenAI API key.")
+            raise ValueError("API key is empty. Enter your OpenAI API key or GIBD API key")
         return api_key
 
     def add_documentation_file(self):
@@ -1034,6 +1424,194 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             QMessageBox.critical(None, 'Error', f'Failed to upload documentation files: {str(e)}')
 
 
+    # ******************************************************************************************************
+    # NEW FUNCTIONS
+    # ********************************************************************************************************
+    def user_feedback(self):
+        """Handle user feedback from thumbs up, thumbs down, and feedback message buttons."""
+        # Detect which button was clicked
+        sender = self.sender()
+
+        # Initialize feedback variables
+        # feedback = ""
+        # feedback_message = ""
+
+        # Determine feedback based on which button was clicked
+        if sender == self.thumbs_up_button:
+            feedback = "good"
+            # feedback_message = ""
+            self.update_chatgpt_ans_textBrowser("Thank you for your positive feedback!", is_user=False)
+        elif sender == self.thumbs_down_button:
+            feedback = "bad"
+            # feedback_message = ""
+            self.update_chatgpt_ans_textBrowser("Thank you for your feedback. We'll work to improve!", is_user=False)
+        elif sender == self.feedback_message_button:
+            # feedback = ""
+            feedback_message = "Feedback is parsed"
+            self.update_chatgpt_ans_textBrowser("Your feedback message has been recorded. Thank you!", is_user=False)
+        else:
+            # Unknown sender
+            self.update_chatgpt_ans_textBrowser("Feedback received.", is_user=False)
+            return
+
+        # Get API key and current task info (same pattern as run_script)
+        try:
+            api_key = self.get_openai_key()
+            user_query = self.current_task if hasattr(self,
+                                                      'current_task') and self.current_task else "No task available"
+            request_id = self.current_request_id if hasattr(self,
+                                                            'current_request_id') and self.current_request_id else None
+
+            # Send feedback to server (same HTTP call as helper.send_error but in dockwidget)
+            url = f"https://www.gibd.online/api/feedback/{api_key}"
+            data = {
+                "service_name": "Spatial Data Retrieval Agent",
+                "question_id": request_id,
+                "question": user_query,
+                "feedback": feedback,
+                "feedback_message": feedback_message,
+                # "error": "",
+                # "error_msg": "",
+                # "error_traceback": "",
+                # "generated_code": ""
+            }
+
+            response = requests.post(
+                url,
+                headers={"Content-Type": "application/json"},
+                json=data
+            )
+
+            if response.status_code == 201:
+                print("Feedback sent successfully!")
+            else:
+                print(f"Error sending feedback: {response.status_code}: {response.text}")
+
+        except Exception as e:
+            print(f"Error sending feedback: {e}")
+    def send_request_feedback(self):
+        """Handle user feedback specifically for requests sent via run_button."""
+        # Detect which button was clicked
+        sender = self.sender()
+        # self.current_feedback=""
+        # self.current_feedback_message=""
+
+        # Check if using gibd-services API key
+        api_key = self.get_openai_key()
+        if 'gibd-services' not in (api_key or ''):
+            self.update_chatgpt_ans_textBrowser(
+                "Feedback functionality is only available with GIBD API key. Obtain a GIBD API Key <a href='https://www.gibd.online/'>here</a>",
+                is_user=False)
+            return
+
+        # Check if there's a valid request to provide feedback on
+        # Only check for current_task since it's set immediately when run_button is pressed
+        if not hasattr(self, 'current_task') or not self.current_task:
+            self.update_chatgpt_ans_textBrowser("No request available to provide feedback on. Please run a task first.",
+                                                is_user=False)
+            return
+
+        # Determine feedback based on which button was clicked
+        if sender == self.thumbs_up_button:
+            # User clicked thumbs up
+            self.current_feedback = "good"
+            # self.current_feedback_message = ""
+            self.update_chatgpt_ans_textBrowser("Thank you for your positive feedback on this request!", is_user=False)
+            self.send_feedback_to_api()
+
+        elif sender == self.thumbs_down_button:
+            # User clicked thumbs down
+            self.current_feedback = "bad"
+            # self.current_feedback_message = ""
+            self.update_chatgpt_ans_textBrowser("Thank you for your feedback. We'll work to improve the results!",
+                                                is_user=False)
+            self.send_feedback_to_api()
+
+        elif sender == self.feedback_message_button:
+            # Show custom dialog to collect user feedback with multi-line text area
+            dialog = QDialog(self)
+            dialog.setWindowTitle('Provide Feedback')
+            dialog.resize(500, 350)
+
+            layout = QVBoxLayout(dialog)
+
+            # Add instruction label
+            label = QLabel('Please enter your feedback message:')
+            layout.addWidget(label)
+
+            # Add text edit with word wrap
+            text_edit = QTextEdit()
+            text_edit.setLineWrapMode(QTextEdit.WidgetWidth)  # Enable word wrap at widget width
+            text_edit.setAcceptRichText(False)  # Plain text only
+            layout.addWidget(text_edit)
+
+            # Add OK and Cancel buttons
+            button_layout = QHBoxLayout()
+            ok_button = QPushButton('OK')
+            cancel_button = QPushButton('Cancel')
+            button_layout.addStretch()
+            button_layout.addWidget(ok_button)
+            button_layout.addWidget(cancel_button)
+            layout.addLayout(button_layout)
+
+            # Connect buttons
+            ok_button.clicked.connect(dialog.accept)
+            cancel_button.clicked.connect(dialog.reject)
+
+            # Show dialog and get result
+            ok = dialog.exec_() == QDialog.Accepted
+            feedback_message = text_edit.toPlainText()
+
+            # If user cancels or provides no input, return without sending feedback
+            if not ok or not feedback_message.strip():
+                self.update_chatgpt_ans_textBrowser("Feedback cancelled.", is_user=False)
+                return
+
+            # Store the message while preserving the existing feedback rating (good/bad/none)
+            self.current_feedback_message = feedback_message
+            self.update_chatgpt_ans_textBrowser("Your comment has been recorded. Thank you!", is_user=False)
+            self.send_feedback_to_api()
+        else:
+            # Unknown sender
+            self.update_chatgpt_ans_textBrowser("Feedback received.", is_user=False)
+            return
+
+
+    def send_feedback_to_api(self):
+        """Send the currently stored feedback to the API."""
+        try:
+            api_key = self.get_openai_key()
+            user_query = self.current_task
+            request_id = self.current_request_id
+
+            # Send feedback to server for this specific request
+            url = f"https://www.gibd.online/api/feedback/{api_key}"
+            data = {
+                "service_name": "Spatial Data Retrieval Agent",
+                "question_id": request_id,
+                "question": user_query,
+                "feedback": self.current_feedback,
+                "feedback_message": self.current_feedback_message,
+            }
+
+            response = requests.post(
+                url,
+                headers={"Content-Type": "application/json"},
+                json=data
+            )
+
+            if response.status_code == 201:
+                print(f"Feedback sent successfully for request: {request_id}")
+            else:
+                print(f"Error sending feedback: {response.status_code}: {response.text}")
+
+        except Exception as e:
+            print(f"Error sending feedback: {e}")
+            self.update_chatgpt_ans_textBrowser(f"Failed to send feedback: {e}", is_user=False)
+    # ******************************************************************************************************
+    # NEW FUNCTIONS END
+    # ********************************************************************************************************
+
 class ScriptThread(QThread):
     output_line = pyqtSignal(str)
     chatgpt_update = pyqtSignal(str)
@@ -1042,15 +1620,19 @@ class ScriptThread(QThread):
     generated_code_ready = pyqtSignal(str)
     finished = pyqtSignal(bool)
 
-    def __init__(self, script_path, task, saved_fname, OpenAI_key, model_name):
+    def __init__(self, script_path, task, saved_fname, OpenAI_key, model_name, reasoning_effort_value):
         super().__init__()
         self.script_path = script_path
         self.task = task
         self.saved_fname = saved_fname
         self.OpenAI_key = OpenAI_key
         self.model_name = model_name
+        self.reasoning_effort_value = reasoning_effort_value
+
 
     def run(self):
+        original_stdout = sys.stdout
+        original_stderr = sys.stderr
 
         try:
             # Update the config file with the API keys
@@ -1072,81 +1654,110 @@ class ScriptThread(QThread):
                 'task': self.task,
                 'saved_fname': self.saved_fname,
                 # 'OpenAI_key': self.OpenAI_key,  # Add OpenAI_key to local variables
-                'model_name': self.model_name
+                'model_name': self.model_name,
+                'reasoning_effort_value': self.reasoning_effort_value
             }
             # # Add each API key to local_vars
             # for key_name, api_key in self.api_keys.items():
             #     local_vars[key_name] = api_key
 
-            # Redirect stdout and stderr to capture the output
-            original_stdout = sys.stdout
-            original_stderr = sys.stderr
-            sys_stdout_capture = StringIO()
-            sys_stderr_capture = StringIO()
-            sys.stdout = sys_stdout_capture
-            sys.stderr = sys_stderr_capture
+            ## Redirect stdout and stderr to capture the output
+            # original_stdout = sys.stdout
+            # original_stderr = sys.stderr
+            # sys_stdout_capture = StringIO()
+            # sys_stderr_capture = StringIO()
+            # sys.stdout = sys_stdout_capture
+            # sys.stderr = sys_stderr_capture
+            # Redirect stdout and stderr
+            stream_redirector = StreamRedirector()
+            stream_redirector.output_written.connect(self.output_line.emit)
+            # stream_redirector.output_written.connect(capture_output_code)
 
-            def emit_output():
-                sys_stdout_capture.flush()
-                sys_stderr_capture.flush()
-                captured_stdout = sys_stdout_capture.getvalue()
-                captured_stderr = sys_stderr_capture.getvalue()
-                sys_stdout_capture.truncate(0)
-                sys_stderr_capture.truncate(0)
-                sys_stdout_capture.seek(0)
-                sys_stderr_capture.seek(0)
+            sys.stdout = stream_redirector
+            sys.stderr = stream_redirector
 
-                if captured_stdout:
-                    for line in captured_stdout.splitlines(keepends=True):
-                        if line.endswith('\n'):
-                            self.output_line.emit(line.rstrip())
-                        else:
-                            # handle the case where the line doesn't end with a newline
-                            self.output_line.emit(line)
 
-                        if "selected_data_source:" in line:
-                            tool_IDs = line.split("selected_data_source:")[1].strip()
-                            if tool_IDs:
-                                # self.tool_filename_ready.emit(tool_filename)  # Emit the tool filename
-                                # self.chatgpt_update.emit(f"AI: Selected tool(s): {tool_filename}")
-                                self.chatgpt_update.emit(f"AI: Selected data source: {tool_IDs}")
-
-                if captured_stderr:
-                    for line in captured_stderr.splitlines(keepends=True):
-                        if line.endswith('\n'):
-                            self.output_line.emit(f"Error: {line.rstrip()}")
-                        else:
-                            # handle the case where the line doesn't end with a newline
-                            self.output_line.emit(f"Error: {line}")
+            # def emit_output(self, sys_stdout_capture, sys_stderr_capture):
+            #     sys_stdout_capture.flush()
+            #     sys_stderr_capture.flush()
+            #     captured_stdout = sys_stdout_capture.getvalue()
+            #     captured_stderr = sys_stderr_capture.getvalue()
+            #     sys_stdout_capture.truncate(0)
+            #     sys_stderr_capture.truncate(0)
+            #     sys_stdout_capture.seek(0)
+            #     sys_stderr_capture.seek(0)
+            #
+            #     if captured_stdout:
+            #         for line in captured_stdout.splitlines(keepends=True):
+            #             if line.endswith('\n'):
+            #                 self.output_line.emit(line.rstrip())
+            #             else:
+            #                 # handle the case where the line doesn't end with a newline
+            #                 self.output_line.emit(line)
+            #
+            #             # if "data_source_ID:" in line:
+            #             #     datasource_ids = line.split("data_source_ID:")[1].strip()
+            #             #     if datasource_ids:
+            #             #         # self.tool_filename_ready.emit(tool_filename)  # Emit the tool filename
+            #             #         # self.chatgpt_update.emit(f"AI: Selected tool(s): {tool_filename}")
+            #             #         self.chatgpt_update.emit(f"AI: Selected data source: {datasource_ids}")
+            #
+            #             if "data_source_ID:" in line:
+            #                 datasource_ids = line.split("data_source_ID:")[1].strip()
+            #                 if datasource_ids:
+            #                     # Format tool IDs as clickable links (access through parent)
+            #                     try:
+            #                         # Get the main widget instance to access the formatting function
+            #                         main_widget = self.parent()
+            #                         while main_widget and not hasattr(main_widget, 'format_datasource_ids_as_links'):
+            #                             main_widget = main_widget.parent()
+            #
+            #                         if main_widget and hasattr(main_widget, 'format_datasource_ids_as_links'):
+            #                             linked_tools = main_widget.format_datasource_ids_as_links(datasource_ids)
+            #                             self.chatgpt_update.emit(f"Selected data source(s): {linked_tools}")
+            #                         else:
+            #                             self.chatgpt_update.emit(f"Selected data source(s): {datasource_ids}")
+            #                     except:
+            #                         self.chatgpt_update.emit(f"Selected data source(s): {datasource_ids}")
+            #
+            #
+            #
+            #     if captured_stderr:
+            #         for line in captured_stderr.splitlines(keepends=True):
+            #             if line.endswith('\n'):
+            #                 self.output_line.emit(f"Error: {line.rstrip()}")
+            #             else:
+            #                 # handle the case where the line doesn't end with a newline
+            #                 self.output_line.emit(f"Error: {line}")
 
             # Execute the script using exec
             exec_globals = globals()
             exec_locals = local_vars
 
-            # This will allow for real-time capturing and emitting of output
-            import threading
-            stop_thread = threading.Event()
+            # # This will allow for real-time capturing and emitting of output
+            # import threading
+            # stop_thread = threading.Event()
+            #
+            # def monitor_output():
+            #     while not stop_thread.is_set():
+            #         emit_output()
+            #         time.sleep(0.1)  # Adjust sleep time as needed
+            #
+            # monitor_thread = threading.Thread(target=monitor_output)
+            # monitor_thread.start()
 
-            def monitor_output():
-                while not stop_thread.is_set():
-                    emit_output()
-                    time.sleep(0.1)  # Adjust sleep time as needed
-
-            monitor_thread = threading.Thread(target=monitor_output)
-            monitor_thread.start()
-
-            try:
-                exec(script_content, exec_globals, exec_locals)
-            finally:
-                stop_thread.set()
-                monitor_thread.join()
-
-            # Emit any remaining output
-            emit_output()
-
-            # Restore original stdout and stderr
-            sys.stdout = original_stdout
-            sys.stderr = original_stderr
+            # try:
+            exec(script_content, exec_globals, exec_locals)
+            # finally:
+            #     stop_thread.set()
+            #     monitor_thread.join()
+            #
+            # # Emit any remaining output
+            # emit_output()
+            #
+            # # Restore original stdout and stderr
+            # sys.stdout = original_stdout
+            # sys.stderr = original_stderr
 
             if 'generated_code' in exec_locals:
                 self.generated_code_ready.emit(exec_locals['generated_code'])
@@ -1161,8 +1772,13 @@ class ScriptThread(QThread):
             # Print traceback error to the text_edit
             traceback_str = traceback.format_exc()
             self.output_line.emit(f"Error: {e}\n{traceback_str}")  # Emit any exceptions to the UI
-            self.chatgpt_update.emit(f"Error: {e}\n{traceback_str}")  # Emit any exceptions)
+            # self.chatgpt_update.emit(f"Error: {e}\n{traceback_str}")  # Emit any exceptions)
+            self.chatgpt_update.emit(f"Error: {e}")  # Emit any exceptions)
             self.finished.emit(False)  # Signal failure
+
+        finally:
+            sys.stdout = original_stdout
+            sys.stderr = original_stderr
 
     # def update_config_file(self):
     #     current_script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -1198,6 +1814,50 @@ class ScriptThread(QThread):
 
     def isRunning(self):
         return self._is_running
+
+    # def emit_output(self, sys_stdout_capture, sys_stderr_capture):
+    #     sys_stdout_capture.flush()
+    #     sys_stderr_capture.flush()
+    #     captured_stdout = sys_stdout_capture.getvalue()
+    #     captured_stderr = sys_stderr_capture.getvalue()
+    #     sys_stdout_capture.truncate(0)
+    #     sys_stderr_capture.truncate(0)
+    #     sys_stdout_capture.seek(0)
+    #     sys_stderr_capture.seek(0)
+    #
+    #     if captured_stdout:
+    #         for line in captured_stdout.splitlines(keepends=True):
+    #             if line.endswith('\n'):
+    #                 self.output_line.emit(line.rstrip())
+    #             else:
+    #                 # handle the case where the line doesn't end with a newline
+    #                 self.output_line.emit(line)
+    #
+    #             # if "data_source_ID:" in line:
+    #             #     datasource_ids = line.split("data_source_ID:")[1].strip()
+    #             #     if datasource_ids:
+    #             #         # self.tool_filename_ready.emit(tool_filename)  # Emit the tool filename
+    #             #         # self.chatgpt_update.emit(f"AI: Selected tool(s): {tool_filename}")
+    #             #         self.chatgpt_update.emit(f"AI: Selected data source: {datasource_ids}")
+    #
+    #             if "data_source_ID:" in line:
+    #                 datasource_ids = line.split("data_source_ID:")[1].strip()
+    #                 if datasource_ids:
+    #                     # Format tool IDs as clickable links (access through parent)
+    #                     try:
+    #                         # Get the main widget instance to access the formatting function
+    #                         main_widget = self.parent()
+    #                         while main_widget and not hasattr(main_widget, 'format_datasource_ids_as_links'):
+    #                             main_widget = main_widget.parent()
+    #
+    #                         if main_widget and hasattr(main_widget, 'format_datasource_ids_as_links'):
+    #                             linked_tools = main_widget.format_datasource_ids_as_links(datasource_ids)
+    #                             self.chatgpt_update.emit(f"Selected data source(s): {linked_tools}")
+    #                         else:
+    #                             self.chatgpt_update.emit(f"Selected data source(s): {datasource_ids}")
+    #                     except:
+    #                         self.chatgpt_update.emit(f"Selected data source(s): {datasource_ids}")
+
 
 
 class GPTRequestThread(QThread):

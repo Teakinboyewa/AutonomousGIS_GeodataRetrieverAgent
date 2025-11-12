@@ -1,5 +1,5 @@
 import LLM_Find_Constants as constants
-import LLM_Find_helper
+import LLM_FIND_helper
 import os
 import requests
 import networkx as nx

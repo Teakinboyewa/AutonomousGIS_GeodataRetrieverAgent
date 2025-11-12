@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>806</width>
-    <height>922</height>
+    <width>778</width>
+    <height>842</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -72,7 +72,7 @@
            <widget class="QPlainTextEdit" name="output_text_edit">
             <property name="minimumSize">
              <size>
-              <width>10</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
@@ -87,17 +87,20 @@
               <pointsize>10</pointsize>
              </font>
             </property>
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
             <property name="styleSheet">
              <string notr="true">border: 2px solid #55aaff; /* light blue border */</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="chatgpt_ans">
+           <widget class="QTextBrowser" name="chatgpt_ans_textBrowser">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>16777215</height>
+              <height>250</height>
              </size>
             </property>
             <property name="font">
@@ -113,6 +116,9 @@ border-radius: 10px; /* rounded corners */
 color: #000000; /* black text */
 padding: 5px; /* padding inside the text edit */</string>
             </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -120,12 +126,15 @@ padding: 5px; /* padding inside the text edit */</string>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>120</height>
+              <height>140</height>
              </size>
             </property>
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <family>Nirmala UI</family>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
@@ -136,7 +145,7 @@ color: #000000; /* black text */
 padding: 5px; /* padding inside the text edit */</string>
             </property>
             <property name="placeholderText">
-             <string>Write your data request here.</string>
+             <string>Write your data request here...</string>
             </property>
            </widget>
           </item>
@@ -241,6 +250,94 @@ padding: 5px; /* padding inside the text edit */
             </property>
             <property name="text">
              <string>Clear</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="thumbs_up_button">
+            <property name="minimumSize">
+             <size>
+              <width>15</width>
+              <height>15</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>👍</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>10</width>
+              <height>10</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="thumbs_down_button">
+            <property name="minimumSize">
+             <size>
+              <width>15</width>
+              <height>15</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>👎</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>10</width>
+              <height>10</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="feedback_message_button">
+            <property name="minimumSize">
+             <size>
+              <width>15</width>
+              <height>15</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Docs/Message icon.png</normaloff>Docs/Message icon.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>25</width>
+              <height>20</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -776,32 +873,74 @@ p, li { white-space: pre-wrap; }
        <attribute name="title">
         <string>Settings</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>API key</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QgsPasswordLineEdit" name="OpenAI_key_LineEdit">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QLabel" name="label_8">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic; color:#6f6f53;&quot;&gt;Note: Your own OpenAI API keys input here will only be stored locally on the user's computer ('plugin_dir/LLM-Find/openai_key_config.ini'). &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic; color:#6f6f53;&quot;&gt;Obtain an API Key from &lt;/span&gt;&lt;a href=&quot;https://www.gibd.online/login&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GIBD Service&lt;/span&gt;&lt;/a&gt; . &lt;span style=&quot; font-weight:600; font-style:italic; color:#6f6f53;&quot;&gt;Note:&lt;/span&gt;&lt;span style=&quot; font-style:italic; color:#6f6f53;&quot;&gt; When using GIBD API key, queries and errors are collected to improve the Geodata Retriever agent performance. &lt;/span&gt;&lt;a href=&quot;https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/GIBD%20Service.md&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;More details here.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="2">
+         <widget class="Line" name="line">
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
+          <property name="midLineWidth">
+           <number>1</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QLabel" name="label_4">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>OpenAI API key</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsPasswordLineEdit" name="OpenAI_key_LineEdit">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>25</height>
-             </size>
-            </property>
-           </widget>
-          </item>
           <item>
            <widget class="QLabel" name="label_2">
             <property name="sizePolicy">
@@ -861,40 +1000,133 @@ p, li { white-space: pre-wrap; }
               <string>gpt-4o-mini</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>gpt-5</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>gpt-oss:120b</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>gpt-oss:20b</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>llama4:latest</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>llama3.1:70b</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="ChatMode_checkbox">
+           <widget class="QLabel" name="reasoningEffortLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="inputMethodHints">
+             <set>Qt::ImhNone</set>
+            </property>
             <property name="text">
-             <string>Chat Mode</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reasoning Effort (GPT-5 only)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QComboBox" name="reasoningEffortComboBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <item>
+             <property name="text">
+              <string>minimal</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>low</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>medium</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>high</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </item>
-        <item>
-         <widget class="QLabel" name="label_8">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+        <item row="5" column="0" colspan="2">
+         <widget class="QLabel" name="label_5">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt; font-style:italic; color:#6f6f53;&quot;&gt;Note: API keys input here will only be stored locally on the user's computer ('plugin_dir/LLM-Find/openai_key_config.ini'). &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic; color:#6f6f53;&quot;&gt;GPT-5 offers deeper reasoning for complex tasks but need more waiting time. Use GPT-4o for faster responses on simpler tasks. &lt;/span&gt;&lt;a href=&quot;https://platform.openai.com/docs/models&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Learn more about OpenAI models.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="wordWrap">
            <bool>true</bool>
           </property>
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
-        <item>
+        <item row="6" column="0">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -955,11 +1187,11 @@ p, li { white-space: pre-wrap; }
 &lt;li style=&quot; font-size:12pt;&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent/blob/master/User_manual.md&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;User manual&lt;/span&gt;&lt;/a&gt; &lt;/li&gt;&lt;/ul&gt;
 &lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-size:12pt;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Learn how the agent works, check out our &lt;a href=&quot;https://doi.org/10.1080/17538947.2025.2458688&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;paper&lt;/span&gt;&lt;/a&gt;. &lt;/li&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;li style=&quot; font-size:12pt;&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Contribute to the plugin/agent development,visit project &lt;a href=&quot;https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent.git&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt; page. &lt;/li&gt;
+&lt;li style=&quot; font-size:12pt;&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Contribute to the Geodata Retriever Agent development, visit project &lt;a href=&quot;https://github.com/Teakinboyewa/AutonomousGIS_GeodataRetrieverAgent.git&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt; page. &lt;/li&gt;
 &lt;li style=&quot; font-size:12pt;&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To Learn more about the LLM-Find framework (how the agent works along with over 70 data request examples), visit the &lt;a href=&quot;https://github.com/gladcolor/LLM-Find&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LLM-Find GitHub page&lt;/span&gt;&lt;/a&gt;.&lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;  &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Contacts: &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temitope Akinboyewa (&lt;/span&gt;&lt;a href=&quot;mailto:takinboyewa@psu.edu&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;takinboyewa@psu.edu&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;), Zhenlong Li (&lt;/span&gt;&lt;a href=&quot;mailto:zhenlong@psu.edu&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;zhenlong@psu.edu&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;), Huan Ning (&lt;/span&gt;&lt;a href=&quot;mailto:hning@psu.edu&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;hning@psu.edu&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;), M. Naser Lessani (&lt;/span&gt;&lt;a href=&quot;mailto:mlessani@psu.edu&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;mlessani@psu.edu&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temitope Akinboyewa (&lt;/span&gt;&lt;a href=&quot;mailto:takinboyewa@psu.edu&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;takinboyewa@psu.edu&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;), Zhenlong Li (&lt;/span&gt;&lt;a href=&quot;mailto:zhenlong@psu.edu&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;zhenlong@psu.edu&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;), Huan Ning (&lt;/span&gt;&lt;a href=&quot;mailto:hning@psu.edu&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;hning@psu.edu&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;), M. Naser Lessani (&lt;/span&gt;&lt;a href=&quot;mailto:mlessani@psu.edu&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;mlessani@psu.edu&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;), Ali Khosravi Kazazi (&lt;/span&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;abk6234@psu.edu&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://giscience.psu.edu/&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;Geoinformation and Big Data Research Laboratory (GIBD), &lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Department of Geography, The Pennsylvania State University &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9.75pt;&quot;&gt;	  &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

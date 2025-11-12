@@ -6,3 +6,4 @@ rasterio:rasterio
 osmnx:osmnx
 fiona:fiona
 geopandas:geopandas
+json:json

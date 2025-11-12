@@ -30,9 +30,19 @@ class CaseSensitiveConfigParser(configparser.ConfigParser):
 def collect_a_handbook(source_ID, source_dir=Handbooks_dir, keys_dir=Keys_dir):
 
     handbook_file = os.path.join(source_dir, f'{source_ID}.toml')
-    with open(handbook_file, "rb") as f:
-        handbook = tomllib.load(f)
-    handbook_total_str = handbook['handbook']
+
+    # Check if handbook file exists
+    if not os.path.exists(handbook_file):
+        print(f"Warning: Handbook file not found: {handbook_file}")
+        return None
+
+    try:
+        with open(handbook_file, "rb") as f:
+            handbook = tomllib.load(f)
+        handbook_total_str = handbook['handbook']
+    except Exception as e:
+        print(f"Error loading handbook for {source_ID}: {e}")
+        return None
 
     # load keys
     key_file = os.path.join(keys_dir, f"{source_ID}.keys")
