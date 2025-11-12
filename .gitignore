@@ -1,9 +1,26 @@
-# Exclude all .keys and .ini files
+# Exclude all .keys files (API keys)
 *.keys
-*.ini
 
-# Exclude versioned AGGRA_dockwidget.py files
+# Exclude OpenAI config file (contains sensitive API keys)
+LLM_Find/openai_key_config.ini
+
+# Exclude API examples notebook
+API\ examples.ipynb
+Testing\ UMS/API\ examples.ipynb
+
+# Exclude versioned files (v1, v2, v3, etc.)
+*_v1.py
+*_v2.py
+*_v3.py
+*_v4.py
+*_v5.py
+*_v[0-9]*.py
 AGGRA_dockwidget_v*.py
+LLM_Find/LLM_FIND_v*.py
+LLM_Find/LLM_Find_*_v*.py
 
+# Exclude pycache directories
 **/__pycache__/
+*.pyc
+*.pyo
 
