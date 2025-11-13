@@ -495,6 +495,13 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                                 password_edit.setEchoMode(QLineEdit.Normal)  # Show text normally, not masked
                                 password_edit.setText("Data source do not require API Key")
                                 password_edit.setStyleSheet("QLineEdit { color: gray; font-style: italic; }")
+                            elif key_value == "":
+                                # Empty key value means API key is required but not yet filled
+                                password_edit.setReadOnly(False)
+                                password_edit.setEchoMode(QLineEdit.Password)  # Mask the API key
+                                password_edit.setStyleSheet("")  # Reset style
+                                password_edit.setPlaceholderText("Input API key for this data source")
+                                password_edit.clear()  # Leave empty for user to fill
                             else:
                                 # Make editable and show the API key
                                 password_edit.setReadOnly(False)
