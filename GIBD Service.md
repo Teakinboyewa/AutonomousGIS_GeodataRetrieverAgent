@@ -12,14 +12,5 @@ When using a **GIBD API key**, certain information is collected to improve perfo
 - Final code generated  
 - Any errors encountered during code execution  
 
-**Important:** GIBD-Services does **not** collect or access your actual data. However, a limited **data overview** is collected, which may include:
-
-- Data type  
-- CRS (Coordinate Reference System)  
-- Column names  
-
-This limited metadata collection helps enhance compatibility and ensure workflow integrity while maintaining **user data privacy**.
-
-> Note: These collection policies apply **only** when using a GIBD API key.  
-> They do **not** apply when using an OpenAI API key.
+**Important:** GIBD-Services does **not** collect or access your actual data. These collection policies apply **only** when using a GIBD API key. They do **not** apply when using an OpenAI API key.
 
