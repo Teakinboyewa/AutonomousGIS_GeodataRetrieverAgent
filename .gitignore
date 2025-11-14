@@ -1,5 +1,5 @@
 # Exclude all .keys files (API keys)
-*.keys
+#*.keys
 
 # Exclude OpenAI config file (contains sensitive API keys)
 LLM_Find/openai_key_config.ini
