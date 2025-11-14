@@ -501,6 +501,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                                 password_edit.setEchoMode(QLineEdit.Password)  # Mask the API key
                                 password_edit.setStyleSheet("")  # Reset style
                                 password_edit.setPlaceholderText("Input API key for this data source")
+                                # password_edit.setPlaceholderText("Input API key for this data source")
                                 password_edit.clear()  # Leave empty for user to fill
                             else:
                                 # Make editable and show the API key
