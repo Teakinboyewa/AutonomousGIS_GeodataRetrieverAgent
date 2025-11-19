@@ -634,22 +634,48 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     def on_model_changed(self, model_name):
         """Handle model selection change"""
-        self.toggle_reasoning_effort_visibility(model_name == 'gpt-5')
+        self.toggle_reasoning_effort_visibility(model_name in ['gpt-5', 'gpt-5.1'])
+        self.update_reasoning_effort_options(model_name)
         self.toggle_openai_key_field(model_name)
 
     def toggle_reasoning_effort_visibility(self, show=None):
         """Show or hide reasoning effort controls based on model selection"""
         if show is None:
             # Check current model selection
-            show = self.modelNameComboBox.currentText() == 'gpt-5'
+            show = self.modelNameComboBox.currentText() in ['gpt-5', 'gpt-5.1']
 
         # Show/hide the reasoning effort controls
         self.reasoningEffortLabel.setVisible(show)
         self.reasoningEffortComboBox.setVisible(show)
 
-        # Set default reasoning effort if GPT-5 is selected
+        # Set default reasoning effort if GPT-5/GPT-5.1 is selected
         if show and self.reasoningEffortComboBox.currentText() == "":
-            self.reasoningEffortComboBox.setCurrentText("medium")
+            # For GPT-5.1, default to "low"; for GPT-5, default to "medium"
+            current_model = self.modelNameComboBox.currentText()
+            default_value = "high" if current_model == "gpt-5.1" else "minimal"
+            self.reasoningEffortComboBox.setCurrentText(default_value)
+
+    def update_reasoning_effort_options(self, model_name):
+        """Update reasoning effort options based on selected model"""
+        # Block signals to avoid triggering changed events during update
+        self.reasoningEffortComboBox.blockSignals(True)
+
+        # Clear existing items
+        self.reasoningEffortComboBox.clear()
+
+        if model_name == 'gpt-5.1':
+            # GPT-5.1 only supports: none, low, high
+            self.reasoningEffortComboBox.addItems(['none', 'low', 'high'])
+            # Set default to low
+            self.reasoningEffortComboBox.setCurrentText('low')
+        elif model_name == 'gpt-5':
+            # GPT-5 supports: minimal, low, medium, high
+            self.reasoningEffortComboBox.addItems(['minimal', 'low', 'medium', 'high'])
+            # Set default to medium
+            self.reasoningEffortComboBox.setCurrentText('medium')
+
+        # Unblock signals
+        self.reasoningEffortComboBox.blockSignals(False)
 
     def toggle_openai_key_field(self, model_name):
         """Enable or disable OpenAI key field based on model selection"""
@@ -1022,9 +1048,9 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             self.saved_fname_history.append(self.saved_fname)
             self.saved_fname_completer.model().setStringList(self.saved_fname_history)
 
-        # Get reasoning effort if GPT-5 is selected
+        # Get reasoning effort if GPT-5 or GPT-5.1 is selected
         self.reasoning_effort_value = 'medium'  # default
-        if self.model_name == 'gpt-5':
+        if self.model_name in ['gpt-5', 'gpt-5.1']:
             self.reasoning_effort_value = self.reasoningEffortComboBox.currentText()
 
         self.thread = ScriptThread(script_path, self.task, self.saved_fname, self.api_keys, self.model_name, self.reasoning_effort_value)

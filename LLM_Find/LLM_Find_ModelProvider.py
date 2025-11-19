@@ -196,7 +196,7 @@ class OllamaProvider(ModelProvider):
 # Removed HuggingFace provider - not needed for gpt-oss-20b
 
 class GPT5Provider(ModelProvider):
-    """Specialized provider for GPT-5 with different API structure"""
+    """Specialized provider for GPT-5 and GPT-5.1 with different API structure"""
 
     def create_client(self, config: Dict[str, Any]):
         from openai import OpenAI
@@ -213,6 +213,8 @@ class GPT5Provider(ModelProvider):
 
             # Get reasoning effort from kwargs, default to medium
             effort_level = kwargs.get('reasoning_effort', 'medium')
+
+
             reasoning = {"effort": effort_level}
 
             return client.responses.create(
@@ -275,6 +277,7 @@ class ModelProviderFactory:
         'gpt-4o': 'openai',
         'gpt-4o-mini': 'openai',
         'gpt-5': 'gpt5',
+        'gpt-5.1': 'gpt5',
         'o1': 'openai',
         'o1-mini': 'openai',
         'o3-mini': 'openai',

@@ -183,11 +183,11 @@ handbook_str = handbook.collect_a_handbook(source_ID=data_source_ID)  # NEW CHAN
 
 # Check if handbook was successfully loaded
 if handbook_str is None:
-    print(f"Error: Could not load handbook for data source '{data_source_ID}'. Please check if the handbook file exists.")
-    sys.exit(1)
-
-print()
-print(f"Handbook:\n{handbook_str}")
+    print(f"Warning: Could not load handbook for data source '{data_source_ID}'. Continuing without handbook...")
+    handbook_str = ""  # Set to empty string to continue the flow
+else:
+    print()
+    print(f"Handbook:\n{handbook_str}")
 
 
 
