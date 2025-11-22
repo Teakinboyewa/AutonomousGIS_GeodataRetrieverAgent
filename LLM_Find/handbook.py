@@ -1,5 +1,6 @@
 # import toml
-import tomllib
+# import tomllib
+import tomli
 import configparser
 
 from glob import glob
@@ -38,7 +39,7 @@ def collect_a_handbook(source_ID, source_dir=Handbooks_dir, keys_dir=Keys_dir):
 
     try:
         with open(handbook_file, "rb") as f:
-            handbook = tomllib.load(f)
+            handbook = tomli.load(f)
         handbook_total_str = handbook['handbook']
     except Exception as e:
         print(f"Error loading handbook for {source_ID}: {e}")
@@ -72,7 +73,7 @@ def load_keys_v0(source_ID,
                  keys_dir=Keys_dir):  # using .toml format, which requires quotation marks, not friendly for users
     key_file = os.path.join(keys_dir, f"{source_ID}.keys")
     with open(key_file, "rb") as f:
-        keys = tomllib.load(f)
+        keys = tomli.load(f)
     return keys
 
 
@@ -110,7 +111,7 @@ def assemble_handbook_description(handbook_files):
     data_source_dict = {}
     for idx, book in enumerate(handbook_files):
         with open(book, "rb") as f:
-            handbook = tomllib.load(f)
+            handbook = tomli.load(f)
         data_source_ID = os.path.basename(book)[:-5]  # data_source_ID is the name of .toml file
         data_source_name = handbook['data_source_name'].strip()
         description = f"{idx + 1}. {data_source_name}. {handbook['brief_description'].strip()}"
