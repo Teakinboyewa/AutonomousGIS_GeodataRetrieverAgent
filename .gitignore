@@ -27,5 +27,6 @@ LLM_Find/LLM_Find_*_v*.py
 *.pyc
 *.pyo
 
+# Exclude specific files
 install_packages/requirements_v1.txt
 
