@@ -24,8 +24,10 @@
 import base64
 import configparser
 import os
+import platform
 import re
 import shutil
+import subprocess
 import urllib
 
 import requests
@@ -50,7 +52,7 @@ from PyQt5.QtCore import QUrl, QThread, pyqtSignal, pyqtSlot, QSettings, QObject
 from PyQt5.QtGui import QTextCursor, QSyntaxHighlighter, QTextCharFormat, QColor, QDesktopServices
 
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QWidget, QPushButton, QFileDialog, QMenu, QAction, QCompleter, \
-    QVBoxLayout, QLineEdit, QTableWidgetItem, QDialog, QLabel, QMessageBox, QInputDialog, QComboBox,QTextEdit
+    QVBoxLayout, QLineEdit, QTableWidgetItem, QDialog, QLabel, QMessageBox, QInputDialog, QComboBox,QTextEdit, QProgressDialog
 
 from qgis.gui import QgsPasswordLineEdit
 from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -61,48 +63,205 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 current_script_dir = os.path.dirname(os.path.abspath(__file__))
 keys_dir = os.path.join(current_script_dir, 'LLM_Find', 'Keys')
 handbooks_dir = os.path.join(current_script_dir, 'LLM_Find', 'Handbooks')
-from .install_packages.check_packages import check_and_install_libraries, check_missing_libraries, \
-    read_libraries_from_file, install_libraries
+from .install_packages.check_packages import check_missing_libraries, \
+    read_libraries_from_file, check_and_install_with_versions, parse_requirements_with_versions, check_version_mismatches
+
+
+
+def python_env():
+    # Get the os type
+    system = platform.system()
+    python_exe = getattr(sys, "_base_executable", None)
+    # Grab the “real” interpreter path for each OS
+    if system == "Windows":
+        # usually C:\…\apps\PythonXX\python.exe
+        # python_exe = getattr(sys, "_base_executable", None)
+        if not python_exe or "qgis" in os.path.basename(python_exe).lower():
+            python_exe = os.path.join(sys.prefix, "python.exe")
+
+
+    elif system == "Linux":
+        # usually /usr/bin/python3 or under sys.prefix/bin/
+        # python_exe = getattr(sys, "_base_executable", None)
+        if not python_exe or "qgis" in os.path.basename(python_exe).lower():
+            candidate = os.path.join(sys.prefix, "bin", "python3")
+            python_exe = candidate if os.path.isfile(candidate) else "python3"
+
+    elif system == "Darwin":
+        # macOS QGIS bundles are similar to Linux
+        # python_exe = getattr(sys, "_base_executable", None)
+        if not python_exe or "qgis" in os.path.basename(python_exe).lower():
+            candidate = os.path.join(sys.prefix, "bin", "python3")
+            python_exe = candidate if os.path.isfile(candidate) else "python3"
+
+    else:
+        raise RuntimeError(f"Unsupported OS: {system!r}")
+
+    if not python_exe:
+        raise RuntimeError("Could not determine Python executable.")
+
+    return python_exe
+
+
+# ****************************************************************************************************************
+def check_pip_installed():
+    """
+    Check if pip is available in the current Python environment.
+    Returns True if pip is available, False otherwise.
+    """
+    try:
+        pip_cmd = [python_env(), "-m", "pip", "--version"]
+        subprocess.check_output(pip_cmd)
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"Pip check failed: {e}")
+        return False
+    except FileNotFoundError:
+        return False
+
+
+def get_requirements_file():
+    """
+    Get the path to the requirements file.
+
+    Returns:
+        str: Path to requirements.txt
+    """
+    current_script_dir = os.path.dirname(os.path.abspath(__file__))
+    requirements_file = os.path.join(current_script_dir, 'install_packages', 'requirements.txt')
+    return requirements_file
 
 
 class LibraryCheckThread(QThread):
-    finished_checking = pyqtSignal(list)
+    finished_checking = pyqtSignal(list, dict, bool)  # missing packages list, version mismatches dict, force_reinstall flag
 
     def __init__(self, filename):
         QThread.__init__(self)
         self.filename = filename
 
     def run(self):
-        # Perform the library check in this thread
-        missing_packages = check_missing_libraries(read_libraries_from_file(self.filename))
-        self.finished_checking.emit(missing_packages)
+        try:
+            import sys
+            import os
+
+            # Add the plugin directory to the path to ensure imports work correctly
+            plugin_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            if plugin_dir not in sys.path:
+                sys.path.insert(0, plugin_dir)
 
 
-class VersionCheckThread(QThread):
-    version_check_completed = pyqtSignal(bool)  # Emits True if update is needed
+            # Perform the library check in this thread
+            missing_packages = check_missing_libraries(read_libraries_from_file(self.filename))
+
+            # Also check for version mismatches in already-installed packages
+            version_mismatches = check_version_mismatches(self.filename)
+
+            self.finished_checking.emit(missing_packages, version_mismatches, False)
+        except Exception as e:
+            error_str = str(e)
+            print(f"Error during library check: {e}")
+            # Check if this is a binary incompatibility error (numpy dtype size changed)
+            force_reinstall = "numpy.dtype size changed" in error_str or "binary incompatibility" in error_str.lower()
+
+            if force_reinstall:
+                print("[WARNING] Binary incompatibility detected. Will use --force-reinstall flag.")
+                # Report that force reinstall is needed
+                self.finished_checking.emit([], {}, True)
+            else:
+                # If there's another error in version checking, just report missing packages
+                try:
+                    missing_packages = check_missing_libraries(read_libraries_from_file(self.filename))
+                    self.finished_checking.emit(missing_packages, {}, False)
+                except:
+                    self.finished_checking.emit([], {}, False)
+
+
+
+
+class InstallLibrariesThread(QThread):
+    install_finished = pyqtSignal(bool, str)  # success flag, message
+
+    def __init__(self, requirements_file, force_reinstall=False):
+        super().__init__()
+        self.requirements_file = requirements_file
+        self.force_reinstall = force_reinstall
 
     def run(self):
-        needs_update = self.check_openai_version()
-        self.version_check_completed.emit(needs_update)
-
-    def check_openai_version(self):
         try:
-            import pkg_resources
-            import requests
-            # Get the installed version
-            installed_version = pkg_resources.get_distribution("openai").version
-            # Get the latest version from PyPI
-            response = requests.get("https://pypi.org/pypi/openai/json", timeout=5)
-            latest_version = response.json()["info"]["version"]
+            import sys
+            import os
 
-            # Compare versions
-            if installed_version != latest_version:
-                return True
+            # Add the plugin directory to the path to ensure imports work correctly
+            plugin_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            if plugin_dir not in sys.path:
+                sys.path.insert(0, plugin_dir)
+
+            # from install_packages.check_packages import parse_requirements_with_versions
+
+            # Parse requirements with versions
+            requirements = parse_requirements_with_versions(self.requirements_file)
+
+            if not requirements:
+                self.install_finished.emit(False, "No packages found in requirements file.")
+                return
+
+            # Build list of packages with version specs
+            packages_to_install = []
+            for package_name, version_spec in requirements.items():
+                if version_spec:
+                    packages_to_install.append(package_name + version_spec)
+                else:
+                    packages_to_install.append(package_name)
+
+            # Build pip command with optional force reinstall flags
+            lib_cmd = [python_env(), "-m", "pip", "install", "--user"]
+
+            if self.force_reinstall:
+                print("[INFO] Using --force-reinstall --upgrade to fix binary incompatibility...")
+                lib_cmd.extend(["--force-reinstall", "--upgrade"])
+
+            lib_cmd.extend(packages_to_install)
+
+            # Use subprocess.run to capture stderr for better error diagnostics
+            result = subprocess.run(lib_cmd, capture_output=True, text=True)
+
+            if result.returncode != 0:
+                # Pip failed - include stderr in the error message
+                error_message = "Installation failed:\n"
+                if result.stderr:
+                    error_message += f"\nPip Error Output:\n{result.stderr}"
+                else:
+                    error_message += f"\nExit Status: {result.returncode}"
+
+                if result.stdout:
+                    error_message += f"\n\nPip Output:\n{result.stdout[-1000:]}"  # Last 1000 chars of stdout
+
+                self.install_finished.emit(False, error_message)
             else:
-                return False
+                self.install_finished.emit(True, "All dependencies were successfully installed. It is highly recommended to restart QGIS after the installation of all dependencies.")
+        except subprocess.CalledProcessError as e:
+            self.install_finished.emit(False, f"Installation failed:\n{str(e)}. Click here for help")
         except Exception as e:
-            print(f"Error checking openai version: {e}")
-            return False
+            self.install_finished.emit(False, f"Error: {str(e)}")
+
+
+# **********************************************************************************************************************
+class InstallPipThread(QThread):
+    pip_installed = pyqtSignal(bool, str)  # success, message
+
+    def run(self):
+        import urllib.request, subprocess, os
+        try:
+            url = "https://bootstrap.pypa.io/get-pip.py"
+            dest = os.path.join(os.path.expanduser("~"), "get-pip.py")
+            urllib.request.urlretrieve(url, dest)
+
+            subprocess.check_call([python_env(), dest])
+            self.pip_installed.emit(True, "pip was successfully installed.")
+        except Exception as e:
+            print(f"pip installation failed: {e}")
+            self.pip_installed.emit(False, f"Failed to install pip:\n{str(e)}")
+
 
 
 class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
@@ -120,16 +279,13 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.setupUi(self)
         # Set initial size of the plugin window
         # self.set_initial_size(800, 600)  # Width: 800, Height: 600
-        required_packages = os.path.join(current_script_dir, 'install_packages', 'requirements.txt')
+        required_packages = get_requirements_file()
 
         self.library_check_thread = LibraryCheckThread(required_packages)
         self.library_check_thread.finished_checking.connect(self.handle_missing_libraries)
         self.library_check_thread.start()  # Start the background thread
 
-        # Start the OpenAI version check thread
-        self.version_check_thread = VersionCheckThread()
-        self.version_check_thread.version_check_completed.connect(self.handle_version_check)
-        self.version_check_thread.start()
+
 
         self.load_OpenAI_key()
 
@@ -263,67 +419,70 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.contribution_dialog.exec_()
 
-    def handle_missing_libraries(self, missing_packages):
+    def handle_missing_libraries(self, missing_packages, version_mismatches, force_reinstall=False):
+        has_issues = False
+        message = ""
+
+        # Check if binary incompatibility was detected
+        if force_reinstall:
+            has_issues = True
+            message += "BINARY INCOMPATIBILITY DETECTED:\n\n"
+            message += "NumPy or another core library appears to be incompatible.\n"
+            message += "This will be fixed by upgrading all packages to correct versions.\n\n"
+
+        # Check for missing packages
         if missing_packages:
-            message = "The following Python packages are required to use the plugin:\n\n"
+            has_issues = True
+            message += "The following Python packages are MISSING:\n\n"
             message += "\n".join(missing_packages)
-            message += "\n\nWould you like to install them now? After installation, please restart QGIS."
+            message += "\n\n"
 
-            reply = QMessageBox.question(self, 'Missing Dependencies', message,
-                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        # Check for version mismatches
+        if version_mismatches:
+            has_issues = True
+            message += "The following packages have VERSION MISMATCHES:\n\n"
+            for package_name, (required_spec, installed_version) in version_mismatches.items():
+                if installed_version is None:
+                    message += f"• {package_name}: NOT INSTALLED (required: {required_spec})\n"
+                else:
+                    message += f"• {package_name}: installed {installed_version}, required {required_spec}\n"
+            message += "\n"
+
+        if has_issues:
+            message += "Would you like to install/fix these packages now?\n"
+
+            reply = QMessageBox.question(self, 'Missing or Mismatched Dependencies',
+                                         message,
+                                         QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.Yes:
-                install_libraries(missing_packages)
+                if not check_pip_installed():
+                    reply = QMessageBox.question(self, "Pip Not Found",
+                                                 "The 'pip' tool is not available in this Python environment.\n"
+                                                 "Please ensure pip is installed before continuing.\n\n"
+                                                 "Would you like to try installing it automatically?",
+                                                 QMessageBox.Yes | QMessageBox.No
+                                                 )
+                    if reply == QMessageBox.Yes:
+                        success = self.install_pip_with_progress()
+                        return
 
-    def check_libraries_once(self):
+                # Pass requirements file path and force_reinstall flag
+                current_script_dir = os.path.dirname(os.path.abspath(__file__))
+                required_packages = os.path.join(current_script_dir, 'install_packages', 'requirements.txt')
+                self.install_libraries_with_progress(required_packages, force_reinstall)
 
-        """Check if libraries were already installed, otherwise run the check."""
-        settings = QSettings('YourOrganization', 'YourApplication')
-        libraries_checked = settings.value('libraries_checked', False, type=bool)
+                # Optional: remember that user responded yes, to avoid checking again
+                settings = QSettings()
+                required_libraries = read_libraries_from_file(required_packages)
+                settings.setValue("cached_libraries", required_libraries)
 
-        if not libraries_checked:
-            # First time: Libraries have not been checked
-            print("Checking and installing required libraries...")
-            from .install_packages.check_packages import check_and_install_libraries
-            # Call your existing method to check and install libraries
-            required_packages = os.path.join(os.path.dirname(__file__), 'install_packages', 'requirements.txt')
-            check_and_install_libraries(required_packages)
+    def import_libraries(self):
+        """Dynamically import the third-party libraries after ensuring they're installed."""
 
-            # Mark the libraries as checked and installed
-            settings.setValue('libraries_checked', True)
-        else:
-            # Libraries have already been checked
-            print("Libraries have already been checked and installed.")
+        """Dynamically import the third-party libraries after ensuring they're installed."""
 
-    def handle_version_check(self, needs_update):
-        if needs_update:
-            message = (
-                "A new version of the 'openai' package is available.\n"
-                "Would you like to update it now? This may require administrator privileges."
-            )
-            reply = QMessageBox.question(
-                self, 'Update Available', message,
-                QMessageBox.Yes | QMessageBox.No, QMessageBox.No
-            )
-            if reply == QMessageBox.Yes:
-                self.update_openai_package()
+        pass
 
-    def update_openai_package(self):
-        try:
-            import subprocess
-            import sys
-
-            # Run the pip install command to update the package
-            subprocess.check_call(['python3', "-m", "pip", "install", "--upgrade", "openai"])
-
-            QMessageBox.information(
-                self, 'Update Successful',
-                "The 'openai' package has been updated. Please restart the application."
-            )
-        except Exception as e:
-            QMessageBox.critical(
-                self, 'Update Failed',
-                f"Failed to update 'openai' package:\n{e}"
-            )
 
     def read_updated_config(self):
         current_script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -634,48 +793,67 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     def on_model_changed(self, model_name):
         """Handle model selection change"""
-        self.toggle_reasoning_effort_visibility(model_name in ['gpt-5', 'gpt-5.1'])
-        self.update_reasoning_effort_options(model_name)
+        model_name = self.modelNameComboBox.currentText()
+        self.toggle_reasoning_effort_visibility(model_name)
         self.toggle_openai_key_field(model_name)
 
-    def toggle_reasoning_effort_visibility(self, show=None):
+    def toggle_reasoning_effort_visibility(self, model_name=None):
         """Show or hide reasoning effort controls based on model selection"""
-        if show is None:
+        if model_name is None:
             # Check current model selection
-            show = self.modelNameComboBox.currentText() in ['gpt-5', 'gpt-5.1']
+            model_name = self.modelNameComboBox.currentText()
+
+        # Check if this model supports reasoning effort
+        show = model_name in ['gpt-5', 'gpt-5.1']
 
         # Show/hide the reasoning effort controls
         self.reasoningEffortLabel.setVisible(show)
         self.reasoningEffortComboBox.setVisible(show)
 
         # Set default reasoning effort if GPT-5/GPT-5.1 is selected
-        if show and self.reasoningEffortComboBox.currentText() == "":
-            # For GPT-5.1, default to "low"; for GPT-5, default to "medium"
-            current_model = self.modelNameComboBox.currentText()
-            default_value = "high" if current_model == "gpt-5.1" else "minimal"
-            self.reasoningEffortComboBox.setCurrentText(default_value)
+        if show:
+            # Update combo box items based on model
+            if model_name == 'gpt-5.1':
+                # GPT-5.1 supports: none, low, high
+                effort_options = ['none', 'low', 'high']
+                default_effort = 'none'
+            else:
+                # GPT-5 supports: minimal, low, medium, high
+                effort_options = ['minimal', 'low', 'medium', 'high']
+                default_effort = 'minimal'
 
-    def update_reasoning_effort_options(self, model_name):
-        """Update reasoning effort options based on selected model"""
-        # Block signals to avoid triggering changed events during update
-        self.reasoningEffortComboBox.blockSignals(True)
+            # Update the combo box items
+            current_text = self.reasoningEffortComboBox.currentText()
+            self.reasoningEffortComboBox.clear()
+            self.reasoningEffortComboBox.addItems(effort_options)
 
-        # Clear existing items
-        self.reasoningEffortComboBox.clear()
+            # Set appropriate default if current selection is invalid for this model
+            if current_text in effort_options:
+                self.reasoningEffortComboBox.setCurrentText(current_text)
+            else:
+                self.reasoningEffortComboBox.setCurrentText(default_effort)
 
-        if model_name == 'gpt-5.1':
-            # GPT-5.1 only supports: none, low, high
-            self.reasoningEffortComboBox.addItems(['none', 'low', 'high'])
-            # Set default to low
-            self.reasoningEffortComboBox.setCurrentText('low')
-        elif model_name == 'gpt-5':
-            # GPT-5 supports: minimal, low, medium, high
-            self.reasoningEffortComboBox.addItems(['minimal', 'low', 'medium', 'high'])
-            # Set default to medium
-            self.reasoningEffortComboBox.setCurrentText('medium')
-
-        # Unblock signals
-        self.reasoningEffortComboBox.blockSignals(False)
+    # def update_reasoning_effort_options(self, model_name):
+    #     """Update reasoning effort options based on selected model"""
+    #     # Block signals to avoid triggering changed events during update
+    #     self.reasoningEffortComboBox.blockSignals(True)
+    #
+    #     # Clear existing items
+    #     self.reasoningEffortComboBox.clear()
+    #
+    #     if model_name == 'gpt-5.1':
+    #         # GPT-5.1 only supports: none, low, high
+    #         self.reasoningEffortComboBox.addItems(['none', 'low', 'high'])
+    #         # Set default to low
+    #         self.reasoningEffortComboBox.setCurrentText('low')
+    #     elif model_name == 'gpt-5':
+    #         # GPT-5 supports: minimal, low, medium, high
+    #         self.reasoningEffortComboBox.addItems(['minimal', 'low', 'medium', 'high'])
+    #         # Set default to medium
+    #         self.reasoningEffortComboBox.setCurrentText('medium')
+    #
+    #     # Unblock signals
+    #     self.reasoningEffortComboBox.blockSignals(False)
 
     def toggle_openai_key_field(self, model_name):
         """Enable or disable OpenAI key field based on model selection"""
@@ -854,6 +1032,11 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         file_dialog.setAcceptMode(QFileDialog.AcceptSave)
         file_dialog.setFileMode(QFileDialog.AnyFile)
         file_dialog.setDefaultSuffix("shp")
+
+        # Set default directory to Downloads folder
+        downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
+        file_dialog.setDirectory(downloads_path)
+
         file_dialog.setNameFilters([
             "Shapefile (*.shp)",
             "GeoPackage (*.gpkg *.GPKG)",
@@ -1280,6 +1463,37 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def update_output(self, line):
         clean_line = self.strip_ansi_sequences(line)
 
+        # Capture REQUEST_ID from output
+
+        if "RequestID:" in line:
+            # request_id = line.split("REQUEST_ID:")[1].strip()
+            request_id = line.split("RequestID:")[1].strip()
+            self.current_request_id = request_id
+            # Don't display this line to the user
+            return
+
+            # Handle CODE_READY_URLENCODED BEFORE adding to output
+
+        elif "CODE_READY_URLENCODED:" in line:
+            try:
+                import urllib.parse
+                encoded = line.split("CODE_READY_URLENCODED:", 1)[1].strip()
+                decoded_code = urllib.parse.unquote(encoded)
+                # cache + show
+                self.latest_generated_code = decoded_code
+                self.CodeEditor.setPlainText(self.latest_generated_code)
+                self.CodeEditor.moveCursor(QTextCursor.Start)
+                # Also give a friendly nudge in the chat panel (optional)
+                self.update_chatgpt_ans_textBrowser("Code generation completed (see Generated Code tab).",
+                                                    is_user=False)
+                self.update_chatgpt_ans_textBrowser("Executing generated code...",
+                                                    is_user=False)
+
+            except Exception as e:
+                self.update_chatgpt_ans_textBrowser(f"Failed to decode generated code: {e}", is_user=False)
+            return  # Don't add code pattern to output_text_edit
+
+
         # Code for handling the output text edit
         self.output_text_edit.insertPlainText(clean_line)
         if not clean_line.endswith('\n'):
@@ -1298,14 +1512,11 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             else:
                 self.update_chatgpt_ans_textBrowser("Selecting data source...", is_user=False)
 
-        # Capture REQUEST_ID from output
 
-        if "RequestID:" in line:
-            # request_id = line.split("REQUEST_ID:")[1].strip()
-            request_id = line.split("RequestID:")[1].strip()
-            self.current_request_id = request_id
-            # Don't display this line to the user
-            return
+
+
+
+
 
         elif "data_source_ID:" in line:
             data_source_IDs = line.split("data_source_ID:")[1].strip()
@@ -1323,33 +1534,27 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             else:
                 self.update_chatgpt_ans_textBrowser("Generating code for data retriever...", is_user=False)
 
-        elif "CODE GENERATED SUCCESSFULLY" in line:
-            self.update_chatgpt_ans_textBrowser("Code generation completed (see Generated Code tab).",
-                                                is_user=False)
-
-            self.update_chatgpt_ans_textBrowser("Executing generated code...",
-                                                is_user=False)
 
 
 
-        # elif "CODE_READY_URLENCODED:" in line:
-        #     try:
-        #         import urllib.parse
-        #         encoded = line.split("CODE_READY_URLENCODED:", 1)[1].strip()
-        #         decoded_code = urllib.parse.unquote(encoded)
-        #         # cache + show
-        #         self.latest_generated_code = decoded_code
-        #         self.CodeEditor.setPlainText(self.latest_generated_code)
-        #         self.CodeEditor.moveCursor(QTextCursor.Start)
-        #         # Also give a friendly nudge in the chat panel (optional)
-        #         self.update_chatgpt_ans_textBrowser("Code generation completed (see Generated Code tab).",
-        #                                             is_user=False)
-        #     except Exception as e:
-        #         self.update_chatgpt_ans_textBrowser(f"Failed to decode generated code: {e}", is_user=False)
-        #     return  # Don't add code pattern to output_text_edit
+        elif "AI IS GENERATING THE DATA FETCHING PROGRAM ..." in line:
+            current_model = self.modelNameComboBox.currentText()
+            if current_model == 'gpt-5':
+                self.update_chatgpt_ans_textBrowser(
+                    "Generating code for data retriever (may take some time while GPT-5 is reasoning)...", is_user=False)
+            else:
+                self.update_chatgpt_ans_textBrowser("Generating code for data retriever...", is_user=False)
 
-        elif "Successfully executed code:" in line:
-            self.update_chatgpt_ans_textBrowser("Code execution completed", is_user=False)
+        elif "AI IS DEBUGGING THE CODE..." in line:
+            current_model = self.modelNameComboBox.currentText()
+            if current_model == 'gpt-5':
+                self.update_chatgpt_ans_textBrowser(
+                    "An error occurred, debugging code (may take some time while GPT-5 is reasoning)...", is_user=False)
+            else:
+                self.update_chatgpt_ans_textBrowser("An error occurred, debugging code...", is_user=False)
+
+        # elif "Successfully executed code:" in line:
+        #     self.update_chatgpt_ans_textBrowser("Code execution completed", is_user=False)
 
 
 
@@ -1642,9 +1847,53 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         except Exception as e:
             print(f"Error sending feedback: {e}")
             self.update_chatgpt_ans_textBrowser(f"Failed to send feedback: {e}", is_user=False)
+
     # ******************************************************************************************************
     # NEW FUNCTIONS END
     # ********************************************************************************************************
+
+    def install_libraries_with_progress(self, libraries, force_reinstall=False):
+        self.progress_dialog = QProgressDialog("Installing required libraries...", None, 0, 0, self)
+        self.progress_dialog.setWindowTitle("Installing Dependencies")
+        self.progress_dialog.setWindowModality(Qt.WindowModal)
+        self.progress_dialog.setCancelButton(None)
+        self.progress_dialog.setMinimumDuration(0)
+        self.progress_dialog.show()
+
+        self.install_thread = InstallLibrariesThread(libraries, force_reinstall)
+        self.install_thread.install_finished.connect(self.on_install_finished)
+        self.install_thread.start()
+
+    def on_install_finished(self, success, message):
+        self.progress_dialog.cancel()
+        if success:
+            QMessageBox.information(self, "Success", message)
+        else:
+            QMessageBox.critical(self, "Error", message)
+
+    def install_pip_with_progress(self):
+        self.pip_progress = QProgressDialog("Installing pip...", None, 0, 0, self)
+        self.pip_progress.setWindowTitle("Installing pip")
+        self.pip_progress.setWindowModality(Qt.WindowModal)
+        self.pip_progress.setCancelButton(None)
+        self.pip_progress.setMinimumDuration(0)
+        self.pip_progress.show()
+
+        self.pip_thread = InstallPipThread()
+        self.pip_thread.pip_installed.connect(self.on_pip_install_finished)
+        self.pip_thread.start()
+
+    def on_pip_install_finished(self, success, message):
+        self.pip_progress.cancel()
+        if success and check_pip_installed():
+            QMessageBox.information(self, "Pip Installed", message + "\n\nPlease restart QGIS before continuing.")
+        else:
+            QMessageBox.critical(self, "Installation Failed", message)
+
+# The classFactory function must be placed at the end of this file
+def classFactory(iface):
+    """Load SpatialAnalysisAgentPlugin class."""
+    return AGGRADockWidget(iface)
 
 class ScriptThread(QThread):
     output_line = pyqtSignal(str)
