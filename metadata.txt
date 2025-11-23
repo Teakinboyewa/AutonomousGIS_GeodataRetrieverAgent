@@ -13,7 +13,7 @@ changelog = version=1.0, November 23, 2025
             - Added single-click functionality to display data source selected, and data source handbook.
             - Integrated GIBD Service API key for increased accessibility to GIS Data Retriever Agent
             - Resolved numpy and other dependencies' incompatibility
-            - Resolved "No module named Nest-asyncio" issue
+
 
             version=0.4, August 2025
              - Enhanced API key management system
