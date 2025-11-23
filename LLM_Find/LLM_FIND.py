@@ -73,7 +73,6 @@ model = helper.ai_model_configuration(model_name=model_name, reasoning_effort_va
 
 
 #%% SELECT THE DATA SOURCE
-#Select the data source
 
 print("=" * 50)
 print("AI IS SELECTING DATA SOURCE ...")
