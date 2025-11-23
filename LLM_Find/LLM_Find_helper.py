@@ -688,6 +688,8 @@ def execute_complete_program(request_id, code: str, try_cnt: int, task: str, mod
             print("```python")
             print(code)
             print("```")
+            print("CODE_READY_URLENCODED:" + urllib.parse.quote(code), flush=True)
+            # sys.stdout.flush()  # Force flush to ensure output reaches UI
 
             return code, error_collector
 
