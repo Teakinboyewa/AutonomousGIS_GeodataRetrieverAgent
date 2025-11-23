@@ -4,9 +4,11 @@
 # Exclude OpenAI config file (contains sensitive API keys)
 LLM_Find/openai_key_config.ini
 
+# Exclude Testing UMS folder (local testing)
+Testing\ UMS/
+
 # Exclude API examples notebook
 API\ examples.ipynb
-Testing\ UMS/API\ examples.ipynb
 
 # Exclude versioned files (v1, v2, v3, etc.)
 *_v[0-9]*.txt
