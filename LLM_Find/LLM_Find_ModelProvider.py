@@ -180,7 +180,7 @@ class OllamaProvider(ModelProvider):
             api_key=api_key
         )
 
-    def generate_completion(self, client, model: str, messages: List[Dict], **kwargs):
+    def generate_completion(self, request_id, client, model: str, messages: List[Dict], **kwargs):
         return client.chat.completions.create(
             model=model,
             messages=messages,
@@ -202,7 +202,7 @@ class GPT5Provider(ModelProvider):
         from openai import OpenAI
         return OpenAI(api_key=config.get('api_key'))
 
-    def generate_completion(self, client, model: str, messages: List[Dict], **kwargs):
+    def generate_completion(self, request_id, client, model: str, messages: List[Dict], **kwargs):
         try:
             # First try the specialized GPT-5 API format if available
             # Convert messages to GPT-5 input format

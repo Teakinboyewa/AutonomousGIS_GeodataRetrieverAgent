@@ -116,7 +116,7 @@ debug_requirement = [
     # "If using colorbar for GeoPandas or Matplotlib visualization, set the colorbar's height or length as the same as the plot for better layout.",
     # "When doing spatial joins, remove the duplicates in the results. Or please think about whether it needs to be removed.",
     # "Map grid, legend, or colorbar need to show the unit.",
-    'If a Python package is not installed, add the install command such as "pip" at the beginning of the revised code.',
+    #'If a Python package is not installed, add the install command such as "pip" at the beginning of the revised code.',
     # "Show a progressbar (e.g., tqdm in Python) if loop more than 200 times, also add exception handling for loops to make sure the loop can run.",
     # "When crawl the webpage context to ChatGPT, using Beautifulsoup to crawl the text only, not all the HTML file.",
     "If using GeoPandas for spatial analysis, when doing overlay analysis, carefully think about use Geopandas.GeoSeries.intersects() or geopandas.sjoin(). ",
