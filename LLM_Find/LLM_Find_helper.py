@@ -147,16 +147,16 @@ def generate_data_fetching_code(request_id, download_prompt_str, model_name, str
 
     """Return a fine-tuned prompt using the selected model.
         Supports: OpenAI proxy, GPT-5, and normal OpenAI"""
-    if reasoning_effort:
-        print(f"[DEBUG] generate_data_fetching_code: reasoning_effort = {reasoning_effort}")
+    # if reasoning_effort:
+        # print(f"[DEBUG] generate_data_fetching_code: reasoning_effort = {reasoning_effort}")
 
     kwargs = {}
     # Only pass reasoning_effort for GPT-5 models
     if reasoning_effort and model_name in ['gpt-5', 'gpt-5.1']:
         kwargs['reasoning_effort'] = reasoning_effort
-        print(f"[DEBUG] generate_data_fetching_code: reasoning_effort ENABLED for {model_name}")
-    elif reasoning_effort:
-        print(f"[DEBUG] generate_data_fetching_code: reasoning_effort IGNORED for {model_name} (not supported)")
+        # print(f"[DEBUG] generate_data_fetching_code: reasoning_effort ENABLED for {model_name}")
+    # elif reasoning_effort:
+    #     print(f"[DEBUG] generate_data_fetching_code: reasoning_effort IGNORED for {model_name} (not supported)")
 
     return unified_llm_call(
         request_id=request_id,
@@ -200,8 +200,8 @@ def get_question_id(user_api_key):
 
 def unified_llm_call(request_id, messages, model_name, stream=False, temperature=1, response_format=None, **kwargs):
     # Debug: Check if reasoning_effort is in kwargs
-    if 'reasoning_effort' in kwargs:
-        print(f"[DEBUG] unified_llm_call: reasoning_effort = {kwargs['reasoning_effort']}")
+    # if 'reasoning_effort' in kwargs:
+        # print(f"[DEBUG] unified_llm_call: reasoning_effort = {kwargs['reasoning_effort']}")
 
     # Check if model requires local provider (Ollama) - this takes precedence
     provider_name = ModelProviderFactory._model_providers.get(model_name, 'openai')
@@ -243,7 +243,7 @@ def unified_llm_call(request_id, messages, model_name, stream=False, temperature
                 # Check if structured output is requested and supported
                 if response_format and client and hasattr(client, 'beta'):
                     # Use structured output API
-                    print("[DEBUG PRINT]: Using structured output API for chat completion")
+                    # print("[DEBUG PRINT]: Using structured output API for chat completion")
                     response = client.beta.chat.completions.parse(
                         model=model_name,
                         messages=messages,
@@ -254,7 +254,7 @@ def unified_llm_call(request_id, messages, model_name, stream=False, temperature
                     return response.choices[0].message.content
                 else:
                     # Use regular completion
-                    print("[DEBUG PRINT]: Using customized regular completion (streaming_openai_response)")
+                    # print("[DEBUG PRINT]: Using customized regular completion (streaming_openai_response)")
                     response = provider.generate_completion(
                         request_id,
                         client,
@@ -268,11 +268,11 @@ def unified_llm_call(request_id, messages, model_name, stream=False, temperature
 
             except ImportError:
                 # Direct OpenAI fallback
-                print("[DEBUG PRINT]: Using Direct OpenAI fallback for completion")
+                # print("[DEBUG PRINT]: Using Direct OpenAI fallback for completion")
                 client = OpenAI(api_key=api_key)
 
                 if response_format and hasattr(client, 'beta'):
-                    print("[DEBUG PRINT]: Using beta response format")
+                    # print("[DEBUG PRINT]: Using beta response format")
                     # Use structured output
                     response = client.beta.chat.completions.parse(
                         model=model_name,
@@ -284,7 +284,7 @@ def unified_llm_call(request_id, messages, model_name, stream=False, temperature
                     return response.choices[0].message.content
                 else:
                     # Regular completion
-                    print("[DEBUG PRINT]: Using non-beta response format")
+                    # print("[DEBUG PRINT]: Using non-beta response format")
                     response = client.chat.completions.create(
                         model=model_name,
                         messages=messages,
@@ -310,12 +310,12 @@ def unified_llm_call(request_id, messages, model_name, stream=False, temperature
                                      model_name=model_name, messages=messages,
                                      stream=stream, temperature=temperature, **kwargs)
         else:
-            print("[DEBUG PRINT]: Using OpenAI model")
+            # print("[DEBUG PRINT]: Using OpenAI model")
 
             client = OpenAI(api_key=api_key)
 
             if response_format and hasattr(client, 'beta'):
-                print("[DEBUG PRINT]: Using beta response format")
+                # print("[DEBUG PRINT]: Using beta response format")
                 # Use structured output
                 response = client.beta.chat.completions.parse(
                     model=model_name,
@@ -327,7 +327,7 @@ def unified_llm_call(request_id, messages, model_name, stream=False, temperature
                 return response.choices[0].message.content
             else:
                 # Regular completion
-                print("[DEBUG PRINT]: Using non-beta response format")
+                # print("[DEBUG PRINT]: Using non-beta response format")
                 response = client.chat.completions.create(
                     model=model_name,
                     messages=messages,
@@ -351,7 +351,7 @@ def GIBD_Service_call(api_key, service_name, request_id, model_name, messages, s
         }
 
         if stream:
-            print("[DEBUG PRINT]: Using streaming GIBD API")
+            # print("[DEBUG PRINT]: Using streaming GIBD API")
             response_req = requests.post(url, json=payload, stream=True)
             # Handle streaming
             def stream_generator():
@@ -380,7 +380,7 @@ def GIBD_Service_call(api_key, service_name, request_id, model_name, messages, s
 
             return out
         else:
-            print("[DEBUG PRINT]: Using Non streaming GIBD API")
+            # print("[DEBUG PRINT]: Using Non streaming GIBD API")
             # Non-streaming
             response_req = requests.post(url, json=payload)
             if response_req.status_code == 200:
@@ -659,8 +659,8 @@ def extract_code_from_str(LLM_reply_str, verbose=False):
 
 
 def execute_complete_program(request_id, code: str, try_cnt: int, task: str, model_name: str, handbook_str: str, stream, reasoning_effort=None) -> str:
-    if reasoning_effort:
-        print(f"[DEBUG] execute_complete_program: reasoning_effort = {reasoning_effort}")
+    # if reasoning_effort:
+    #     print(f"[DEBUG] execute_complete_program: reasoning_effort = {reasoning_effort}")
 
     count = 0
     output_capture = io.StringIO()

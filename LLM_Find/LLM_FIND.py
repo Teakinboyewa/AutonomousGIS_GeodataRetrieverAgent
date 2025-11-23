@@ -42,9 +42,9 @@ downloaded_file_name = main(task, saved_fname, model_name)
 if os.path.exists(saved_fname):
     os.remove(saved_fname)
 print(saved_fname)
-# save_dir = os.path.join(os.getcwd(), "Downloaded_Data")
-# os.makedirs(save_dir, exist_ok=True)
-# print (save_dir)
+save_dir = os.path.join(os.path.expanduser("~"), "Downloads", "Downloaded_Data")
+os.makedirs(save_dir, exist_ok=True)
+print (save_dir)
 
 
 #%% Printing the Task
