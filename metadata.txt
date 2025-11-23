@@ -6,8 +6,16 @@
 name=AutonomousGIS_GeoData Retriever Agent
 qgisMinimumVersion=3.0
 description=An autonomous agent framework to select geospatial data and then fetch data by generating and executing programs with self-debugging.
-version=0.4
-changelog = version=0.4, August 2025
+version=1.0
+changelog = version=1.0, November 23, 2025
+            - Integrated OpenAI's GPT-5 and 5.1 models.
+            - Enhanced the GUI with improved interactivity, including real-time operational status updates.
+            - Added single-click functionality to display data source selected, and data source handbook.
+            - Integrated GIBD Service API key for increased accessibility to GIS Data Retriever Agent
+            - Resolved numpy and other dependencies' incompatibility
+            - Resolved "No module named Nest-asyncio" issue
+
+            version=0.4, August 2025
              - Enhanced API key management system
              - Improved key naming consistency and retrieval from .keys files
 
