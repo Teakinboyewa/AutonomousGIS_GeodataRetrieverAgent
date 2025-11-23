@@ -1,34 +1,11 @@
-#%% Import package
+#%% IMPORT PACKAGES
 import os
 import sys
-import asyncio
 import time
-
-import nest_asyncio
 from qgis._core import QgsRasterLayer
 from qgis.core import QgsVectorLayer, QgsProject
-from IPython import get_ipython
-import rasterio
-from PIL import Image
 import requests
-import networkx as nx
-import pandas as pd
-import geopandas as gpd
-# from pyvis.network import Network
-from openai import OpenAI
-from IPython.display import display, HTML, Code
-from IPython.display import clear_output
-import matplotlib.pyplot as plt
-import base64
-import pickle
-import osmnx as ox
-
-# Enable autoreload
-ipython = get_ipython()
-if ipython:
-    ipython.run_line_magic('load_ext', 'autoreload')
-    ipython.run_line_magic('autoreload', '2')
-
+import uuid
 
 # Get the directory of the current script
 plugin_dir = os.path.dirname(os.path.abspath(__file__))
@@ -41,25 +18,13 @@ if llm_find_dir not in sys.path:
 
 
 # Now you can import the module
-import LLM_Find_Constants as constants
 import LLM_Find_helper as helper
-# import LLM_FIND_helper as helper
 import handbook
-
-
-import numpy as np
-# from LLM_Find_kernel import Solution
-
-# from langchain_openai import ChatOpenAI
-
 #%%
 
 def main(task, saved_fname, model_name):
     filename_only = os.path.basename(saved_fname)
-    # Convert the data locations string back to a list if needed
-    #saved_fname = saved_fname.split(';')  # Assuming data locations are joined by a semicolon
-    #task_name = task_name
-    #task = task
+
     return filename_only
 
 
@@ -76,9 +41,10 @@ downloaded_file_name = main(task, saved_fname, model_name)
 #Create the model
 if os.path.exists(saved_fname):
     os.remove(saved_fname)
-
-save_dir = os.path.join(os.getcwd(), "Downloaded_Data")
-os.makedirs(save_dir, exist_ok=True)
+print(saved_fname)
+# save_dir = os.path.join(os.getcwd(), "Downloaded_Data")
+# os.makedirs(save_dir, exist_ok=True)
+# print (save_dir)
 
 
 #%% Printing the Task
@@ -89,28 +55,22 @@ time.sleep(3)
 
 
 #%% INITIALIZINIG THE AI MODEL
-OpenAI_key = helper.get_openai_key(model_name)
-model = helper.initialize_ai_model(model_name=model_name, reasoning_effort_value=reasoning_effort_value, OpenAI_key=OpenAI_key)
+API_Key = helper.get_openai_key(model_name)
 
 
-import uuid
-if 'gibd-services'  in (OpenAI_key or ''):
-    request_id = helper.get_question_id(OpenAI_key)
+if 'gibd-services'  in (API_Key or ''):
+    request_id = helper.get_question_id(API_Key)
     print(f"RequestID:{request_id}")
 else:
     request_id = str(uuid.uuid4())
 
 
-# import uuid
-# # request_id = str(uuid.uuid4())
-# request_id = helper.get_question_id(OpenAI_key)
-# print(f"RequestID:{request_id}")
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# model_name = r'gpt-4o'  # TO BE ENTERED ON THE PLUGIN
-# OpenAI_key = helper.load_OpenAI_key()
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# model = ChatOpenAI(api_key=OpenAI_key, model=model_name, temperature=1)
-# operation_model = helper.get_model_for_operation(model_name)
+
+model = helper.ai_model_configuration(model_name=model_name, reasoning_effort_value=reasoning_effort_value, api_key=API_Key, request_id=request_id)
+
+
+
+
 
 #%% SELECT THE DATA SOURCE
 #Select the data source
@@ -123,39 +83,15 @@ source_select_prompt_str = helper.create_select_prompt(task=task)
 print(source_select_prompt_str)
 
 
-
-
 #%% #PICK UP THE DATA SOURCE HANDBOOK
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# from IPython.display import clear_output
-# async def fetch_chunks(model, source_select_prompt_str):
-#     chunks = []
-#     async for chunk in model.astream(source_select_prompt_str):
-#         chunks.append(chunk)
-#         # print(chunk.content, end="", flush=True)
-#     return chunks
-# nest_asyncio.apply()
-# chunks = asyncio.run(fetch_chunks(model, source_select_prompt_str))
-
-select_source_reply = helper.select_source(request_id=request_id, select_prompt_str =source_select_prompt_str, model_name=model_name, stream=True)
-
-
-
-# clear_output(wait=True)
-## clear_output(wait=False)
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# LLM_reply_str = helper.convert_chunks_to_str(chunks=chunks)
-#
-# print("Select the data source: \n")
-# print(select_source_reply)
+select_source_reply = helper.select_source(request_id=request_id, select_prompt_str =source_select_prompt_str, model_name=model_name, stream=True, reasoning_effort=reasoning_effort_value)
 
 #%% #GENERATE THE SELECTED DATA SOURCE HANDBOOK
 
 import ast
 # Convert the string to an actual dictionary
 try:
-    # if not select_source_reply or not select_source_reply.strip():
-    #     raise ValueError("Empty response from data source selection")
+
     select_source = ast.literal_eval(select_source_reply)
 except (SyntaxError, ValueError) as e:
     print("Error parsing the dictionary:", e)
@@ -171,13 +107,9 @@ print(data_source_dict)
 data_source_ID = data_source_dict[selected_data_source]['ID'] # NEW CHANGE
 
 
-# data_source_ID = constants.data_source_dict[selected_data_source]['ID']
-
 print("selected_data_source:", selected_data_source)
 print("data_source_ID:", data_source_ID)
 
-# handbook_list = constants.handbooks[f"{data_source_ID}"]
-# handbook_str =  '\n'.join([f"{idx + 1}. {line}" for idx, line in enumerate(handbook_list)])
 
 handbook_str = handbook.collect_a_handbook(source_ID=data_source_ID)  # NEW CHANGE
 
@@ -189,32 +121,6 @@ else:
     print()
     print(f"Handbook:\n{handbook_str}")
 
-
-
-
-# # Iterate over each selected tool
-# selected_data_source_IDs_list = []
-# SelectedDataSource =  {}
-# all_handbook =[]
-#
-# for selected_data_source in selected_data_sources:
-#     selected_data_source_ID = data_source_dict[selected_data_source]['ID'] # NEW CHANGE
-#     selected_data_source_IDs_list.append(selected_data_source_ID)
-#
-#     # data_source_ID = constants.data_source_dict[selected_data_source]['ID']
-#
-#     # handbook_list = constants.handbooks[f"{data_source_ID}"]
-#     # handbook_str =  '\n'.join([f"{idx + 1}. {line}" for idx, line in enumerate(handbook_list)])
-#     handbook_str = handbook.collect_a_handbook(source_ID=selected_data_source_ID)  # NEW CHANGE
-#     handbook_str =  '\n'.join([f"{idx + 1}. {line}" for idx, line in enumerate(handbook_str)])
-#     all_handbook.append(handbook_str)
-# print()
-# print(f"Handbook:\n{all_handbook}")
-# # print("selected_data_source:", selected_data_source)
-# print("selected_data_sources:", selected_data_source)
-#
-# print("List of selected data sources IDs:", selected_data_source_IDs_list)
-
 #%% GENERATE THE DATA FETCHING PROGRAM
 
 print("=" * 50)
@@ -224,34 +130,17 @@ time.sleep(2)
 download_prompt_str = helper.create_download_prompt(task,saved_fname, selected_data_source, handbook_str)
 print(download_prompt_str)
 
-data_fetching_code_str = helper.generate_data_fetching_code(request_id=request_id,download_prompt_str =download_prompt_str, model_name=model_name, stream=True)
-
-# from IPython.display import clear_output
-# #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# async def fetch_download_str(model, download_prompt_str):
-#     chunks = []
-#     async for chunk in model.astream(download_prompt_str):
-#         chunks.append(chunk)
-#         # print(chunk.content, end="", flush=True)
-#     return chunks
-# nest_asyncio.apply()
-# chunks = asyncio.run(fetch_chunks(model, download_prompt_str))
-# clear_output(wait=True)
-# # clear_output(wait=False)
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-# LLM_reply_str = helper.convert_chunks_to_str(chunks=data_fetching_code)
-# print(LLM_reply_str)
+data_fetching_code_str = helper.generate_data_fetching_code(request_id=request_id,download_prompt_str =download_prompt_str, model_name=model_name, stream=True, reasoning_effort=reasoning_effort_value)
 
 #%%
 code = helper.extract_code_from_str(data_fetching_code_str)
-# display(Code(code, language='python'))
+
 
 # Emit the initially generated code to CodeEditor immediately after generation
 generated_code = code
 print("CODE GENERATED SUCCESSFULLY")
 # import urllib.parse
-# print("CODE_READY_URLENCODED:" + urllib.parse.quote(generated_code))
+# print("CODE_READY_URLENCODED: " + urllib.parse.quote(generated_code), end='')
 
 
 #%% #EXECUTE THE GENERATED PROGRAM
@@ -259,15 +148,15 @@ time.sleep(2)
 code = code.replace('area({osm_id})->.searchArea;',
                     'relation({osm_id}); map_to_area->.searchArea;')  # GPT-4o never follow the related instruction!
 code, error_collector = helper.execute_complete_program(request_id=request_id,code=code, try_cnt=5, task=task, model_name=model_name,
-                                       handbook_str=handbook_str, stream=True)
+                                       handbook_str=handbook_str, stream=True, reasoning_effort=reasoning_effort_value)
 code = code.replace('area({osm_id})->.searchArea;',
                     'relation({osm_id}); map_to_area->.searchArea;')  # GPT-4o never follow the related instruction!
-display(Code(code, language='python'))
+# display(Code(code, language='python'))
 
 
 
 #%%# # Displaying the result in QGIS
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 # Displaying the result in QGIS
 if saved_fname.endswith('.gpkg') or saved_fname.endswith('.csv') or saved_fname.endswith('.shp'):
     layer = QgsVectorLayer(saved_fname, f"{downloaded_file_name}", "ogr")
@@ -281,20 +170,17 @@ elif saved_fname.endswith('.tif'):
 else:
     print("Unsupported file format")
 
-# print("SAVED FNAME: ",saved_fname)
-# print("Layer path: ",layer_path)
 
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 generated_code = code
-# import urllib.parse
-# print("CODE_READY_URLENCODED:" + urllib.parse.quote(generated_code))
+import urllib.parse
+print("CODE_READY_URLENCODED: " + urllib.parse.quote(generated_code), end='')
 
 # Only send error reports if using gibd-services API key
-if 'gibd-services' not in (OpenAI_key or ''):
+if 'gibd-services' not in (API_Key or ''):
     print("Error reporting skipped (not using gibd-services API key)")
 
-url = f"https://www.gibd.online/api/feedback/{OpenAI_key}"
+url = f"https://www.gibd.online/api/feedback/{API_Key}"
 
 # Data to send
 data = {
@@ -316,3 +202,4 @@ response = requests.post(
     headers={"Content-Type": "application/json"},
     json=data
 )
+
