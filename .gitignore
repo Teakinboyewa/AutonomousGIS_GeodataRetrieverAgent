@@ -9,6 +9,7 @@ API\ examples.ipynb
 Testing\ UMS/API\ examples.ipynb
 
 # Exclude versioned files (v1, v2, v3, etc.)
+*_v[0-9]*.txt
 *_v1.py
 *_v2.py
 *_v3.py
