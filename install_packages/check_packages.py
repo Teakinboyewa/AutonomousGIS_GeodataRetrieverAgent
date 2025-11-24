@@ -56,14 +56,14 @@ def check_library_installed_only(distribution_name):
         return (distribution_name, True)
 
 
-def check_library(library_info):
-    """Check if a library is installed, return (library, is_missing)."""
-    library, module = library_info
-    try:
-        importlib.import_module(module)
-        return (library, False)  # Library is installed
-    except ImportError:
-        return (library, True)  # Library is missing
+# def check_library(library_info):
+#     """Check if a library is installed, return (library, is_missing)."""
+#     library, module = library_info
+#     try:
+#         importlib.import_module(module)
+#         return (library, False)  # Library is installed
+#     except ImportError:
+#         return (library, True)  # Library is missing
 
 def read_libraries_from_file(filename):
     """Read the list of libraries and their import paths from a text file."""

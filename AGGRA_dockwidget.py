@@ -270,15 +270,9 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(AGGRADockWidget, self).__init__(parent)
-        # Set default width
-        # Set up the user interface from Designer.
-        # After setupUI you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://doc.qt.io/qt-5/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
+
         self.setupUi(self)
-        # Set initial size of the plugin window
-        # self.set_initial_size(800, 600)  # Width: 800, Height: 600
+
         required_packages = get_requirements_file()
 
         self.library_check_thread = LibraryCheckThread(required_packages)
