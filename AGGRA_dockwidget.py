@@ -792,7 +792,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.toggle_openai_key_field(model_name)
 
     def toggle_reasoning_effort_visibility(self, model_name=None):
-        """Show or hide reasoning effort controls based on model selection"""
+        """Show or hide reasoning effort controls and update options based on model selection"""
         if model_name is None:
             # Check current model selection
             model_name = self.modelNameComboBox.currentText()
@@ -804,28 +804,58 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.reasoningEffortLabel.setVisible(show)
         self.reasoningEffortComboBox.setVisible(show)
 
-        # Set default reasoning effort if GPT-5/GPT-5.1 is selected
         if show:
             # Update combo box items based on model
             if model_name == 'gpt-5.1':
                 # GPT-5.1 supports: none, low, high
                 effort_options = ['none', 'low', 'high']
-                default_effort = 'none'
-            else:
+                default_effort = 'low'
+            elif model_name == 'gpt-5':
                 # GPT-5 supports: minimal, low, medium, high
                 effort_options = ['minimal', 'low', 'medium', 'high']
                 default_effort = 'minimal'
 
             # Update the combo box items
-            current_text = self.reasoningEffortComboBox.currentText()
+            # current_text = self.reasoningEffortComboBox.currentText()
             self.reasoningEffortComboBox.clear()
             self.reasoningEffortComboBox.addItems(effort_options)
-
-            # Set appropriate default if current selection is invalid for this model
-            if current_text in effort_options:
-                self.reasoningEffortComboBox.setCurrentText(current_text)
-            else:
-                self.reasoningEffortComboBox.setCurrentText(default_effort)
+            # Always set to default when model is selected
+            self.reasoningEffortComboBox.setCurrentText(default_effort)
+    # def toggle_reasoning_effort_visibility(self, model_name=None):
+    #     """Show or hide reasoning effort controls based on model selection"""
+    #     if model_name is None:
+    #         # Check current model selection
+    #         model_name = self.modelNameComboBox.currentText()
+    #
+    #     # Check if this model supports reasoning effort
+    #     show = model_name in ['gpt-5', 'gpt-5.1']
+    #
+    #     # Show/hide the reasoning effort controls
+    #     self.reasoningEffortLabel.setVisible(show)
+    #     self.reasoningEffortComboBox.setVisible(show)
+    #
+    #     # Set default reasoning effort if GPT-5/GPT-5.1 is selected
+    #     if show:
+    #         # Update combo box items based on model
+    #         if model_name == 'gpt-5.1':
+    #             # GPT-5.1 supports: none, low, high
+    #             effort_options = ['none', 'low', 'high']
+    #             default_effort = 'none'
+    #         else:
+    #             # GPT-5 supports: minimal, low, medium, high
+    #             effort_options = ['minimal', 'low', 'medium', 'high']
+    #             default_effort = 'minimal'
+    #
+    #         # Update the combo box items
+    #         current_text = self.reasoningEffortComboBox.currentText()
+    #         self.reasoningEffortComboBox.clear()
+    #         self.reasoningEffortComboBox.addItems(effort_options)
+    #
+    #         # Set appropriate default if current selection is invalid for this model
+    #         if current_text in effort_options:
+    #             self.reasoningEffortComboBox.setCurrentText(current_text)
+    #         else:
+    #             self.reasoningEffortComboBox.setCurrentText(default_effort)
 
     # def update_reasoning_effort_options(self, model_name):
     #     """Update reasoning effort options based on selected model"""

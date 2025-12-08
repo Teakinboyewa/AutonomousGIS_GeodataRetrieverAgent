@@ -123,15 +123,15 @@ def select_source(request_id, select_prompt_str, model_name, stream, reasoning_e
     """Return a fine-tuned prompt using the selected model.
         Supports: OpenAI proxy, GPT-5, and normal OpenAI"""
     if reasoning_effort:
-        print(f"[DEBUG] select_source: reasoning_effort = {reasoning_effort}")
+        # print(f"[DEBUG] select_source: reasoning_effort = {reasoning_effort}")
 
         kwargs = {}
         # Only pass reasoning_effort for GPT-5 models
         if reasoning_effort and model_name in ['gpt-5', 'gpt-5.1']:
             kwargs['reasoning_effort'] = reasoning_effort
-        print(f"[DEBUG] select_source: reasoning_effort ENABLED for {model_name}")
-    elif reasoning_effort:
-        print(f"[DEBUG] select_source: reasoning_effort IGNORED for {model_name} (not supported)")
+        # print(f"[DEBUG] select_source: reasoning_effort ENABLED for {model_name}")
+    # elif reasoning_effort:
+    #     print(f"[DEBUG] select_source: reasoning_effort IGNORED for {model_name} (not supported)")
 
     return unified_llm_call(
         request_id=request_id,
