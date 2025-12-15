@@ -798,7 +798,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             model_name = self.modelNameComboBox.currentText()
 
         # Check if this model supports reasoning effort
-        show = model_name in ['gpt-5', 'gpt-5.1']
+        show = model_name in ['gpt-5', 'gpt-5.1', 'gpt-5.2']
 
         # Show/hide the reasoning effort controls
         self.reasoningEffortLabel.setVisible(show)
@@ -814,6 +814,10 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                 # GPT-5 supports: minimal, low, medium, high
                 effort_options = ['minimal', 'low', 'medium', 'high']
                 default_effort = 'minimal'
+            elif model_name == 'gpt-5.2':
+                # GPT-5.2 supports: minimal, low, medium, high
+                effort_options = ['none', 'low','medium','high','xhigh']
+                default_effort = 'medium'
 
             # Update the combo box items
             # current_text = self.reasoningEffortComboBox.currentText()
@@ -828,7 +832,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     #         model_name = self.modelNameComboBox.currentText()
     #
     #     # Check if this model supports reasoning effort
-    #     show = model_name in ['gpt-5', 'gpt-5.1']
+    #     show = model_name in ['gpt-5', 'gpt-5.1', 'gpt-5.2']
     #
     #     # Show/hide the reasoning effort controls
     #     self.reasoningEffortLabel.setVisible(show)
@@ -1257,7 +1261,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         # Get reasoning effort if GPT-5 or GPT-5.1 is selected
         self.reasoning_effort_value = 'medium'  # default
-        if self.model_name in ['gpt-5', 'gpt-5.1']:
+        if self.model_name in ['gpt-5', 'gpt-5.1', 'gpt-5.2']:
             self.reasoning_effort_value = self.reasoningEffortComboBox.currentText()
 
         self.thread = ScriptThread(script_path, self.task, self.saved_fname, self.api_keys, self.model_name, self.reasoning_effort_value)

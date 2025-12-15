@@ -72,7 +72,7 @@ def ai_model_configuration(model_name, reasoning_effort_value, api_key, request_
         provider = ModelProvider.ModelProviderFactory.get_provider(model_name)
         provider_name = ModelProvider.ModelProviderFactory._model_providers.get(model_name, 'openai')
 
-        if model_name in ['gpt-5', 'gpt-5.1']:
+        if model_name in ['gpt-5', 'gpt-5.1', 'gpt-5.2']:
             reasoning_effort = reasoning_effort_value
             # reasoning_effort = globals().get('reasoning_effort', f'{reasoning_effort_value}')
             # print(f"Reasoning Effort: {reasoning_effort}")
@@ -127,7 +127,7 @@ def select_source(request_id, select_prompt_str, model_name, stream, reasoning_e
 
         kwargs = {}
         # Only pass reasoning_effort for GPT-5 models
-        if reasoning_effort and model_name in ['gpt-5', 'gpt-5.1']:
+        if reasoning_effort and model_name in ['gpt-5', 'gpt-5.1', 'gpt-5.2']:
             kwargs['reasoning_effort'] = reasoning_effort
         # print(f"[DEBUG] select_source: reasoning_effort ENABLED for {model_name}")
     # elif reasoning_effort:
@@ -152,7 +152,7 @@ def generate_data_fetching_code(request_id, download_prompt_str, model_name, str
 
     kwargs = {}
     # Only pass reasoning_effort for GPT-5 models
-    if reasoning_effort and model_name in ['gpt-5', 'gpt-5.1']:
+    if reasoning_effort and model_name in ['gpt-5', 'gpt-5.1', 'gpt-5.2']:
         kwargs['reasoning_effort'] = reasoning_effort
         # print(f"[DEBUG] generate_data_fetching_code: reasoning_effort ENABLED for {model_name}")
     # elif reasoning_effort:
@@ -722,7 +722,7 @@ def execute_complete_program(request_id, code: str, try_cnt: int, task: str, mod
             try:
                 kwargs = {}
                 # Only pass reasoning_effort for GPT-5 models
-                if reasoning_effort and model_name in ['gpt-5', 'gpt-5.1']:
+                if reasoning_effort and model_name in ['gpt-5', 'gpt-5.1', 'gpt-5.2']:
                     kwargs['reasoning_effort'] = reasoning_effort
 
                 debug_response_str =  unified_llm_call(
