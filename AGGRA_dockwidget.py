@@ -63,6 +63,9 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 current_script_dir = os.path.dirname(os.path.abspath(__file__))
 keys_dir = os.path.join(current_script_dir, 'LLM_Find', 'Keys')
 handbooks_dir = os.path.join(current_script_dir, 'LLM_Find', 'Handbooks')
+if os.path.join(current_script_dir, 'LLM_Find') not in sys.path:
+    sys.path.append(os.path.join(current_script_dir, 'LLM_Find'))
+import handbook as handbook_store  # built-in + user handbook locations
 from .install_packages.check_packages import check_missing_libraries, \
     read_libraries_from_file, check_and_install_with_versions, parse_requirements_with_versions, check_version_mismatches
 
@@ -381,6 +384,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.addrowButton.clicked.connect(self.add_row)
         self.removerowButton.clicked.connect(self.remove_row)
         self.add_document_button.clicked.connect(self.add_documentation_file)
+        self.add_handbook_studio_button()
         # self.add_document_github_button.clicked.connect(self.open_upload_dialog)
         # self.add_document_github_button.clicked.connect(self.show_contribution_dialog) ## For adding data source to GitHub
         self.Add_new_key_btn.clicked.connect(self.show_add_key_dialog)
@@ -527,17 +531,61 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         else:
             self.update_openai_config_file()
 
-    def setup_initial_rows(self, keys_directory=keys_dir):
-        # Get all .toml files from the 'Handbooks' directory to show ALL available datasources
-        handbooks_files = [f for f in os.listdir(handbooks_dir) if f.endswith('.toml') and f != 'template.toml']
-        # Strip the .toml extension for display purposes
-        all_datasources = [os.path.splitext(f)[0] for f in handbooks_files]
+    def add_handbook_studio_button(self):
+        """Button on the 'Add New Data Source' tab that opens the Handbook Studio."""
+        self.handbook_studio = None
+        button = QPushButton("Create a handbook (with AI or manually)...")
+        button.setToolTip("Generate a handbook for a new data source with AI, or write one yourself")
+        font = button.font()
+        font.setBold(True)
+        button.setFont(font)
+        button.clicked.connect(self.open_handbook_studio)
+        self.create_handbook_button = button
+        self.verticalLayout_5.insertWidget(1, button)
 
-        # Add a row for each datasource (both with and without API keys)
-        for datasource in sorted(all_datasources):
-            self.add_row(key_name=datasource, keys_directory=keys_directory)
+    def open_handbook_studio(self):
+        from .handbook_studio_dialog import HandbookStudioDialog
+        if self.handbook_studio is None:
+            self.handbook_studio = HandbookStudioDialog(self.handbook_studio_settings, python_env(), self)
+            self.handbook_studio.handbook_saved.connect(self.refresh_datasource_rows)
+        self.handbook_studio.show()
+        self.handbook_studio.raise_()
+        self.handbook_studio.activateWindow()
+
+    def handbook_studio_settings(self):
+        """AI settings from the Settings tab, read when the studio needs them."""
+        reasoning_effort = None
+        if not self.reasoningEffortComboBox.isHidden():  # isVisible() is False while the tab is hidden
+            reasoning_effort = self.reasoningEffortComboBox.currentText() or None
+        return {
+            "api_key": self.OpenAI_key_LineEdit.text().strip(),
+            "model": self.modelNameComboBox.currentText(),
+            "reasoning_effort": reasoning_effort,
+        }
+
+    def refresh_datasource_rows(self, source_id=None):
+        """Rebuild the data source API key table after a handbook was added or removed."""
+        self.tableWidget.setRowCount(0)
+        self.setup_initial_rows()
+
+    # ── Data Sources API Keys table ──────────────────────────────────────────
+    # One row per credential (GIS Co-Scientist convention: a source may need
+    # several keys, each stored under its own name in <ID>.keys).
+
+    def refresh_key_entries(self):
+        self._key_entries = {label: (source_id, name)
+                             for label, source_id, name in handbook_store.key_entries()}
+        return self._key_entries
+
+    def setup_initial_rows(self, keys_directory=keys_dir):
+        # One row for every credential of every data source (built-in and user handbooks),
+        # and one row for each data source that needs no key
+        for label in self.refresh_key_entries():
+            self.add_row(key_name=label, keys_directory=keys_directory)
 
     def add_row(self, key_name=None, keys_directory=keys_dir):
+        if not hasattr(self, "_key_entries"):
+            self.refresh_key_entries()
         # Get the current number of rows
         row_count = self.tableWidget.rowCount()
         # Insert a new row at the end
@@ -545,44 +593,25 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         # Create a QWidget container for the password field
         container_widget = QtWidgets.QWidget()
-        # Ensure the container widget can expand
         container_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-
-        # Create the password field
         password_edit = QgsPasswordLineEdit(container_widget)
-        # Set the size policy for the password edit
         password_edit.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-
-        # Set placeholder text for when API key is required
         password_edit.setPlaceholderText("Input your data source API key")
-
-        # Set the layout for the container widget
         layout = QtWidgets.QHBoxLayout(container_widget)
         layout.addWidget(password_edit)
         layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
-
         # Store reference to password field in the container for easy access
         container_widget.password_edit = password_edit
+        container_widget.loading = False
 
-        # Create a QComboBox for the first column
+        # First column: which data source / credential this row is for
         combo_box = QtWidgets.QComboBox()
-        # Set size policy for the combo box
         combo_box.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-
-        # Add a blank option first
         combo_box.addItem("")  # Blank option at the top
-
-        # Get ALL datasource names from the Handbooks directory (both with and without API keys)
-        handbooks_files = [f for f in os.listdir(handbooks_dir) if f.endswith('.toml') and f != 'template.toml']
-        all_datasources = [os.path.splitext(f)[0] for f in handbooks_files]
-
-        # Add all datasource name options (both those that require API keys and those that don't)
-        combo_box.addItems(sorted(all_datasources))
-
-            # Connect the combo box change signal to a function that sets the corresponding API key
+        combo_box.addItems(list(self._key_entries))
         combo_box.currentIndexChanged.connect(lambda: self.set_api_key(combo_box, container_widget, keys_directory))
 
-        # Connect the password field change signal to update the .keys file when edited
+        # Save the key to the .keys file when edited
         password_edit.textChanged.connect(
             lambda: self.update_datasources_api_key_file(combo_box, container_widget, keys_directory))
 
@@ -590,200 +619,84 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             combo_box.setCurrentText(key_name)
         self.tableWidget.setCellWidget(row_count, 0, combo_box)
 
-        # Set the API key if provided
-        # if key_name:
-        #     settings = QSettings('YourOrganization', 'YourApplication')
-        #     api_key = settings.value(f'API_Key/{key_name}', '')
-        #     password_edit.setText(api_key)
-
         # Load the API key from the corresponding file
-        if key_name and keys_directory:
+        if key_name:
             self.set_api_key(combo_box, container_widget, keys_directory)
-            # key_file_path = os.path.join(keys_directory, f"{key_name}.keys")
-            # try:
-            #     with open(key_file_path, 'r') as key_file:
-            #         # Assuming the key file contains a line like: OpenAI_key = <actual_api_key>
-            #         for line in key_file:
-            #             if "=" in line:
-            #                 key_value = line.split('=')[1].strip()
-            #                 password_edit.setText(key_value)  # Set the API key in the password field
-            #                 break  # We only expect one line containing the key
-            # except FileNotFoundError:
-            #     QMessageBox.warning(self, "File Error", f"File not found: {key_file_path}")
 
-        # Create a QLineEdit for the second column
-        # password_edit = QgsPasswordLineEdit
         self.tableWidget.setCellWidget(row_count, 1, container_widget)
-        # self.tableWidget.setColumnWidth(1, 160)  # Adjust the width as needed
-        # Let the table adjust the row height to fit the content
         self.tableWidget.resizeRowToContents(row_count)
-
-        # Increment the row label counter
         self.row_label_counter += 1
-        # # Adjust the table height
-        # self.adjust_table_height()
 
-    def set_api_key(self, combo_box, container_widget, keys_directory):
-        # Get the selected key name from the combo box
-        selected_key_name = combo_box.currentText()
+    def _show_no_key(self, password_edit):
+        password_edit.setReadOnly(True)
+        password_edit.setEchoMode(QLineEdit.Normal)  # Show text normally, not masked
+        password_edit.setText("Data source do not require API Key")
+        password_edit.setStyleSheet("QLineEdit { color: gray; font-style: italic; }")
 
-        # Get reference to password field from the container
+    def set_api_key(self, combo_box, container_widget, keys_directory=keys_dir):
         password_edit = container_widget.password_edit
-
-        if selected_key_name:
-            # Construct the path to the corresponding .keys file
-            key_file_path = os.path.join(keys_directory, f"{selected_key_name}.keys")
-
-            try:
-                # Open the file and read the API key
-                with open(key_file_path, 'r') as key_file:
-                    for line in key_file:
-                        if "=" in line:
-                            key_value = line.split('=')[1].strip()
-
-                            # Check if the key value indicates no API key is required
-                            if "do not require" in key_value.lower() or "don not require" in key_value.lower():
-                                # Make read-only and show "no key required" message
-                                password_edit.setReadOnly(True)
-                                password_edit.setEchoMode(QLineEdit.Normal)  # Show text normally, not masked
-                                password_edit.setText("Data source do not require API Key")
-                                password_edit.setStyleSheet("QLineEdit { color: gray; font-style: italic; }")
-                            elif key_value == "":
-                                # Empty key value means API key is required but not yet filled
-                                password_edit.setReadOnly(False)
-                                password_edit.setEchoMode(QLineEdit.Password)  # Mask the API key
-                                password_edit.setStyleSheet("")  # Reset style
-                                password_edit.setPlaceholderText("Input API key for this data source")
-                                # password_edit.setPlaceholderText("Input API key for this data source")
-                                password_edit.clear()  # Leave empty for user to fill
-                            else:
-                                # Make editable and show the API key
-                                password_edit.setReadOnly(False)
-                                password_edit.setEchoMode(QLineEdit.Password)  # Mask the API key
-                                password_edit.setStyleSheet("")  # Reset style
-                                password_edit.setText(key_value)  # Set the API key in the password field
-                            break  # Only expecting one key per file
-            except FileNotFoundError:
-                # If no .keys file exists, this datasource doesn't need an API key
-                # Make read-only and show "no key required" message
-                password_edit.setReadOnly(True)
-                password_edit.setEchoMode(QLineEdit.Normal)  # Show text normally, not masked
-                password_edit.setText("Data source do not require API Key")
-                password_edit.setStyleSheet("QLineEdit { color: gray; font-style: italic; }")
-        else:
-            # Clear the field if no valid key is selected
+        entry = self._key_entries.get(combo_box.currentText())
+        container_widget.loading = True  # do not write the file while filling the field
+        try:
+            if not entry:
+                # Clear the field if no valid entry is selected
+                password_edit.setReadOnly(False)
+                password_edit.setEchoMode(QLineEdit.Password)
+                password_edit.setStyleSheet("")
+                password_edit.clear()
+                return
+            source_id, name = entry
+            value = handbook_store.get_key_value(source_id, name) if name else ""
+            if not name or handbook_store.is_no_key_marker(value):
+                self._show_no_key(password_edit)
+                return
             password_edit.setReadOnly(False)
-            password_edit.setEchoMode(QLineEdit.Password)  # Reset to password mode
-            password_edit.setStyleSheet("")  # Reset style
-            password_edit.clear()
+            password_edit.setEchoMode(QLineEdit.Password)  # Mask the API key
+            password_edit.setStyleSheet("")
+            password_edit.setPlaceholderText(f"Input {name} for this data source")
+            password_edit.setToolTip(self._key_link_tooltip(source_id, name))
+            password_edit.setText(value if handbook_store.key_value_is_set(value) else "")
+        finally:
+            container_widget.loading = False
 
-    def update_datasources_api_key_file(self, combo_box, container_widget, keys_directory):
-        # Get the selected key name from the combo box
-        selected_key_name = combo_box.currentText()
+    def _key_link_tooltip(self, source_id, name):
+        links = handbook_store.load_key_links(source_id)
+        url = links.get(name) or links.get("website") or links.get("signup_url") or ""
+        return f"{name} for {source_id}" + (f"\nGet a key at: {url}" if url else "")
 
-        # Get reference to password field from the container
+    def update_datasources_api_key_file(self, combo_box, container_widget, keys_directory=keys_dir):
         password_edit = container_widget.password_edit
-
-        # Don't update if the field is read-only (data source doesn't require API key)
-        if password_edit.isReadOnly():
+        # Don't update while loading, or if the data source doesn't require an API key
+        if container_widget.loading or password_edit.isReadOnly():
             return
-
-        # Ensure a key name is selected
-        if selected_key_name:
-            # Construct the path to the corresponding .keys file
-            key_file_path = os.path.join(keys_directory, f"{selected_key_name}.keys")
-            API_keyname = f"{selected_key_name}_key"
-
-            # Get the new API key from the password edit field
-            new_api_key = password_edit.text()
-
-            try:
-                # Check if the .keys file exists
-                if os.path.exists(key_file_path):
-                    # File exists - update the existing key
-                    with open(key_file_path, 'r') as key_file:
-                        lines = key_file.readlines()
-
-                    # Find the line with the API key and update only that line
-                    with open(key_file_path, 'w') as key_file:
-                        for line in lines:
-                            if line.startswith(f"{API_keyname} ="):
-                                # Replace the old key with the new key (empty or not)
-                                key_file.write(f"{API_keyname} = {new_api_key}\n")
-                            else:
-                                # Write the line back as it is if it's not the key line
-                                key_file.write(line)
-                else:
-                    # File doesn't exist - only create a new .keys file if API key is not empty
-                    if new_api_key.strip():
-                        with open(key_file_path, 'w') as key_file:
-                            key_file.write(f"[API_Key]\n{API_keyname} = {new_api_key}\n")
-
-                        # Update all combo boxes to reflect that this datasource now has a key
-                        # (This ensures consistency across all rows in the table)
-                        self.add_new_keyname_to_combo_boxes(selected_key_name)
-
-            except Exception as e:
-                QMessageBox.warning(self, "File Error",
-                                    f"Failed to update/create the key file: {key_file_path}\nError: {str(e)}")
+        entry = self._key_entries.get(combo_box.currentText())
+        if not entry or not entry[1]:
+            return
+        source_id, name = entry
+        try:
+            handbook_store.set_key_value(source_id, name, password_edit.text())
+        except Exception as e:
+            QMessageBox.warning(self, "File Error",
+                                f"Failed to save {name} for {source_id}:\nError: {str(e)}")
 
     def show_add_key_dialog(self):
-        # Create and display the dialog
-        keys_directory = keys_dir  # Adjust this path as needed
-        dialog = AddKeyDialog(keys_directory, self)
-
-        if dialog.exec_():  # If the dialog is successfully accepted (after pressing save)
-            # Get the new key name (the user input from the dialog)
-            new_key_name = dialog.name_input.text().strip()
-
-            # Add the new key name to the existing combo boxes
-            self.add_new_keyname_to_combo_boxes(new_key_name)
-            self.add_row(key_name=new_key_name, keys_directory=keys_directory)
+        dialog = AddKeyDialog(self)
+        if dialog.exec_():  # If the dialog is accepted (after pressing save)
+            self.refresh_datasource_rows()
 
     def add_new_keyname_to_combo_boxes(self, new_key_name):
-        # Iterate over the rows in your table and update the QComboBox for each row
-        for row in range(self.tableWidget.rowCount()):
-            combo_box = self.tableWidget.cellWidget(row, 0)  # Get the combo box in the first column of each row
-            if isinstance(combo_box, QtWidgets.QComboBox):
-                # Check if the new key is already in the combo box
-                if new_key_name not in [combo_box.itemText(i) for i in range(combo_box.count())]:
-                    # Add the new key to the combo box
-                    combo_box.addItem(new_key_name)
-
-        # After the dialog closes, refresh your table or UI to show the new key
-        # self.refresh_key_table()  # Assuming you have a method to refresh your table
+        # Kept for compatibility: rows are now rebuilt from the key entries
+        self.refresh_datasource_rows()
 
     # Function to show the remove key dialog and handle UI updates
     def show_remove_key_dialog(self):
-        keys_directory = keys_dir  # Adjust the path as needed
-        dialog = RemoveKeyDialog(keys_directory, self)
-
+        dialog = RemoveKeyDialog(self)
         if dialog.exec_():  # If the dialog is accepted (key successfully removed)
-            # Get the removed key name from the combo box
-            removed_key_name = dialog.combo_box.currentText()
-
-            # Remove the key from the combo boxes
-            self.remove_key_from_combo_boxes(removed_key_name)
+            self.refresh_datasource_rows()
 
     def remove_key_from_combo_boxes(self, removed_key_name):
-        # First, iterate over the rows and remove the row where the key is selected
-        for row in reversed(range(self.tableWidget.rowCount())):  # Reverse to avoid index issues when removing rows
-            combo_box = self.tableWidget.cellWidget(row, 0)  # Get the combo box in the first column of each row
-            if isinstance(combo_box, QtWidgets.QComboBox):
-                # Check if the key is currently selected in this row
-                if combo_box.currentText() == removed_key_name:
-                    # Remove the entire row
-                    self.tableWidget.removeRow(row)
-
-        # Iterate over the rows in your table and update the QComboBox for each row
-        for row in range(self.tableWidget.rowCount()):
-            combo_box = self.tableWidget.cellWidget(row, 0)  # Get the combo box in the first column of each row
-            if isinstance(combo_box, QtWidgets.QComboBox):
-                # Find the index of the removed key in the combo box
-                index = combo_box.findText(removed_key_name)
-                if index != -1:
-                    # Remove the key from the combo box if it exists
-                    combo_box.removeItem(index)
+        # Kept for compatibility: rows are now rebuilt from the key entries
+        self.refresh_datasource_rows()
 
     def on_model_changed(self, model_name):
         """Handle model selection change"""
@@ -1430,9 +1343,9 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             # datasource_filename = datasource_id.replace(':', '_')
             datasource_filename = datasource_id
 
-            # Look for the tool documentation file in all subdirectories
-            doc_file = None
-            for root, dirs, files in os.walk(docs_dir):
+            # Exact ID first (user handbooks override built-in ones), then a fuzzy search
+            doc_file = handbook_store.handbook_file_for(datasource_id)
+            for root, dirs, files in ([] if doc_file else os.walk(docs_dir)):
                 for file in files:
                     if file.endswith('.toml'):
                         # Check if the tool filename is in the file name
@@ -1661,11 +1574,9 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     def add_documentation_file(self):
         try:
-            destination_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "LLM_Find", "Handbooks")
-
-            # Ensure the destination directory exists; if not, create it
-            if not os.path.exists(destination_dir):
-                os.makedirs(destination_dir)
+            # User handbooks live outside the plugin folder so plugin updates keep them
+            destination_dir = handbook_store.User_handbooks_dir
+            handbook_store.ensure_user_dirs()
             # Open file dialog to select .toml files
             files, _ = QFileDialog.getOpenFileNames(
                 None, 'Select Documentation Files', '', 'TOML Files (*.toml)'
@@ -1682,6 +1593,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                     # Display success message
                 QMessageBox.information(None, 'Success',
                                         f'Documentation files have been successfully uploaded to {destination_dir}')
+                self.refresh_datasource_rows()
                 # else:
                 #     # If no files were selected, show an info message
                 #     QMessageBox.information(None, 'No Files Selected', 'No documentation files were selected.')
@@ -2454,80 +2366,78 @@ class ContributionDialog(QDialog):
 
 
 class AddKeyDialog(QDialog):
-    def __init__(self, keys_directory, parent=None):
+    """Store an API key for a data source, under the credential name its
+    handbook uses (e.g. FIRMS_MAP_KEY)."""
+
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.keys_directory = keys_directory
         self.setWindowTitle("Add New Key")
 
-        # Dialog layout
         layout = QVBoxLayout()
 
-        # Key Name input
-        self.name_label = QLabel("Enter the Key Name:")
-        self.name_input = QLineEdit()
-        layout.addWidget(self.name_label)
+        layout.addWidget(QLabel("Data source:"))
+        self.source_combo = QComboBox()
+        self.source_combo.addItems(handbook_store.list_handbook_ids())
+        self.source_combo.currentIndexChanged.connect(self.update_key_names)
+        layout.addWidget(self.source_combo)
+
+        layout.addWidget(QLabel("Key name (as used by the data source's handbook):"))
+        self.name_input = QComboBox()
+        self.name_input.setEditable(True)
         layout.addWidget(self.name_input)
 
-        # Key Value input
-        self.key_label = QLabel("Enter the Key Value:")
-        self.key_input = QLineEdit()
-        layout.addWidget(self.key_label)
+        layout.addWidget(QLabel("Key value:"))
+        self.key_input = QgsPasswordLineEdit()
         layout.addWidget(self.key_input)
 
-        # Save button
         self.save_button = QPushButton("Save")
         self.save_button.clicked.connect(self.save_key)
         layout.addWidget(self.save_button)
 
         self.setLayout(layout)
+        self.update_key_names()
+
+    def update_key_names(self):
+        source_id = self.source_combo.currentText()
+        self.name_input.clear()
+        if source_id:
+            names = handbook_store.required_key_names(source_id) or [f"{source_id}_key"]
+            self.name_input.addItems(names)
 
     def save_key(self):
-        key_name = self.name_input.text().strip()
+        source_id = self.source_combo.currentText().strip()
+        key_name = self.name_input.currentText().strip()
         key_value = self.key_input.text().strip()
 
-        if not key_name or not key_value:
-            QMessageBox.warning(self, "Input Error", "Both key name and key value are required.")
+        if not source_id or not key_name or not key_value:
+            QMessageBox.warning(self, "Input Error", "Data source, key name and key value are all required.")
             return
-
-        # Create the filename
-        file_name = f"{key_name}.keys"
-        file_path = os.path.join(self.keys_directory, file_name)
-
-        # Construct the content of the file
-        api_key_name = f"{key_name}_key"
-        content = f"[API_Key]\n{api_key_name} = {key_value}\n"
-
+        if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", key_name):
+            QMessageBox.warning(self, "Input Error",
+                                "The key name may only contain letters, digits and underscores.")
+            return
         try:
-            # Write the content to the new .keys file
-            with open(file_path, 'w') as key_file:
-                key_file.write(content)
-
-            # Show success message
-            # QMessageBox.information(self, "Success", f"New key file '{file_name}' created successfully.")
-
-            # Close the dialog
+            handbook_store.set_key_value(source_id, key_name, key_value)
             self.accept()
-
         except Exception as e:
-            QMessageBox.warning(self, "File Error", f"Failed to create the key file: {file_name}\nError: {str(e)}")
+            QMessageBox.warning(self, "File Error", f"Failed to save the key for {source_id}\nError: {str(e)}")
 
 
 class RemoveKeyDialog(QDialog):
-    def __init__(self, keys_directory, parent=None):
+    """Forget a stored API key."""
+
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.keys_directory = keys_directory
         self.setWindowTitle("Remove Key")
 
-        # Dialog layout
         layout = QVBoxLayout()
 
-        # Combo box to list all the key files
+        # Combo box listing every stored key
         self.combo_box = QComboBox()
         self.load_key_names()
         layout.addWidget(QLabel("Select a key to remove:"))
         layout.addWidget(self.combo_box)
 
-        # Remove button
         self.remove_button = QPushButton("Remove")
         self.remove_button.clicked.connect(self.remove_key)
         layout.addWidget(self.remove_button)
@@ -2535,37 +2445,27 @@ class RemoveKeyDialog(QDialog):
         self.setLayout(layout)
 
     def load_key_names(self):
-        # Get all .keys files from the 'Keys' directory (only removable keys, not public datasources)
-        keys_files = [f for f in os.listdir(self.keys_directory) if f.endswith('.keys') and f != 'template.keys']
-        all_key_names = [os.path.splitext(f)[0] for f in keys_files]
-        self.combo_box.addItems(all_key_names)
+        for label, source_id, name in handbook_store.key_entries():
+            if name and handbook_store.key_value_is_set(handbook_store.get_key_value(source_id, name)):
+                self.combo_box.addItem(label, (source_id, name))
 
     def remove_key(self):
-        selected_key_name = self.combo_box.currentText()
-
-        if not selected_key_name:
+        entry = self.combo_box.currentData()
+        if not entry:
             QMessageBox.warning(self, "Selection Error", "Please select a key to remove.")
             return
+        source_id, name = entry
 
         # Confirm deletion
         confirm = QMessageBox.question(self, "Confirm Delete",
-                                       f"Are you sure you want to remove the key '{selected_key_name}'?",
+                                       f"Are you sure you want to remove the key '{name}' of {source_id}?",
                                        QMessageBox.Yes | QMessageBox.No)
-
         if confirm == QMessageBox.Yes:
-            file_path = os.path.join(self.keys_directory, f"{selected_key_name}.keys")
             try:
-                # Remove the key file
-                os.remove(file_path)
-
-                # Show success message
-                QMessageBox.information(self, "Success", f"Key file '{selected_key_name}' removed successfully.")
-
-                # Close the dialog and return success
+                handbook_store.remove_key(source_id, name)
                 self.accept()
-
             except Exception as e:
-                QMessageBox.warning(self, "File Error", f"Failed to remove the key file: {file_path}\nError: {str(e)}")
+                QMessageBox.warning(self, "File Error", f"Failed to remove the key: {str(e)}")
 
 
 class StreamRedirector(QObject):
@@ -2612,7 +2512,9 @@ class RunGeneratedCodeThread(QThread):
 
         try:
             # exec_locals = {}
-            exec(self.code_to_run, self.exec_globals)
+            # Make stored data source keys available to code that reads os.environ["NAME"]
+            with handbook_store.keys_in_env(handbook_store.keys_env_for_code(self.code_to_run)):
+                exec(self.code_to_run, self.exec_globals)
         except Exception as e:
             self.success = False
             traceback_str = traceback.format_exc()

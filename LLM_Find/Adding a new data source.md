@@ -1,5 +1,29 @@
 # You can add your customized data source by adding an associated handbook following these requirements.
 
+# Creating a handbook with the Handbook Studio (recommended)
+On the ```Add New Data Source``` tab, click ```Create a handbook (with AI or manually)...``` to open the Handbook Studio.
+
+* **Generate with AI**: describe the data source or the data you need (or paste an API/documentation link) and click ```Generate handbook```. The AI finds the official source, reads its documentation, and writes the handbook and a code example. With the test option ticked, it also runs the code example as a small sample download in a separate Python process and fixes it if it fails.
+  * With an **OpenAI API key** (`sk-...`), the AI searches the web for the documentation.
+  * With a **GIBD API key**, web search is not available, so the AI relies on its own knowledge and on the documentation URLs you enter. Adding the documentation URL helps a lot.
+* **Write manually**: start a blank handbook, open an existing one (built-in or yours) to adapt it, or import a `.toml` file.
+* **Ask the AI to revise the draft**: type a change (e.g. "save the output as GeoJSON") or paste an error message, and the AI updates the handbook.
+* **Test code** runs the code example once; **Save handbook** makes the data source available to the agent immediately.
+
+## API keys (same convention as GIS Co-Scientist)
+If the data source needs credentials, tick ```This data source needs an API key``` and enter the **key names** the provider uses, e.g. `FIRMS_MAP_KEY` (comma-separated if it needs several, e.g. `EOG_CLIENT_ID, EOG_CLIENT_SECRET`), then enter each value.
+
+* In the handbook, `key_name = "FIRMS_MAP_KEY"` declares the credential; the values are stored in `<SourceID>.keys` under `[API_Key]`, never in the handbook.
+* The code example reads the key with `os.environ["FIRMS_MAP_KEY"]`. When data is requested, the plugin puts the stored values into environment variables while the generated code runs.
+* The handbook text may write `{FIRMS_MAP_KEY}` where the value belongs (e.g. in a URL or header); it is replaced with the stored value.
+* Keys can also be entered or changed in the ```Data Sources API Keys``` table: one row per credential, labelled `SourceID : KEY_NAME`.
+
+Older handbooks that use a `{<SourceID>_key}` placeholder keep working unchanged.
+
+Handbooks you create or import are saved in your QGIS profile folder, `AutonomousGIS_GeodataRetrieverAgent_data/Handbooks` (keys in `.../Keys`), outside the plugin folder, so they are kept when the plugin is updated. A handbook of yours with the same ID as a built-in one replaces the built-in one.
+
+The rest of this page describes the handbook format, for writing or editing handbooks by hand.
+
 # Handbook format
 
 A handhook consists of three required parts: `data_source_name`, `brief_dexription`, and `handbook`, being stored as a `.toml` format.

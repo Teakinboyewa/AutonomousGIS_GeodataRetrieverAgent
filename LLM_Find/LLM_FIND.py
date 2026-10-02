@@ -120,6 +120,18 @@ else:
     print()
     print(f"Handbook:\n{handbook_str}")
 
+# Credentials (GIS Co-Scientist convention): exported as environment variables
+# while the generated code runs, so the code reads them with os.environ["NAME"].
+credential_names = handbook.required_key_names(data_source_ID)
+if credential_names:
+    missing_keys = [n for n in credential_names if n not in handbook.source_keys_env(data_source_ID)]
+    if missing_keys:
+        print(f"Warning: no API key is set for {', '.join(missing_keys)}. "
+              f"Enter it in the 'Data Sources API Keys' table on the 'Add New Data Source' tab.")
+    handbook_str += (f"The API credentials for this data source are available as environment variables: "
+                     f"{', '.join(credential_names)}. Read them with os.environ[\"NAME\"] under exactly "
+                     f"these names; never hard-code or print them.\n")
+
 #%% GENERATE THE DATA FETCHING PROGRAM
 
 print("=" * 50)
@@ -146,8 +158,9 @@ print("CODE GENERATED SUCCESSFULLY")
 time.sleep(2)
 code = code.replace('area({osm_id})->.searchArea;',
                     'relation({osm_id}); map_to_area->.searchArea;')  # GPT-4o never follow the related instruction!
-code, error_collector = helper.execute_complete_program(request_id=request_id,code=code, try_cnt=5, task=task, model_name=model_name,
-                                       handbook_str=handbook_str, stream=True, reasoning_effort=reasoning_effort_value)
+with handbook.keys_in_env(handbook.source_keys_env(data_source_ID, code=code)):
+    code, error_collector = helper.execute_complete_program(request_id=request_id,code=code, try_cnt=5, task=task, model_name=model_name,
+                                           handbook_str=handbook_str, stream=True, reasoning_effort=reasoning_effort_value)
 code = code.replace('area({osm_id})->.searchArea;',
                     'relation({osm_id}); map_to_area->.searchArea;')  # GPT-4o never follow the related instruction!
 # display(Code(code, language='python'))
