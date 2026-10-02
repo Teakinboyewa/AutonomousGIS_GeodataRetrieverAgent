@@ -76,7 +76,14 @@ def make_source_id(name):
     """A file-name-safe source ID from a human-readable name, e.g.
     'OpenAQ API (Global Air Quality)' -> 'OpenAQ_API_Global_Air_Quality'."""
     cleaned = re.sub(r"[^A-Za-z0-9]+", "_", str(name or "")).strip("_")
-    cleaned = cleaned[:40].rstrip("_")
+    if len(cleaned) > 32:  # cut at a word boundary, never mid-word
+        words, kept = cleaned.split("_"), []
+        for word in words:
+            if kept and len("_".join(kept + [word])) > 32:
+                break
+            kept.append(word)
+        cleaned = "_".join(kept)[:32]
+    cleaned = cleaned.rstrip("_")
     if cleaned and cleaned[0].isdigit():
         cleaned = "DS_" + cleaned
     return cleaned or "New_Data_Source"
@@ -120,20 +127,56 @@ def normalize_source(data, fallback_name="", website=""):
     return out
 
 
-def parse_json_object(reply):
-    """Parse a model reply into a dict, tolerating code fences and prose."""
+def parse_json_object(reply, expected_keys=()):
+    """Parse a model reply into a dict, tolerating code fences, prose around
+    the object, and {placeholders} in that prose (which must not be mistaken
+    for the start of the object). Falls back to TOML, which models sometimes
+    answer with. Raises ValueError when no object can be found."""
     if not isinstance(reply, str) or not reply.strip():
         raise ValueError("empty reply from the model")
-    cleaned = re.sub(r"^```[a-zA-Z]*\s*", "", reply.strip())
-    cleaned = re.sub(r"\s*```$", "", cleaned).strip()
-    start, end = cleaned.find("{"), cleaned.rfind("}")
-    if start != -1 and end > start:
-        cleaned = cleaned[start:end + 1]
-    # strict=False: models often leave raw newlines inside code strings.
-    data = json.loads(cleaned, strict=False)
-    if not isinstance(data, dict):
-        raise ValueError("the model reply was not a JSON object")
-    return data
+    text = reply.strip()
+    candidates = [m.group(1).strip() for m in re.finditer(r"```[a-zA-Z]*\s*\n?(.*?)```", text, re.S)]
+    candidates.append(re.sub(r"\s*```$", "", re.sub(r"^```[a-zA-Z]*\s*", "", text)).strip())
+
+    decoder = json.JSONDecoder(strict=False)  # models often leave raw newlines inside code strings
+    found = []
+    for candidate in candidates:
+        try:
+            data = decoder.decode(candidate)
+            if isinstance(data, dict):
+                found.append(data)
+                continue
+        except ValueError:
+            pass
+        # Try every '{' as the start of the object (skips {placeholders} in prose).
+        for match in list(re.finditer(r"\{", candidate))[:300]:
+            try:
+                data, _ = decoder.raw_decode(candidate, match.start())
+            except ValueError:
+                continue
+            if isinstance(data, dict) and data:
+                found.append(data)
+                break
+    if expected_keys:
+        for data in found:
+            if any(k in data for k in expected_keys):
+                return data
+    if found:
+        return max(found, key=len)
+
+    for candidate in candidates:  # TOML answer
+        try:
+            try:
+                import tomllib as _toml
+            except ImportError:
+                import tomli as _toml
+            data = _toml.loads(candidate)
+            if isinstance(data, dict) and data:
+                return data
+        except Exception:
+            pass
+    preview = " ".join(text[:160].split())
+    raise ValueError(f"the AI reply was not a valid JSON object (it started with: {preview!r})")
 
 
 def extract_urls(text):
@@ -184,8 +227,10 @@ class LLMBackend:
             self._question_id = resp.json()["question_id"]
         return self._question_id
 
-    def chat(self, messages):
-        """A plain completion (no tools). Returns the reply text."""
+    def chat(self, messages, json_mode=False):
+        """A plain completion (no tools). Returns the reply text. With
+        ``json_mode`` the service is asked to return a JSON object only
+        (silently retried without it if the service rejects the option)."""
         if self.is_gibd:
             payload = {
                 "service_name": GIBD_SERVICE_NAME,
@@ -197,7 +242,12 @@ class LLMBackend:
             }
             if self.reasoning_effort:
                 payload["reasoning_effort"] = self.reasoning_effort
-            resp = requests.post(f"{GIBD_BASE_URL}/openai/{self.api_key}", json=payload, timeout=600)
+            url = f"{GIBD_BASE_URL}/openai/{self.api_key}"
+            resp = None
+            if json_mode:
+                resp = requests.post(url, json={**payload, "response_format": {"type": "json_object"}}, timeout=600)
+            if resp is None or resp.status_code != 200:
+                resp = requests.post(url, json=payload, timeout=600)
             if resp.status_code != 200:
                 raise RuntimeError(f"GIBD service error {resp.status_code}: {resp.text[:300]}")
             return resp.json()["choices"][0]["message"]["content"]
@@ -208,10 +258,33 @@ class LLMBackend:
                  for m in messages if m.get("role") in ("user", "assistant")]
         if system:
             kwargs["instructions"] = system
+        if json_mode:
+            try:
+                resp = self._openai().responses.create(model=self.model, input=turns,
+                                                       text={"format": {"type": "json_object"}}, **kwargs)
+                return resp.output_text
+            except Exception as e:  # e.g. a model without JSON mode: fall back to a plain reply
+                if "json" not in str(e).lower() and "format" not in str(e).lower():
+                    raise
         resp = self._openai().responses.create(model=self.model, input=turns, **kwargs)
         return resp.output_text
 
-    def research(self, prompt):
+    def chat_json(self, messages, expected_keys=(), log=print):
+        """chat() for replies that must be a JSON object: JSON mode, tolerant
+        parsing, and one retry asking for the bare object if parsing fails."""
+        reply = self.chat(messages, json_mode=True)
+        try:
+            return parse_json_object(reply, expected_keys)
+        except ValueError as e:
+            log(f"The AI reply could not be read ({e}); asking again for JSON only...")
+        retry = messages + [
+            {"role": "assistant", "content": reply or ""},
+            {"role": "user", "content": "Your reply was not a valid JSON object. Reply again with ONLY the "
+                                        "complete JSON object - starting with { and ending with } - and no "
+                                        "other text, code fences or comments."}]
+        return parse_json_object(self.chat(retry, json_mode=True), expected_keys)
+
+    def research(self, prompt, log=print):
         """A JSON-returning research call: with live web search when the key
         allows it, otherwise from the model's own knowledge."""
         if self.has_web_search:
@@ -219,11 +292,17 @@ class LLMBackend:
             if self.reasoning_effort:
                 kwargs["reasoning"] = {"effort": self.reasoning_effort}
             resp = self._openai().responses.create(model=self.model, input=prompt, **kwargs)
+            try:
+                return parse_json_object(resp.output_text)
+            except ValueError as e:
+                log(f"The AI reply could not be read ({e}); asking again for JSON only...")
+            resp = self._openai().responses.create(
+                model=self.model, input=prompt + "\n\nReply with ONLY the JSON object and no other text.", **kwargs)
             return parse_json_object(resp.output_text)
         note = ("\n\n(Web search is not available. Use your own well-established knowledge of this source "
                 "and the documentation text included above, if any. Do not invent URLs or parameters you "
                 "are not confident about; say so in the notes instead.)")
-        return parse_json_object(self.chat([{"role": "user", "content": prompt + note}]))
+        return self.chat_json([{"role": "user", "content": prompt + note}], log=log)
 
 
 # ── Documentation fetching ───────────────────────────────────────────────────
@@ -456,7 +535,8 @@ def _writer_rules(source_id=None):
 
 def _reply_shape():
     return ("Reply with ONLY a JSON object with these string keys: "
-            + ", ".join(FIELDS) + ".")
+            + ", ".join(FIELDS) + ". Start the reply with { and end it with } - no introduction, no "
+            "code fences, no comments. Inside the strings, write line breaks as \\n and escape double quotes.")
 
 
 def _writer_prompt(source_id, context):
@@ -660,12 +740,12 @@ def verify_source(source, source_id, python_exe, backend=None, keys=None, contex
         if docs_text is None:
             docs_text = fetch_doc_text(extract_urls(context) + [source.get("website", "")], log=log)
         log("Asking the AI to fix the handbook...")
-        reply = backend.chat([{"role": "system", "content": _SYSTEM_PROMPT},
-                              {"role": "user", "content": _revise_prompt(
-                                  source_id, context, source, err, sig, streak, docs_text)}])
         try:
-            source = normalize_source(parse_json_object(reply), source.get("data_source_name", ""),
-                                      source.get("website", ""))
+            data = backend.chat_json([{"role": "system", "content": _SYSTEM_PROMPT},
+                                      {"role": "user", "content": _revise_prompt(
+                                          source_id, context, source, err, sig, streak, docs_text)}],
+                                     expected_keys=("handbook", "code_example"), log=log)
+            source = normalize_source(data, source.get("data_source_name", ""), source.get("website", ""))
         except ValueError as e:
             log(f"The AI reply could not be read ({e}); keeping the previous version.")
             return source, {"status": "failed", "attempts": attempts, "error": err, "files": []}
@@ -701,8 +781,9 @@ def generate_handbook(query, backend, website="", source_id="", verify=True, pyt
     src = backend.research(
         "Given a data need, source name, or API link, pick the single best public data source. Confirm it "
         "exists and find the official website and documentation URL. Reply with ONLY a JSON object: "
-        '{"name": str, "provider": str, "website": str, "docs_url": str, "why": str}'
-        f"\n\nData need: {query}{hint}{docs_block}")
+        '{"name": str, "short_name": str (a short ID such as NASA_FIRMS or USGS_Water: letters, digits '
+        'and underscores, at most 24 characters), "provider": str, "website": str, "docs_url": str, "why": str}'
+        f"\n\nData need: {query}{hint}{docs_block}", log=log)
     log(f"Selected: {src.get('name') or 'the data source'} ({src.get('provider') or 'official provider'}).")
     check_stop()
 
@@ -719,18 +800,18 @@ def generate_handbook(query, backend, website="", source_id="", verify=True, pyt
         '{"method": str, "base_url": str, "requires_key": bool, '
         '"key_name": str (comma-separated UPPER_SNAKE env-var names, "" if none), '
         '"key_signup_url": str, "notes": str}'
-        f"\n\nData need: {query}\nSource: {json.dumps(src)}\n\nDOCUMENTATION:\n{docs}")
+        f"\n\nData need: {query}\nSource: {json.dumps(src)}\n\nDOCUMENTATION:\n{docs}", log=log)
     auth = "an API key is required" if access.get("requires_key") else "no API key is required"
     log(f"Access: {access.get('method') or 'programmatic'} at {access.get('base_url') or 'the documented endpoint'}; {auth}.")
     check_stop()
 
-    source_id = make_source_id(source_id or src.get("name") or query)
+    source_id = make_source_id(source_id or src.get("short_name") or src.get("name") or query)
     context = f"Data need: {query}\nSource: {json.dumps(src)}\nAccess: {json.dumps(access)}"
     log(f"Step 3/4: writing the handbook and a runnable example (source ID: {source_id})...")
-    reply = backend.chat([{"role": "system", "content": _SYSTEM_PROMPT},
-                          {"role": "user", "content": _writer_prompt(source_id, context)}])
-    source = normalize_source(parse_json_object(reply), src.get("name") or query,
-                              src.get("website") or website)
+    data = backend.chat_json([{"role": "system", "content": _SYSTEM_PROMPT},
+                              {"role": "user", "content": _writer_prompt(source_id, context)}],
+                             expected_keys=("handbook", "code_example"), log=log)
+    source = normalize_source(data, src.get("name") or query, src.get("website") or website)
     if not source["key_signup_url"] and source["requires_key"] == "true":
         source["key_signup_url"] = str(access.get("key_signup_url") or "")
     log("Draft ready.")
@@ -787,7 +868,7 @@ def refine_handbook(current, message, backend, source_id, history=None, log=prin
             messages.append({"role": turn["role"], "content": str(turn["content"])})
     messages.append({"role": "user", "content": prompt})
 
-    data = parse_json_object(backend.chat(messages))
+    data = backend.chat_json(messages, expected_keys=("handbook", "code_example", "assistant_message"), log=log)
     source = normalize_source(data, current.get("data_source_name", ""), current.get("website", ""))
     return source, (str(data.get("assistant_message") or "").strip() or "Updated the handbook.")
 
