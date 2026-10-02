@@ -5,11 +5,30 @@ import subprocess
 from qgis.PyQt.QtWidgets import QMessageBox, QProgressDialog
 from qgis.PyQt.QtCore import QSettings, Qt
 from concurrent.futures import ThreadPoolExecutor
-import pkg_resources
+import re
 try:
-    from importlib.metadata import version, PackageNotFoundError
+    from importlib.metadata import version, distributions, PackageNotFoundError
 except ImportError:
-    from importlib_metadata import version, PackageNotFoundError
+    from importlib_metadata import version, distributions, PackageNotFoundError
+try:
+    from packaging.version import parse as parse_version
+except ImportError:
+    parse_version = None
+
+
+def _normalize_name(name):
+    """Normalize a distribution name for comparison (PEP 503 style, using underscores)."""
+    return re.sub(r"[-_.]+", "_", name).lower()
+
+
+def _installed_distributions():
+    """Return {normalized_name: version} for all installed distributions."""
+    installed = {}
+    for dist in distributions():
+        name = dist.metadata.get("Name")
+        if name:
+            installed[_normalize_name(name)] = dist.version
+    return installed
 
 
 def check_missing_libraries(libraries):
@@ -33,9 +52,7 @@ def check_library(library_info):
        return (library, False)  # Library is installed
    except ImportError:
 
-       installed = {pkg.key.lower().replace("-", "_") for pkg in pkg_resources.working_set}
-       normalized_name = library.lower().replace("-", "_")
-       if normalized_name in installed:
+       if _normalize_name(library) in _installed_distributions():
            return (library, False)  # Installed but not importable
        return (library, True)  # Not installed
 
@@ -47,10 +64,7 @@ def check_library_installed_only(distribution_name):
     This does not check if the module is importable.
     Returns (distribution_name, is_missing: bool)
     """
-    installed = {pkg.key for pkg in pkg_resources.working_set}
-    normalized_name = distribution_name.lower().replace("-", "_")
-
-    if normalized_name in installed:
+    if _normalize_name(distribution_name) in _installed_distributions():
         return (distribution_name, False)
     else:
         return (distribution_name, True)
@@ -127,14 +141,7 @@ def get_installed_version(package_name):
     except:
         pass
 
-    # Method 2: Try pkg_resources with different name normalizations
-    try:
-        dist = pkg_resources.get_distribution(package_name)
-        return dist.version
-    except:
-        pass
-
-    # Method 3: Try with underscores and hyphens swapped
+    # Method 2: Try with underscores and hyphens swapped
     try:
         normalized = package_name.replace('-', '_')
         return version(normalized)
@@ -147,14 +154,9 @@ def get_installed_version(package_name):
     except:
         pass
 
-    # Method 4: Try all installed packages (fallback)
+    # Method 3: Try all installed packages (fallback)
     try:
-        installed = {pkg.key for pkg in pkg_resources.working_set}
-        normalized_name = package_name.lower().replace("-", "_")
-        for pkg_key in installed:
-            if pkg_key.lower().replace("-", "_") == normalized_name:
-                dist = pkg_resources.get_distribution(pkg_key)
-                return dist.version
+        return _installed_distributions().get(_normalize_name(package_name))
     except:
         pass
 
@@ -231,8 +233,13 @@ def compare_versions(v1, v2):
     Returns: -1 if v1 < v2, 0 if equal, 1 if v1 > v2
     """
     try:
-        return (pkg_resources.parse_version(v1) > pkg_resources.parse_version(v2)) - \
-               (pkg_resources.parse_version(v1) < pkg_resources.parse_version(v2))
+        if parse_version is not None:
+            a, b = parse_version(v1), parse_version(v2)
+        else:
+            # Fallback: compare the leading numeric components (e.g. "2.3.5" -> (2, 3, 5))
+            a = tuple(int(p) for p in re.findall(r"\d+", v1))
+            b = tuple(int(p) for p in re.findall(r"\d+", v2))
+        return (a > b) - (a < b)
     except:
         return 0
 
