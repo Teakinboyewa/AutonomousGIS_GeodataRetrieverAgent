@@ -24,6 +24,7 @@ from qgis.gui import QgsPasswordLineEdit
 
 from . import llm_find_loader
 from .data_sources_panel import _svg_pixmap
+from .debug_support import debug_this_thread
 
 handbook_store = llm_find_loader.load('handbook')
 hg = llm_find_loader.load('handbook_generator')
@@ -204,6 +205,7 @@ class _Worker(QThread):
         return self._stop
 
     def run(self):
+        debug_this_thread()
         try:
             self.done.emit(self._fn(self.log.emit, self.should_stop))
         except hg.Cancelled:

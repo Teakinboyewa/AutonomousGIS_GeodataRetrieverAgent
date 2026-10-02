@@ -66,9 +66,9 @@ def handbook_file_for(source_ID):
 
 
 def keys_file_for(source_ID):
-    """Path of the .keys file for ``source_ID`` (may not exist yet). User
-    handbooks keep their keys in the user Keys folder; built-in handbooks keep
-    theirs in the plugin Keys folder, unless the user folder already has one."""
+    """Path of the .keys file to read for ``source_ID`` (may not exist yet):
+    the user Keys folder once the user has saved a key for it (see
+    set_key_value), otherwise the plugin's bundled defaults."""
     user_path = os.path.join(User_keys_dir, f"{source_ID}.keys")
     if is_user_handbook(source_ID) or os.path.exists(user_path):
         return user_path
@@ -231,9 +231,24 @@ def get_key_value(source_ID, name):
     return ""
 
 
+def _writable_keys_file(source_ID):
+    """Where to save key values: always the user Keys folder. For a built-in
+    source, its bundled .keys file is copied there first. Keeps real keys out
+    of the plugin folder (so they survive plugin updates and never end up in
+    the plugin's git repository)."""
+    user_path = os.path.join(User_keys_dir, f"{source_ID}.keys")
+    if not os.path.exists(user_path):
+        ensure_user_dirs()
+        bundled = os.path.join(Keys_dir, f"{source_ID}.keys")
+        if os.path.exists(bundled):
+            import shutil
+            shutil.copyfile(bundled, user_path)
+    return user_path
+
+
 def set_key_value(source_ID, name, value):
     """Store one credential value, keeping the file's other keys and links."""
-    key_file = keys_file_for(source_ID)
+    key_file = _writable_keys_file(source_ID)
     config = _read_keys_config(key_file)
     if 'API_Key' not in config:
         config['API_Key'] = {}
@@ -291,7 +306,7 @@ def delete_user_handbook(source_ID):
 def remove_key(source_ID, name):
     """Forget a stored credential: clear the value of a key the handbook
     needs (so it can be entered again), or drop an extra key entirely."""
-    key_file = keys_file_for(source_ID)
+    key_file = _writable_keys_file(source_ID)
     config = _read_keys_config(key_file)
     if 'API_Key' not in config:
         return

@@ -1,0 +1,33 @@
+{
+    // Debug the plugin inside a running QGIS. See dev/README.md for the one-time setup.
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Start QGIS and attach",
+            "type": "debugpy",
+            "request": "attach",
+            "preLaunchTask": "Start QGIS (debug)",
+            "connect": { "host": "127.0.0.1", "port": 5678 },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "${env:APPDATA}\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\AutonomousGIS_GeodataRetrieverAgent"
+                }
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Attach to QGIS",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": { "host": "127.0.0.1", "port": 5678 },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "${env:APPDATA}\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\AutonomousGIS_GeodataRetrieverAgent"
+                }
+            ],
+            "justMyCode": true
+        }
+    ]
+}

@@ -65,6 +65,7 @@ current_script_dir = os.path.dirname(os.path.abspath(__file__))
 keys_dir = os.path.join(current_script_dir, 'LLM_Find', 'Keys')
 handbooks_dir = os.path.join(current_script_dir, 'LLM_Find', 'Handbooks')
 from . import llm_find_loader
+from .debug_support import debug_this_thread
 handbook_store = llm_find_loader.load('handbook')  # built-in + user handbook locations
 from .install_packages.check_packages import check_missing_libraries, \
     read_libraries_from_file, check_and_install_with_versions, parse_requirements_with_versions, check_version_mismatches
@@ -1911,6 +1912,7 @@ class ScriptThread(QThread):
 
 
     def run(self):
+        debug_this_thread()
         original_stdout = sys.stdout
         original_stderr = sys.stderr
 
@@ -2027,7 +2029,8 @@ class ScriptThread(QThread):
             # monitor_thread.start()
 
             # try:
-            exec(script_content, exec_globals, exec_locals)
+            # Compiled with the real file name so tracebacks and debugger breakpoints point to LLM_FIND.py
+            exec(compile(script_content, self.script_path, "exec"), exec_globals, exec_locals)
             # finally:
             #     stop_thread.set()
             #     monitor_thread.join()
@@ -2164,6 +2167,7 @@ class GPTRequestThread(QThread):
             raise ValueError("API Key not found in config file.")
 
     def run(self):
+        debug_this_thread()
         try:
             # self.update_config_file()
             from openai import OpenAI
@@ -2556,6 +2560,7 @@ class RunGeneratedCodeThread(QThread):
         self.exec_globals = exec_globals  # Store exec_globals
 
     def run(self):
+        debug_this_thread()
         self.success = True
         # Redirect stdout and stderr
         original_stdout = sys.stdout
