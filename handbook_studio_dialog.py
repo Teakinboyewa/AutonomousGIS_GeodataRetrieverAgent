@@ -117,6 +117,11 @@ QTabWidget::pane {{ border: 1px solid #e3e8ec; border-radius: 8px; background: #
 QTabBar::tab {{ background: #eef1f3; color: #5b6b75; border: 1px solid #e3e8ec; border-bottom: none;
                 padding: 6px 14px; margin-right: 2px; border-top-left-radius: 6px; border-top-right-radius: 6px; }}
 QTabBar::tab:selected {{ background: #ffffff; color: {ACCENT}; border-bottom: 2px solid {ACCENT}; }}
+QTabWidget#StepTabs::pane {{ background: #f4f6f8; border: none; border-top: 1px solid #dbe4ea; top: -1px; }}
+QTabWidget#StepTabs > QTabBar::tab {{ background: transparent; color: #5b6b75; border: none;
+    border-bottom: 3px solid transparent; padding: 9px 22px; margin-right: 4px; font-size: 11pt; }}
+QTabWidget#StepTabs > QTabBar::tab:hover {{ color: {ACCENT}; }}
+QTabWidget#StepTabs > QTabBar::tab:selected {{ color: {ACCENT}; border-bottom: 3px solid {ACCENT}; }}
 QScrollArea {{ background: transparent; border: none; }}
 QScrollArea > QWidget > QWidget {{ background: transparent; }}
 """
@@ -245,21 +250,13 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         root.setSpacing(12)
         root.addLayout(self._build_header())
 
-        splitter = QtWidgets.QSplitter(Qt.Horizontal)
-        splitter.setChildrenCollapsible(False)
-        splitter.setHandleWidth(10)
-        left_scroll = QtWidgets.QScrollArea()
-        left_scroll.setWidgetResizable(True)
-        left_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self._left_content = self._build_left_panel()
-        left_scroll.setWidget(self._left_content)
-        self._left_scroll = left_scroll
-        splitter.addWidget(left_scroll)
-        splitter.addWidget(self._build_form_panel())
-        splitter.setStretchFactor(0, 4)
-        splitter.setStretchFactor(1, 6)
-        splitter.setSizes([480, 740])
-        root.addWidget(splitter, 1)
+        # The three steps as tabs: Start - Refine with AI - Review & Save
+        self.step_tabs = QtWidgets.QTabWidget()
+        self.step_tabs.setObjectName("StepTabs")
+        self.step_tabs.addTab(self._build_start_tab(), "1   Start")
+        self.step_tabs.addTab(self._build_refine_tab(), "2   Refine with AI")
+        self.step_tabs.addTab(self._build_form_panel(), "3   Review && Save")
+        root.addWidget(self.step_tabs, 1)
         root.addLayout(self._build_footer())
 
     def _build_header(self):
@@ -296,20 +293,32 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         footer.addWidget(close_btn)
         return footer
 
-    def _build_left_panel(self):
-        panel = QtWidgets.QWidget()
-        v = QtWidgets.QVBoxLayout(panel)
-        v.setContentsMargins(0, 0, 4, 0)
-        v.setSpacing(12)
-        v.addWidget(self._build_start_card())
-        v.addWidget(self._build_progress_card())
+    def _build_start_tab(self):
+        """Step 1: how to start (left) and the generation progress (right)."""
+        page = QtWidgets.QWidget()
+        row = QtWidgets.QHBoxLayout(page)
+        row.setContentsMargins(12, 12, 12, 12)
+        row.setSpacing(12)
+        row.addWidget(self._build_start_card(), 3)
+        row.addWidget(self._build_progress_card(), 2, Qt.AlignTop)
+        scroll = QtWidgets.QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QtWidgets.QFrame.NoFrame)
+        scroll.setWidget(page)
+        return scroll
+
+    def _build_refine_tab(self):
+        """Step 2: the chat with the AI about the current draft."""
+        page = QtWidgets.QWidget()
+        v = QtWidgets.QVBoxLayout(page)
+        v.setContentsMargins(12, 12, 12, 12)
         v.addWidget(self._build_refine_card(), 1)
-        return panel
+        return page
 
     # Step 1: start ---------------------------------------------------------
     def _build_start_card(self):
         card, v = _card()
-        v.addLayout(_section_header(1, "Start", "How do you want to create the handbook?"))
+        v.addLayout(_section_header(None, "How do you want to create the handbook?"))
 
         self.ai_mode_btn = _button("✨  Generate with AI\nAI writes it for you", "mode")
         self.manual_mode_btn = _button("✎  Write manually\nBlank, edit or import", "mode")
@@ -330,6 +339,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self.ai_mode_btn.setChecked(True)
         self._on_mode_changed(0)
         v.addWidget(self.mode_tabs)
+        v.addStretch(1)  # spare height goes below the content, not between its parts
         return card
 
     def _build_ai_page(self):
@@ -469,13 +479,25 @@ class HandbookStudioDialog(QtWidgets.QDialog):
     # Step 2: refine -------------------------------------------------------
     def _build_refine_card(self):
         card, v = _card()
-        v.addLayout(_section_header(2, "Refine with AI",
-                                    "Ask for a change, or paste an error you got when using the handbook."))
+        v.addLayout(_section_header(None, "Refine the draft with AI",
+                                    "Ask for a change, or paste an error you got when using the handbook. "
+                                    "Changes are applied to the draft in Review & Save."))
         self.chat_view = QtWidgets.QTextBrowser()
         self.chat_view.setOpenExternalLinks(True)
         self.chat_view.setMinimumHeight(110)
-        self.chat_view.setPlaceholderText("e.g. 'Save the output as GeoJSON instead of CSV'")
+        self.chat_view.setPlaceholderText("Generate or open a handbook first, then tell the AI what to change.")
         v.addWidget(self.chat_view, 1)
+
+        suggestions = QtWidgets.QHBoxLayout()
+        suggestions.setSpacing(6)
+        suggestions.addWidget(_label("Try:", "hint"))
+        for text in ("Save the output as GeoJSON", "Handle pagination and rate limits",
+                     "Make the example download smaller", "Add the license to the caveats"):
+            chip = _button(text, "chip")
+            chip.clicked.connect(lambda _=False, t=text: (self.refine_input.setText(t), self.refine_input.setFocus()))
+            suggestions.addWidget(chip)
+        suggestions.addStretch(1)
+        v.addLayout(suggestions)
         row = QtWidgets.QHBoxLayout()
         self.refine_input = QtWidgets.QLineEdit()
         self.refine_input.setPlaceholderText("What should change?")
@@ -490,7 +512,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
     # Step 3: review & save ----------------------------------------------
     def _build_form_panel(self):
         card, v = _card()
-        v.addLayout(_section_header(3, "Review & save",
+        v.addLayout(_section_header(None, "Review & save",
                                     "Check the handbook, edit anything you like, test the code, then save."))
         mono = QFont("Consolas" if sys.platform == "win32" else "Monospace")
         mono.setStyleHint(QFont.Monospace)
@@ -605,14 +627,23 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self.save_btn.setMinimumHeight(34)
         self.save_btn.setDefault(True)
         self.save_btn.clicked.connect(self._on_save)
+        self.fix_btn = _button("✨  Fix with AI", tooltip="Send the error to the AI in 'Refine with AI'")
+        self.fix_btn.clicked.connect(self._on_fix_with_ai)
+        self.fix_btn.setVisible(False)
         v.addWidget(self.status_label)
         actions = QtWidgets.QHBoxLayout()
         actions.setSpacing(8)
         actions.addStretch(1)
+        actions.addWidget(self.fix_btn)
         actions.addWidget(self.test_btn)
         actions.addWidget(self.save_btn)
         v.addLayout(actions)
-        return card
+
+        page = QtWidgets.QWidget()
+        outer = QtWidgets.QVBoxLayout(page)
+        outer.setContentsMargins(12, 12, 12, 12)
+        outer.addWidget(card)
+        return page
 
     # ── Small UI helpers ─────────────────────────────────────────────────
     def _on_mode_changed(self, index):
@@ -622,24 +653,16 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         for i in range(self.mode_tabs.count()):
             policy = QtWidgets.QSizePolicy.Preferred if i == index else QtWidgets.QSizePolicy.Ignored
             self.mode_tabs.widget(i).setSizePolicy(QtWidgets.QSizePolicy.Preferred, policy)
+        self.mode_tabs.setMaximumHeight(self.mode_tabs.widget(index).sizeHint().height())
         self.mode_tabs.adjustSize()
 
-    def _fit_left_column(self):
-        """Never let the splitter squeeze the left column below what its
-        content needs. Measured once, after styling (padding changes sizes)."""
-        if not hasattr(self, "_left_scroll") or getattr(self, "_left_fitted", False):
-            return
-        self._left_fitted = True
-        self._left_content.ensurePolished()
-        for child in self._left_content.findChildren(QtWidgets.QWidget):
-            child.ensurePolished()
-        self._left_content.layout().invalidate()
-        needed = self._left_content.minimumSizeHint().width()
-        self._left_scroll.setMinimumWidth(needed + self._left_scroll.verticalScrollBar().sizeHint().width() + 8)
+    def _go_to(self, step):
+        """Switch to a step tab: 0 Start, 1 Refine with AI, 2 Review & Save."""
+        self.step_tabs.setCurrentIndex(step)
 
-    def showEvent(self, event):
-        super().showEvent(event)
-        self._fit_left_column()
+    def _on_fix_with_ai(self):
+        self._go_to(1)
+        self.refine_input.setFocus()
 
     @staticmethod
     def _scroll_page(page):
@@ -651,6 +674,8 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         return scroll
 
     def _set_status(self, text, kind="info"):
+        if hasattr(self, "fix_btn") and kind != "error":
+            self.fix_btn.setVisible(False)
         fg, bg, border = _BANNER_STYLES.get(kind, _BANNER_STYLES["info"])
         self.status_label.setText(text)
         self.status_label.setStyleSheet(f"QLabel {{ color: {fg}; background: {bg}; border: 1px solid {border}; "
@@ -923,6 +948,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self._render_steps()
         self._fill_form(source, source_id=source_id)
         self.form_tabs.setCurrentIndex(0)
+        self._go_to(2)
         if report is None:
             self._set_step(3, "skipped")
             self._set_status("Draft ready. Review it, then press 'Test code' or 'Save handbook'.", "info")
@@ -943,13 +969,16 @@ class HandbookStudioDialog(QtWidgets.QDialog):
             self.form_tabs.setCurrentIndex(3)
         else:
             self._set_step(3, "error")
-            self._set_status("The code example failed. Ask the AI to fix it (the error is filled in below), "
-                             "or see Progress > Show details.", "error")
             err = (report.get("error") or "").strip()
+            last_line = err.splitlines()[-1] if err else ""
+            self._set_status("The code example failed" + (f": {last_line[:160]}" if last_line else ".")
+                             + "  Click 'Fix with AI' to send the error to the AI.", "error")
             if err:
                 self._log("Last error:\n" + err[-1500:])
+                self.status_label.setToolTip(err[-1500:])
                 tail = "\n".join(err.splitlines()[-6:])
                 self.refine_input.setText(f"The code example failed with this error, please fix it: {tail}")
+                self.fix_btn.setVisible(True)
 
     # ── Refinement ───────────────────────────────────────────────────────
     def _on_refine(self):
@@ -1011,6 +1040,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self._fill_form({"handbook": "Write your first requirement here.\n" + hg.HANDBOOK_TAIL,
                          "code_example": _BLANK_CODE, "requires_key": "false"}, source_id="", key_values={})
         self.form_tabs.setCurrentIndex(0)
+        self._go_to(2)
         self._set_status("Blank handbook ready. Fill in the Overview, Handbook and Code example tabs.", "info")
         self.name_edit.setFocus()
 
@@ -1073,6 +1103,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self._chat_history = []
         self.chat_view.clear()
         self.form_tabs.setCurrentIndex(0)
+        self._go_to(2)
         self._log(f"Opened {path}")
         self._set_status(f"Opened '{source['data_source_name'] or source_id}'. Edit it, then save.", "info")
 
