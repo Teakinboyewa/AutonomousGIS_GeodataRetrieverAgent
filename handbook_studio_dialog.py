@@ -86,7 +86,8 @@ QFrame#Card {{ background: #ffffff; border: 1px solid #e3e8ec; border-radius: 10
 QFrame#OptionRow {{ background: #fafbfc; border: 1px solid #e3e8ec; border-radius: 8px; }}
 QLabel {{ color: #1f2d3a; background: transparent; }}
 QLabel[role="title"] {{ font-size: 16pt; font-weight: 700; }}
-QLabel[role="subtitle"], QLabel[role="hint"] {{ color: #74838c; }}
+QLabel[role="subtitle"] {{ color: #74838c; font-size: 9pt; }}
+QLabel[role="hint"] {{ color: #74838c; font-size: 8pt; }}
 QLabel[role="section"] {{ font-size: 11pt; font-weight: 700; }}
 QLabel[role="field"] {{ font-weight: 600; color: #3d4b55; }}
 QLabel[role="num"] {{ background: {ACCENT}; color: #ffffff; border-radius: 11px; font-weight: 700;
