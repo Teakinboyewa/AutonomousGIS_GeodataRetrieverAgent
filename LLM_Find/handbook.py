@@ -246,6 +246,48 @@ def set_key_value(source_ID, name, value):
         config.write(f)
 
 
+def source_info(source_ID):
+    """Everything the Data Sources cards show about one source, or None if
+    its handbook cannot be read."""
+    path = handbook_file_for(source_ID)
+    book = _load_book(source_ID)
+    if not path or book is None:
+        return None
+    names = required_key_names(source_ID)
+    missing = [n for n in names if not key_value_is_set(get_key_value(source_ID, n))]
+    is_user = is_user_handbook(source_ID)
+    return {
+        "id": source_ID,
+        "name": str(book.get("data_source_name", "") or source_ID).strip(),
+        "description": " ".join(str(book.get("brief_description", "") or "").split()),
+        "handbook": str(book.get("handbook", "") or book.get("hand_book", "") or "").strip(),
+        "code_example": str(book.get("code_example", "") or "").strip(),
+        "website": str(book.get("website", "") or "").strip(),
+        "caveats": str(book.get("caveats", "") or "").strip(),
+        "key_names": names,
+        "missing_keys": missing,
+        "key_links": load_key_links(source_ID) if names else {},
+        "is_user": is_user,
+        "overrides_builtin": is_user and os.path.exists(os.path.join(Handbooks_dir, f"{source_ID}.toml")),
+        "path": path,
+    }
+
+
+def list_sources():
+    """source_info() for every available data source, sorted by name."""
+    infos = [source_info(i) for i in list_handbook_ids()]
+    return sorted((i for i in infos if i), key=lambda i: i["name"].lower())
+
+
+def delete_user_handbook(source_ID):
+    """Delete a user handbook and its keys (a built-in one with the same ID,
+    if any, is used again afterwards)."""
+    for path in (os.path.join(User_handbooks_dir, f"{source_ID}.toml"),
+                 os.path.join(User_keys_dir, f"{source_ID}.keys")):
+        if os.path.exists(path):
+            os.remove(path)
+
+
 def remove_key(source_ID, name):
     """Forget a stored credential: clear the value of a key the handbook
     needs (so it can be entered again), or drop an extra key entirely."""

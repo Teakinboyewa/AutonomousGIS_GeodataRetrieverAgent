@@ -22,6 +22,7 @@
  ***************************************************************************/
 """
 import base64
+import html
 import configparser
 import os
 import platform
@@ -407,6 +408,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         # self.load_api_keys()
         self.setup_initial_rows()  # Set up initial rows in the table
+        self.build_data_source_tabs()
         # self.read_updated_config()
 
     def show_contribution_dialog(self):
@@ -542,11 +544,65 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.create_handbook_button = button
         self.verticalLayout_5.insertWidget(1, button)
 
-    def open_handbook_studio(self):
+    def build_data_source_tabs(self):
+        """Replace the 'Data Sources API Keys' section with two tabs: 'Data Sources'
+        (the available sources as cards) and 'API Keys' (the key table)."""
+        from .data_sources_panel import DataSourcesPanel
+        layout = self.verticalLayout_6
+
+        self.data_sources_panel = DataSourcesPanel()
+        self.data_sources_panel.add_requested.connect(lambda: self.open_handbook_studio())
+        self.data_sources_panel.edit_requested.connect(self.open_handbook_studio)
+        self.data_sources_panel.keys_requested.connect(self.show_api_keys)
+        self.data_sources_panel.sources_changed.connect(self.refresh_datasource_rows)
+
+        # Move the existing key table, its +/- buttons and the note into the API Keys tab
+        keys_page = QtWidgets.QWidget()
+        keys_layout = QVBoxLayout(keys_page)
+        keys_layout.setContentsMargins(4, 6, 4, 4)
+        layout.removeWidget(self.label_12)
+        self.label_12.hide()
+        layout.removeWidget(self.tableWidget)
+        keys_layout.addWidget(self.tableWidget, 1)
+        layout.removeItem(self.horizontalLayout_10)
+        self.horizontalLayout_10.setParent(None)
+        keys_layout.addLayout(self.horizontalLayout_10)
+        layout.removeWidget(self.label_15)
+        keys_layout.addWidget(self.label_15)
+        self.label_15.setText(
+            "<span style='font-style:italic; color:#6f6f53;'>Note: API keys are stored only on your computer: "
+            "for built-in data sources in the plugin's LLM_Find/Keys folder, for your own data sources in "
+            f"{html.escape(handbook_store.User_keys_dir)}.</span>")
+        for i in reversed(range(layout.count())):  # the tabs take the free space instead of the spacer
+            if layout.itemAt(i).spacerItem() is not None:
+                layout.takeAt(i)
+
+        self.data_sources_tabs = QtWidgets.QTabWidget()
+        self.data_sources_tabs.addTab(self.data_sources_panel, "Data Sources")
+        self.data_sources_tabs.addTab(keys_page, "API Keys")
+        # Key status on the cards may have changed while the API Keys tab was open
+        self.data_sources_tabs.currentChanged.connect(
+            lambda index: self.data_sources_panel.refresh() if index == 0 else None)
+        layout.insertWidget(1, self.data_sources_tabs, 1)
+
+    def show_api_keys(self, source_id=None):
+        """Switch to the API Keys tab and focus the first key of ``source_id``."""
+        self.data_sources_tabs.setCurrentIndex(1)
+        for row in range(self.tableWidget.rowCount()):
+            entry = self._key_entries.get(self.tableWidget.cellWidget(row, 0).currentText())
+            if entry and entry[0] == source_id and entry[1]:
+                self.tableWidget.selectRow(row)
+                self.tableWidget.scrollTo(self.tableWidget.model().index(row, 0))
+                self.tableWidget.cellWidget(row, 1).password_edit.setFocus()
+                break
+
+    def open_handbook_studio(self, source_id=None):
         from .handbook_studio_dialog import HandbookStudioDialog
         if self.handbook_studio is None:
             self.handbook_studio = HandbookStudioDialog(self.handbook_studio_settings, python_env(), self)
             self.handbook_studio.handbook_saved.connect(self.refresh_datasource_rows)
+        if source_id:
+            self.handbook_studio.open_source(source_id)
         self.handbook_studio.show()
         self.handbook_studio.raise_()
         self.handbook_studio.activateWindow()
@@ -566,6 +622,8 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         """Rebuild the data source API key table after a handbook was added or removed."""
         self.tableWidget.setRowCount(0)
         self.setup_initial_rows()
+        if hasattr(self, "data_sources_panel"):
+            self.data_sources_panel.refresh()
 
     # ── Data Sources API Keys table ──────────────────────────────────────────
     # One row per credential (GIS Co-Scientist convention: a source may need

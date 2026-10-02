@@ -620,6 +620,16 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self._load_file(path, source_id)
         self._loaded_user_id = source_id if handbook_store.is_user_handbook(source_id) else ""
 
+    def open_source(self, source_id):
+        """Open an existing data source for editing (used by the Data Sources cards)."""
+        self._refresh_existing()
+        index = self.existing_combo.findData(source_id)
+        if index < 0:
+            return
+        self.existing_combo.setCurrentIndex(index)
+        self.mode_tabs.setCurrentIndex(1)
+        self._on_open_existing()
+
     def _on_import(self):
         path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Import a handbook", "", "TOML Files (*.toml)")
         if path:
