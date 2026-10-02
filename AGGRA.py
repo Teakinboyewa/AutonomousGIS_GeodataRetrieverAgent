@@ -218,8 +218,10 @@ class AGGRA:
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.first_start:
-            self.first_start = False
+            # Only mark as started once the widget exists, so a failure here is
+            # reported again (with its real error) on the next click.
             self.dlg = AGGRADockWidget()
+            self.first_start = False
 
         # TODO: fix to allow choice of dock location
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dlg)

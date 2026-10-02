@@ -63,9 +63,8 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 current_script_dir = os.path.dirname(os.path.abspath(__file__))
 keys_dir = os.path.join(current_script_dir, 'LLM_Find', 'Keys')
 handbooks_dir = os.path.join(current_script_dir, 'LLM_Find', 'Handbooks')
-if os.path.join(current_script_dir, 'LLM_Find') not in sys.path:
-    sys.path.append(os.path.join(current_script_dir, 'LLM_Find'))
-import handbook as handbook_store  # built-in + user handbook locations
+from . import llm_find_loader
+handbook_store = llm_find_loader.load('handbook')  # built-in + user handbook locations
 from .install_packages.check_packages import check_missing_libraries, \
     read_libraries_from_file, check_and_install_with_versions, parse_requirements_with_versions, check_version_mismatches
 

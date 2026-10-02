@@ -19,12 +19,10 @@ from qgis.PyQt.QtCore import Qt, QThread, pyqtSignal, QRegExp
 from qgis.PyQt.QtGui import QFont, QRegExpValidator
 from qgis.gui import QgsPasswordLineEdit
 
-_LLM_FIND_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'LLM_Find')
-if _LLM_FIND_DIR not in sys.path:
-    sys.path.append(_LLM_FIND_DIR)
+from . import llm_find_loader
 
-import handbook as handbook_store  # noqa: E402
-import handbook_generator as hg  # noqa: E402
+handbook_store = llm_find_loader.load('handbook')
+hg = llm_find_loader.load('handbook_generator')
 
 
 _BLANK_CODE = '''import requests
