@@ -67,6 +67,7 @@ handbooks_dir = os.path.join(current_script_dir, 'LLM_Find', 'Handbooks')
 from . import llm_find_loader
 from .debug_support import debug_this_thread
 handbook_store = llm_find_loader.load('handbook')  # built-in + user handbook locations
+model_catalog = llm_find_loader.load('LLM_Find_ModelProvider')  # default model, reasoning models
 from .install_packages.check_packages import check_missing_libraries, \
     read_libraries_from_file, check_and_install_with_versions, parse_requirements_with_versions, check_version_mismatches
 
@@ -767,8 +768,8 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             # Check current model selection
             model_name = self.modelNameComboBox.currentText()
 
-        # Check if this model supports reasoning effort
-        show = model_name in ['gpt-5', 'gpt-5.1', 'gpt-5.2']
+        # Check if this model supports reasoning effort (models and their efforts: LLM_Find_ModelProvider)
+        show = model_catalog.supports_reasoning_effort(model_name)
 
         # Show/hide the reasoning effort controls
         self.reasoningEffortLabel.setVisible(show)
@@ -776,18 +777,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         if show:
             # Update combo box items based on model
-            if model_name == 'gpt-5.1':
-                # GPT-5.1 supports: none, low, high
-                effort_options = ['none', 'low', 'high']
-                default_effort = 'low'
-            elif model_name == 'gpt-5':
-                # GPT-5 supports: minimal, low, medium, high
-                effort_options = ['minimal', 'low', 'medium', 'high']
-                default_effort = 'minimal'
-            elif model_name == 'gpt-5.2':
-                # GPT-5.2 supports: minimal, low, medium, high
-                effort_options = ['none', 'low','medium','high','xhigh']
-                default_effort = 'low'
+            effort_options, default_effort = model_catalog.REASONING_MODELS[model_name]
 
             # Update the combo box items
             # current_text = self.reasoningEffortComboBox.currentText()
@@ -1231,7 +1221,7 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         # Get reasoning effort if GPT-5 or GPT-5.1 is selected
         self.reasoning_effort_value = 'medium'  # default
-        if self.model_name in ['gpt-5', 'gpt-5.1', 'gpt-5.2']:
+        if model_catalog.supports_reasoning_effort(self.model_name):
             self.reasoning_effort_value = self.reasoningEffortComboBox.currentText()
 
         self.thread = ScriptThread(script_path, self.task, self.saved_fname, self.api_keys, self.model_name, self.reasoning_effort_value)
@@ -1503,9 +1493,9 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # Code for handling the chatgpt_ans_textBrowser
         if "AI IS SELECTING DATA SOURCE ..." in line:
             current_model = self.modelNameComboBox.currentText()
-            if current_model == 'gpt-5':
+            if model_catalog.supports_reasoning_effort(current_model):
                 self.update_chatgpt_ans_textBrowser(
-                    "Selecting data source (may take some time while GPT-5 is reasoning)...",
+                    "Selecting data source (may take some time while the model is reasoning)...",
                     is_user=False)
             else:
                 self.update_chatgpt_ans_textBrowser("Selecting data source...", is_user=False)
@@ -1526,9 +1516,9 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         elif "AI IS GENERATING THE DATA FETCHING PROGRAM ..." in line:
             current_model = self.modelNameComboBox.currentText()
-            if current_model == 'gpt-5':
+            if model_catalog.supports_reasoning_effort(current_model):
                 self.update_chatgpt_ans_textBrowser(
-                    "Generating code for data retriever (may take some time while GPT-5 is reasoning)...", is_user=False)
+                    "Generating code for data retriever (may take some time while the model is reasoning)...", is_user=False)
             else:
                 self.update_chatgpt_ans_textBrowser("Generating code for data retriever...", is_user=False)
 
@@ -1537,17 +1527,17 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         elif "AI IS GENERATING THE DATA FETCHING PROGRAM ..." in line:
             current_model = self.modelNameComboBox.currentText()
-            if current_model == 'gpt-5':
+            if model_catalog.supports_reasoning_effort(current_model):
                 self.update_chatgpt_ans_textBrowser(
-                    "Generating code for data retriever (may take some time while GPT-5 is reasoning)...", is_user=False)
+                    "Generating code for data retriever (may take some time while the model is reasoning)...", is_user=False)
             else:
                 self.update_chatgpt_ans_textBrowser("Generating code for data retriever...", is_user=False)
 
         elif "AI IS DEBUGGING THE CODE..." in line:
             current_model = self.modelNameComboBox.currentText()
-            if current_model == 'gpt-5':
+            if model_catalog.supports_reasoning_effort(current_model):
                 self.update_chatgpt_ans_textBrowser(
-                    "An error occurred, debugging code (may take some time while GPT-5 is reasoning)...", is_user=False)
+                    "An error occurred, debugging code (may take some time while the model is reasoning)...", is_user=False)
             else:
                 self.update_chatgpt_ans_textBrowser("An error occurred, debugging code...", is_user=False)
 

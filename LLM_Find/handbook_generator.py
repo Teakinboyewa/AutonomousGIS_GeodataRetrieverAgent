@@ -29,7 +29,7 @@ import time
 
 import requests
 
-DEFAULT_MODEL = "gpt-5.2"
+DEFAULT_MODEL = "gpt-6-luna"
 GIBD_SERVICE_NAME = "Spatial Data Retrieval Agent"
 GIBD_BASE_URL = "https://www.gibd.online/api"
 
@@ -209,7 +209,7 @@ class LLMBackend:
         return not self.is_gibd
 
     def _is_reasoning_model(self):
-        return self.model.lower().startswith(("gpt-5", "o1", "o3", "o4"))
+        return self.model.lower().startswith(("gpt-5", "gpt-6", "o1", "o3", "o4"))
 
     def _openai(self):
         if self._client is None:

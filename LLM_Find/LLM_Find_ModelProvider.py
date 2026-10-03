@@ -15,6 +15,23 @@ if current_script_dir not in sys.path:
     sys.path.append(current_script_dir)
 
 
+# Default model (first in the Settings list) and the models that take a
+# reasoning effort, with the efforts offered in Settings and the default one.
+# This is the one place to update when OpenAI releases new models.
+DEFAULT_MODEL = 'gpt-6-luna'
+REASONING_MODELS = {
+    'gpt-6-luna': (['none', 'low', 'medium', 'high', 'xhigh'], 'low'),
+    'gpt-5.2': (['none', 'low', 'medium', 'high', 'xhigh'], 'low'),
+    'gpt-5.1': (['none', 'low', 'high'], 'low'),
+    'gpt-5': (['minimal', 'low', 'medium', 'high'], 'minimal'),
+}
+
+
+def supports_reasoning_effort(model_name):
+    """True for models that accept a reasoning effort (see REASONING_MODELS)."""
+    return model_name in REASONING_MODELS
+
+
 class ModelProvider(ABC):
     """Abstract base class for AI model providers"""
 
