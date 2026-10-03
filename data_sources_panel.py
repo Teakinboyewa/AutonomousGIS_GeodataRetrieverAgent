@@ -363,6 +363,10 @@ class DataSourceDetailDialog(QtWidgets.QDialog):
         buttons.addWidget(edit_btn)
         buttons.addWidget(download_btn)
         if info["is_user"]:
+            share_btn = QtWidgets.QPushButton("Share on GitHub...")
+            share_btn.setToolTip("Contribute this data source to the plugin, so every user gets it")
+            share_btn.clicked.connect(self._on_share)
+            buttons.addWidget(share_btn)
             delete_btn = QtWidgets.QPushButton("Delete")
             delete_btn.setStyleSheet("QPushButton { color: #a31b1b; }")
             delete_btn.clicked.connect(self._on_delete)
@@ -386,6 +390,10 @@ class DataSourceDetailDialog(QtWidgets.QDialog):
         label.setFont(font)
         label.setStyleSheet("color: #5b6b75; margin-top: 8px;")
         return label
+
+    def _on_share(self):
+        from .github_share import ShareOnGitHubDialog
+        ShareOnGitHubDialog(self.info["id"], parent=self).exec_()
 
     def _on_delete(self):
         if delete_source(self.info, self):

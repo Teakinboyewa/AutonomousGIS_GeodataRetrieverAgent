@@ -237,6 +237,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self._worker = None
         self._chat_history = []
         self._loaded_user_id = ""    # user handbook currently being edited
+        self._last_test = ""         # result of the last code test, reported when sharing
         self._step_states = ["pending"] * len(_STEPS)
         self._generating = False
         self._build_ui()
@@ -631,9 +632,13 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self.fix_btn = _button("✨  Fix with AI", tooltip="Send the error to the AI in 'Refine with AI'")
         self.fix_btn.clicked.connect(self._on_fix_with_ai)
         self.fix_btn.setVisible(False)
+        self.share_btn = _button("Share on GitHub...", "link",
+                                 "Contribute this data source to the plugin, so every user gets it")
+        self.share_btn.clicked.connect(self._on_share)
         v.addWidget(self.status_label)
         actions = QtWidgets.QHBoxLayout()
         actions.setSpacing(8)
+        actions.addWidget(self.share_btn)
         actions.addStretch(1)
         actions.addWidget(self.fix_btn)
         actions.addWidget(self.test_btn)
@@ -944,6 +949,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
     def _on_generated(self, result):
         source_id, source, report = result
         self._loaded_user_id = ""
+        self._last_test = ""
         for i in range(3):
             self._step_states[i] = "done"
         self._render_steps()
@@ -959,6 +965,9 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         if not report:
             return
         status = report.get("status")
+        self._last_test = {"verified": "passed in the Handbook Studio",
+                           "skipped_needs_key": "",
+                           }.get(status, "failed in the Handbook Studio")
         if status == "verified":
             self._set_step(3, "done")
             self._set_status("Tested: the sample download worked. Review the handbook, then save it.", "success")
@@ -980,6 +989,30 @@ class HandbookStudioDialog(QtWidgets.QDialog):
                 tail = "\n".join(err.splitlines()[-6:])
                 self.refine_input.setText(f"The code example failed with this error, please fix it: {tail}")
                 self.fix_btn.setVisible(True)
+
+    # ── Sharing ──────────────────────────────────────────────────────────
+    def _on_share(self):
+        """Contribute the saved handbook to the plugin repository on GitHub."""
+        if not self._loaded_user_id:
+            QtWidgets.QMessageBox.information(self, "Save first",
+                                              "Save the handbook first; then you can share it on GitHub.")
+            return
+        path = os.path.join(handbook_store.User_handbooks_dir, f"{self._loaded_user_id}.toml")
+        try:
+            saved = hg.load_toml_source(path)
+        except Exception:
+            saved = None
+        if saved != hg.normalize_source(self._current_source()) or self._source_id() != self._loaded_user_id:
+            if QtWidgets.QMessageBox.question(
+                    self, "Save changes?",
+                    "The draft has changes that are not saved yet. Save them before sharing?") \
+                    != QtWidgets.QMessageBox.Yes:
+                return
+            self._on_save()
+            if getattr(self, "_status_kind", "") != "success":
+                return
+        from .github_share import ShareOnGitHubDialog
+        ShareOnGitHubDialog(self._loaded_user_id, tested=self._last_test, parent=self).exec_()
 
     # ── Refinement ───────────────────────────────────────────────────────
     def _on_refine(self):
@@ -1038,6 +1071,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
                 self, "Start over?", "Clear the current draft?") != QtWidgets.QMessageBox.Yes:
             return
         self._loaded_user_id = ""
+        self._last_test = ""
         self._fill_form({"handbook": "Write your first requirement here.\n" + hg.HANDBOOK_TAIL,
                          "code_example": _BLANK_CODE, "requires_key": "false"}, source_id="", key_values={})
         self.form_tabs.setCurrentIndex(0)
@@ -1076,6 +1110,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
             return
         self._load_file(path, source_id)
         self._loaded_user_id = source_id if handbook_store.is_user_handbook(source_id) else ""
+        self._last_test = ""
 
     def open_source(self, source_id):
         """Open an existing data source for editing (used by the Data Sources cards)."""
@@ -1091,6 +1126,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Import a handbook", "", "TOML Files (*.toml)")
         if path:
             self._loaded_user_id = ""
+            self._last_test = ""
             self._load_file(path, os.path.splitext(os.path.basename(path))[0])
 
     def _load_file(self, path, source_id):
