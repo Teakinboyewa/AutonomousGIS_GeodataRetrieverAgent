@@ -45,6 +45,9 @@ download_data()
 
 ACCENT = "#2c5f7c"
 
+# Order of the step tabs
+STEP_START, STEP_REVIEW, STEP_REFINE = 0, 1, 2
+
 _EXAMPLES = [
     ("NASA FIRMS", "NASA FIRMS active fire detections (MODIS/VIIRS)"),
     ("USGS streamflow", "USGS Water Services: real-time and daily streamflow at gauges in the US"),
@@ -272,9 +275,9 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         tab_font = self.step_tabs.tabBar().font()
         tab_font.setPointSizeF(max(tab_font.pointSizeF(), 1.0) * 1.08)
         self.step_tabs.tabBar().setFont(tab_font)
-        self.step_tabs.addTab(self._build_start_tab(), "1   Start")
-        self.step_tabs.addTab(self._build_refine_tab(), "2   Refine with AI")
-        self.step_tabs.addTab(self._build_form_panel(), "3   Review && Save")
+        self.step_tabs.addTab(self._build_start_tab(), "1   Start")            # STEP_START
+        self.step_tabs.addTab(self._build_form_panel(), "2   Review && Save")   # STEP_REVIEW
+        self.step_tabs.addTab(self._build_refine_tab(), "3   Refine with AI")  # STEP_REFINE
         root.addWidget(self.step_tabs, 1)
         root.addLayout(self._build_footer())
 
@@ -680,11 +683,11 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self.mode_tabs.adjustSize()
 
     def _go_to(self, step):
-        """Switch to a step tab: 0 Start, 1 Refine with AI, 2 Review & Save."""
+        """Switch to a step tab: STEP_START, STEP_REVIEW or STEP_REFINE."""
         self.step_tabs.setCurrentIndex(step)
 
     def _on_fix_with_ai(self):
-        self._go_to(1)
+        self._go_to(STEP_REFINE)
         self.refine_input.setFocus()
 
     @staticmethod
@@ -972,7 +975,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self._render_steps()
         self._fill_form(source, source_id=source_id)
         self.form_tabs.setCurrentIndex(0)
-        self._go_to(2)
+        self._go_to(STEP_REVIEW)
         if report is None:
             self._set_step(3, "skipped")
             self._set_status("Draft ready. Review it, then press 'Test code' or 'Save handbook'.", "info")
@@ -1092,7 +1095,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self._fill_form({"handbook": "Write your first requirement here.\n" + hg.HANDBOOK_TAIL,
                          "code_example": _BLANK_CODE, "requires_key": "false"}, source_id="", key_values={})
         self.form_tabs.setCurrentIndex(0)
-        self._go_to(2)
+        self._go_to(STEP_REVIEW)
         self._set_status("Blank handbook ready. Fill in the Overview, Handbook and Code example tabs.", "info")
         self.name_edit.setFocus()
 
@@ -1157,7 +1160,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self._chat_history = []
         self.chat_view.clear()
         self.form_tabs.setCurrentIndex(0)
-        self._go_to(2)
+        self._go_to(STEP_REVIEW)
         self._log(f"Opened {path}")
         self._set_status(f"Opened '{source['data_source_name'] or source_id}'. Edit it, then save.", "info")
 
