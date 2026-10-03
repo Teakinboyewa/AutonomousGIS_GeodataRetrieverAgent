@@ -179,7 +179,7 @@ class DataSourceCard(QtWidgets.QFrame):
             self.delete_btn.setToolTip("Delete this data source")
             self.delete_btn.setAutoRaise(True)
             self.delete_btn.setCursor(Qt.ArrowCursor)
-            self.delete_btn.setStyleSheet("QToolButton { color: #b9c2c8; font-size: 13pt; border: none; }"
+            self.delete_btn.setStyleSheet("QToolButton { color: #b9c2c8; font-size: 11pt; border: none; }"
                                           "QToolButton:hover { color: #a31b1b; background: #f6e9e9; }")
             self.delete_btn.clicked.connect(lambda: self.delete_requested.emit(self.info))
             self.delete_btn.setVisible(False)

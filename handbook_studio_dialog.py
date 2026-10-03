@@ -85,10 +85,10 @@ QDialog#HandbookStudio {{ background: #f4f6f8; }}
 QFrame#Card {{ background: #ffffff; border: 1px solid #e3e8ec; border-radius: 10px; }}
 QFrame#OptionRow {{ background: #fafbfc; border: 1px solid #e3e8ec; border-radius: 8px; }}
 QLabel {{ color: #1f2d3a; background: transparent; }}
-QLabel[role="title"] {{ font-size: 16pt; font-weight: 700; }}
-QLabel[role="subtitle"] {{ color: #74838c; font-size: 9pt; }}
-QLabel[role="hint"] {{ color: #74838c; font-size: 8pt; }}
-QLabel[role="section"] {{ font-size: 11pt; font-weight: 700; }}
+QLabel[role="title"] {{ font-size: @TITLE@pt; font-weight: 700; }}
+QLabel[role="subtitle"] {{ color: #74838c; font-size: @SMALL@pt; }}
+QLabel[role="hint"] {{ color: #74838c; font-size: @HINT@pt; }}
+QLabel[role="section"] {{ font-size: @SECTION@pt; font-weight: 700; }}
 QLabel[role="field"] {{ font-weight: 600; color: #3d4b55; }}
 QLabel[role="num"] {{ background: {ACCENT}; color: #ffffff; border-radius: 11px; font-weight: 700;
                       min-width: 22px; max-width: 22px; min-height: 22px; max-height: 22px; }}
@@ -120,12 +120,25 @@ QTabBar::tab {{ background: #eef1f3; color: #5b6b75; border: 1px solid #e3e8ec; 
 QTabBar::tab:selected {{ background: #ffffff; color: {ACCENT}; border-bottom: 2px solid {ACCENT}; }}
 QTabWidget#StepTabs::pane {{ background: #f4f6f8; border: none; border-top: 1px solid #dbe4ea; top: -1px; }}
 QTabWidget#StepTabs > QTabBar::tab {{ background: transparent; color: #5b6b75; border: none;
-    border-bottom: 3px solid transparent; padding: 9px 22px; margin-right: 4px; font-size: 11pt; }}
+    border-bottom: 3px solid transparent; padding: 9px 22px; margin-right: 4px; }}
 QTabWidget#StepTabs > QTabBar::tab:hover {{ color: {ACCENT}; }}
 QTabWidget#StepTabs > QTabBar::tab:selected {{ color: {ACCENT}; border-bottom: 3px solid {ACCENT}; }}
 QScrollArea {{ background: transparent; border: none; }}
 QScrollArea > QWidget > QWidget {{ background: transparent; }}
 """
+
+
+def _studio_style():
+    """The stylesheet, with font sizes relative to the QGIS interface font
+    (so the studio matches QGIS on any screen and operating system)."""
+    base = QtWidgets.QApplication.font().pointSizeF()
+    if base <= 0:
+        base = 9.0
+    sizes = {"@TITLE@": base * 1.4, "@SECTION@": base * 1.08, "@SMALL@": base * 0.95, "@HINT@": base * 0.88}
+    style = _STYLE
+    for token, size in sizes.items():
+        style = style.replace(token, f"{size:.1f}")
+    return style
 
 
 def _set_props(widget, **props):
@@ -230,7 +243,7 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         self.setObjectName("HandbookStudio")
         self.setWindowTitle("Handbook Studio - Add a New Data Source")
         self.setWindowFlags(self.windowFlags() | Qt.WindowMaximizeButtonHint)
-        self.setStyleSheet(_STYLE)
+        self.setStyleSheet(_studio_style())
         self.resize(1240, 860)
         self._settings_provider = settings_provider
         self._python_exe = python_exe
@@ -255,6 +268,10 @@ class HandbookStudioDialog(QtWidgets.QDialog):
         # The three steps as tabs: Start - Refine with AI - Review & Save
         self.step_tabs = QtWidgets.QTabWidget()
         self.step_tabs.setObjectName("StepTabs")
+        # Larger tab text set as a font (not in the stylesheet), so Qt sizes the tabs for it
+        tab_font = self.step_tabs.tabBar().font()
+        tab_font.setPointSizeF(max(tab_font.pointSizeF(), 1.0) * 1.08)
+        self.step_tabs.tabBar().setFont(tab_font)
         self.step_tabs.addTab(self._build_start_tab(), "1   Start")
         self.step_tabs.addTab(self._build_refine_tab(), "2   Refine with AI")
         self.step_tabs.addTab(self._build_form_panel(), "3   Review && Save")
