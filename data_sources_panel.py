@@ -27,7 +27,7 @@ CARD_PALETTE = ['#2c5f7c', '#3b7a57', '#8a5a2b', '#6a4c93', '#1b6e8c',
                 '#9c4f4f', '#4f7a3b', '#b5762a', '#3d5a80', '#5c6bc0']
 
 CARD_MIN_WIDTH = 260
-CARD_HEIGHT = 114
+CARD_HEIGHT = 60
 
 _DB_ICON_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" '
                 'stroke="#ffffff" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/>'
@@ -148,8 +148,8 @@ class DataSourceCard(QtWidgets.QFrame):
             f"QFrame#dsCard:hover, QFrame#dsCard:focus {{ border: 1px solid {color}; border-left: 4px solid {color}; }}")
 
         avatar = QtWidgets.QLabel()
-        avatar.setPixmap(_svg_pixmap(_DB_ICON_SVG, 34, background=color))
-        avatar.setFixedSize(34, 34)
+        avatar.setPixmap(_svg_pixmap(_DB_ICON_SVG, 28, background=color, radius=7))
+        avatar.setFixedSize(28, 28)
 
         name = _ElidedLabel(info["name"] or info["id"], 1)
         name_font = name.font()
@@ -157,7 +157,7 @@ class DataSourceCard(QtWidgets.QFrame):
         name.setFont(name_font)
         name.setStyleSheet(f"color: {color}; background: transparent; border: none;")
 
-        desc = _ElidedLabel(info["description"] or "No description", 2)
+        desc = _ElidedLabel(info["description"] or "No description", 1)
         desc_font = desc.font()
         desc_font.setPointSizeF(desc_font.pointSizeF() * 0.9)
         desc.setFont(desc_font)
@@ -184,17 +184,11 @@ class DataSourceCard(QtWidgets.QFrame):
             self.delete_btn.clicked.connect(lambda: self.delete_requested.emit(self.info))
             self.delete_btn.setVisible(False)
 
+        # Compact single row: name, then badges and actions on the right.
         header = QtWidgets.QHBoxLayout()
-        header.setSpacing(2)
+        header.setSpacing(4)
         header.addWidget(name, 1)
-        header.addWidget(self.download_btn, 0, Qt.AlignTop)
-        if self.delete_btn:
-            header.addWidget(self.delete_btn, 0, Qt.AlignTop)
-
-        # Bottom-right badges.
-        badges = QtWidgets.QHBoxLayout()
-        badges.setSpacing(4)
-        badges.addStretch(1)
+        badges = header
         if info["key_names"]:
             if info["missing_keys"]:
                 badge = _badge("Key needed", "key_missing")
@@ -208,23 +202,20 @@ class DataSourceCard(QtWidgets.QFrame):
             badges.addWidget(_badge("Mine", "mine"))
         else:
             badges.addWidget(_badge("Built-in", "builtin"))
+        header.addWidget(self.download_btn)
+        if self.delete_btn:
+            header.addWidget(self.delete_btn)
 
         text = QtWidgets.QVBoxLayout()
-        text.setSpacing(3)
+        text.setSpacing(1)
         text.addLayout(header)
-        text.addWidget(desc, 1)
+        text.addWidget(desc)
 
-        top = QtWidgets.QHBoxLayout()
-        top.setSpacing(11)
-        top.addWidget(avatar, 0, Qt.AlignTop)
-        top.addLayout(text, 1)
-
-        # The badge row spans the whole card width, so two badges always fit.
-        layout = QtWidgets.QVBoxLayout(self)
-        layout.setContentsMargins(12, 9, 8, 7)
-        layout.setSpacing(2)
-        layout.addLayout(top, 1)
-        layout.addLayout(badges)
+        layout = QtWidgets.QHBoxLayout(self)
+        layout.setContentsMargins(10, 6, 6, 6)
+        layout.setSpacing(9)
+        layout.addWidget(avatar, 0, Qt.AlignVCenter)
+        layout.addLayout(text, 1)
 
     @staticmethod
     def _icon(svg):
@@ -464,7 +455,7 @@ class DataSourcesPanel(QtWidgets.QWidget):
         self.grid_host = QtWidgets.QWidget()
         self.grid = QtWidgets.QGridLayout(self.grid_host)
         self.grid.setContentsMargins(2, 2, 2, 2)
-        self.grid.setSpacing(10)
+        self.grid.setSpacing(6)
         self.scroll = QtWidgets.QScrollArea()
         self.scroll.setWidgetResizable(True)
         self.scroll.setFrameShape(QtWidgets.QFrame.NoFrame)
@@ -513,8 +504,7 @@ class DataSourcesPanel(QtWidgets.QWidget):
 
     def _layout_cards(self, visible=None, force=False):
         visible = self._visible_cards() if visible is None else visible
-        width = self.scroll.viewport().width()
-        columns = max(1, width // CARD_MIN_WIDTH)
+        columns = 1  # one card per row
         if columns == self._columns and not force:
             return
         self._columns = columns
