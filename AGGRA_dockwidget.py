@@ -384,7 +384,6 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # Connect the button click to the method that adds a new row
         self.addrowButton.clicked.connect(self.add_row)
         self.removerowButton.clicked.connect(self.remove_row)
-        self.add_document_button.clicked.connect(self.add_documentation_file)
         self.add_handbook_studio_button()
         # self.add_document_github_button.clicked.connect(self.open_upload_dialog)
         # self.add_document_github_button.clicked.connect(self.show_contribution_dialog) ## For adding data source to GitHub
@@ -1630,35 +1629,6 @@ class AGGRADockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             raise ValueError("API key is empty. Enter your OpenAI API key or GIBD API key")
         return api_key
 
-    def add_documentation_file(self):
-        try:
-            # User handbooks live outside the plugin folder so plugin updates keep them
-            destination_dir = handbook_store.User_handbooks_dir
-            handbook_store.ensure_user_dirs()
-            # Open file dialog to select .toml files
-            files, _ = QFileDialog.getOpenFileNames(
-                None, 'Select Documentation Files', '', 'TOML Files (*.toml)'
-            )
-
-            # If files are selected, process them
-            if files:
-                for file_path in files:
-                    # Determine the new path for the file in the destination directory
-                    new_file_path = os.path.join(destination_dir, os.path.basename(file_path))
-                    # Copy the file to the new directory
-                    shutil.copy(file_path, new_file_path)
-                    # print(f"File {file_path} copied to {new_file_path}")  # or update your UI to reflect the change
-                    # Display success message
-                QMessageBox.information(None, 'Success',
-                                        f'Documentation files have been successfully uploaded to {destination_dir}')
-                self.refresh_datasource_rows()
-                # else:
-                #     # If no files were selected, show an info message
-                #     QMessageBox.information(None, 'No Files Selected', 'No documentation files were selected.')
-
-        except Exception as e:
-            # Display failure message in case of any errors
-            QMessageBox.critical(None, 'Error', f'Failed to upload documentation files: {str(e)}')
 
 
     # ******************************************************************************************************

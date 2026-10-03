@@ -63,7 +63,7 @@ You need to replace the `XXX` using your real key and name the key. In the requi
 All handbooks are stored in the `Handbooks` directory, and the associated API keys are stored in the `Keys` directory. 
 
 # How to add a new data source documentation file to the agent
-To add a documentation file (.toml) on your local machine, on the ```Add New Data Source``` panel, use the ```Local Machine``` button within the plugin. This allows you to select and automatically add a documentation file from any location on your local machine to the documentation folder within the plugin directory (C:\Users\YOUR_USERENAME\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\AutonomousGIS_GeodataRetrieverAgent\LLM_Find\Handbooks). Note: Replace "YOUR_USERNAME" with your actual username in the file path. Alternatively, you can manually add the documentation file by copying it directly to the specified plugin directory.
+To add a handbook file (.toml) you already have, for example one shared by a colleague or downloaded from a data source card, open the Handbook Studio (```Add New Data Source``` > ```Create a handbook (with AI or manually)...```), choose ```Write manually``` > ```Import a .toml file...```, review it and press ```Save handbook```. It is saved in your QGIS profile folder (`AutonomousGIS_GeodataRetrieverAgent_data/Handbooks`), so plugin updates keep it. You can also copy the file into that folder directly.
 
 # How to add a key associated to a data source (if needed)
 Many data sources require API keys to access. This can also be added within the plugin by following these processes described below:
